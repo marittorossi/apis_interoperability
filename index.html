@@ -17,9 +17,9 @@
     <script>
       window.onload = () => {
         window.ui = SwaggerUIBundle({
-          url: "api.json",
+          url: "appointment.json",
           dom_id: '#swagger-ui',
-          deepLinking: true,
+          deepLinking: false,
           presets: [
             SwaggerUIBundle.presets.apis,
             SwaggerUIStandalonePreset
@@ -27,7 +27,8 @@
           plugins: [
             SwaggerUIBundle.plugins.DownloadUrl
           ],
-          layout: "StandaloneLayout",
+          supportedSubmitMethods: [], // This removes the "Try it out" button
+          layout: "BaseLayout", // Use BaseLayout to remove the top bar
         });
       };
     </script>
