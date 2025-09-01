@@ -5,38 +5,41 @@ body {
   background: #f4f6f9;
   color: #333;
 }
+
 header {
-  background: linear-gradient(135deg, #004aad, #007bff);
+  background-color: #0070C0; /* Azul principal de ETB */
   color: white;
-  padding: 2rem 1rem;
+  padding: 1.5rem 1rem; /* Reducido un poco el padding */
   text-align: center;
   box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
+
 header h1 {
   margin: 0;
-  font-size: 2.5rem;
+  font-size: 2.2rem; /* Ajustado el tamaño de la fuente */
   font-weight: 700;
 }
-header p {
-  margin: 0.5rem 0 0;
-  font-size: 1.2rem;
+
+.api-links {
+    background-color: #FFFFFF; /* Fondo blanco para los enlaces de las APIs */
+    padding: 10px 0;
+    text-align: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
-nav {
-  background: #fff;
-  padding: 0.8rem;
-  display: flex;
-  justify-content: center;
-  gap: 2rem;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+
+.api-links a {
+    color: #FF5722; /* Color naranja para los enlaces de las APIs, contrastando con el azul */
+    text-decoration: none;
+    font-weight: 600;
+    margin: 0 15px;
+    font-size: 1.1rem;
 }
-nav a {
-  text-decoration: none;
-  color: #004aad;
-  font-weight: 600;
+
+.api-links a:hover {
+    color: #E64A19; /* Tono más oscuro al pasar el ratón */
+    text-decoration: underline;
 }
-nav a:hover {
-  color: #007bff;
-}
+
 main {
   max-width: 1200px;
   margin: 2rem auto;
@@ -45,10 +48,11 @@ main {
   border-radius: 12px;
   box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
+
 footer {
   text-align: center;
   padding: 1rem;
-  background: #004aad;
+  background: #0070C0; /* Azul principal de ETB */
   color: white;
   margin-top: 2rem;
 }
@@ -59,17 +63,15 @@ footer {
 }
 
 /* Estilos de Swagger UI para la marca ETB */
-/* Colores de la barra superior */
 .swagger-ui .topbar {
   background-color: #003366; /* Un tono azul oscuro para la barra superior */
   border-bottom: 2px solid #0070c0; /* Un borde azul claro */
 }
-/* Si el logo de Swagger estuviera visible */
+
 .swagger-ui .topbar a {
   color: #ffffff;
 }
 
-/* Colores de los botones y secciones principales */
 .swagger-ui .btn {
   background-color: #0070c0; /* Azul principal de la marca */
   border-color: #0070c0;
@@ -85,7 +87,7 @@ footer {
   color: #fff;
   background-color: #0070c0; /* Color de fondo de los verbos HTTP */
 }
-/* Colores de los verbos HTTP */
+
 .swagger-ui .opblock.opblock-post .opblock-summary-method {
   background-color: #005a9c; /* Azul para POST */
 }
