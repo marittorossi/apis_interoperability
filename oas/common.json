@@ -1,0 +1,2725 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "common-xapi-services",
+    "description": "The API supports the ability to send requests to create a new trouble ticket specifying the nature and severity of the trouble or issue as well as all necessary related information.",
+    "version": "v1"
+  },
+  "host": "common-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/troubleTicket": {
+      "get": {
+        "operationId": "Get troubleTicket",
+        "description": "get pqr data",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CUSTOMER_ID",
+            "description": "Customer identification number can be ID card or tax ID number",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CUSTOMER_ID_TYPE",
+            "description": "Type of customer identification document ",
+            "required": false,
+            "in": "query",
+            "enum": [
+              "CC",
+              "CE",
+              "PASAPORTE",
+              "NIT",
+              "RUT",
+              "TI"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CUN",
+            "description": "CUN number of the PQR",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "PQR_ID",
+            "description": "CUN number of the PQR",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "BILLING_ACCOUNT",
+            "description": "Billing account number to be consulted",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "PHONE",
+            "description": "Connection number to be consulted",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "LIMIT",
+            "description": "Limit on orders to display",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "OFFSET",
+            "description": "used to organize information and establish a logical order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      },
+      "post": {
+        "operationId": "troubleTicket",
+        "description": "create pqr",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_3"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/troubleTicket/{id}": {
+      "patch": {
+        "operationId": "troubleTicketUpdate",
+        "description": "update pqr client",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_4"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_5"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/permission": {
+      "post": {
+        "operationId": "authenticateUser",
+        "description": "user authentication in the system",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_6"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_7"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        }
+      }
+    },
+    "/audit": {
+      "post": {
+        "operationId": "audits",
+        "description": "Create DIJIN audit",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_8"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_9"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "type": {
+      "example": {
+        "value": {
+          "codeResponse": "200",
+          "messageResponse": "",
+          "pqrs": [
+            {
+              "agenda": null,
+              "agendas": null,
+              "activities": [
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:12:32Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:12:32",
+                    "format4": "02/08/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277393",
+                  "management": "MIXTA",
+                  "managementDescription": "PENDIENTE ENTREGA",
+                  "name": "INSTANCIA ADMINISTRATIVA",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                },
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:12:32Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:12:32",
+                    "format4": "02/08/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277394",
+                  "management": "SIN NOTIFICAR",
+                  "managementDescription": "SIN TEXTO",
+                  "name": "NOTIFICACION",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                },
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:16:57Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:16:57",
+                    "format4": "02/08/2025 03:16:57 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:16:57",
+                      "format2": "03:16:57 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "16",
+                      "format6": "57"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277395",
+                  "management": "SIN IMPUTABILIDAD",
+                  "managementDescription": "SIN TEXTO",
+                  "name": "IMPUTABILIDAD(F28)",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                }
+              ],
+              "assignedUser": "laurros1",
+              "billingAccount": "12054363574",
+              "characteristics": [
+                {
+                  "action": null,
+                  "name": "DescripcionTipologia",
+                  "value": "Información con la  gestión y requisitos del trámite de  cancelación de los servicios suscritos"
+                },
+                {
+                  "action": null,
+                  "name": "AccionSeguirTipologia",
+                  "value": "Entregar la información de requisitos o estado del trámite, según el caso. Si la orden presenta alguna novedad, reingresar o escalar."
+                },
+                {
+                  "action": null,
+                  "name": "AUDITORIA_PARRAFO",
+                  "value": "NO"
+                },
+                {
+                  "action": null,
+                  "name": "estado_pqr_homologado",
+                  "value": "Resuelto"
+                }
+              ],
+              "contactDocumentNumber": "52530339",
+              "contactDocumentType": "CC",
+              "creationDate": {
+                "date": "2025-07-28T15:12:34Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:12:34",
+                "format4": "28/07/2025 03:12:34 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:12:34",
+                  "format2": "03:12:34 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "12",
+                  "format6": "34"
+                }
+              },
+              "creationUser": "laurros1",
+              "isAgendaSuspended": false,
+              "isSon": false,
+              "notificationMedium": "TELEFONICO",
+              "modificationDate": {
+                "date": "2025-07-28T15:17:12.542Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:17:12",
+                "format4": "28/07/2025 03:17:12 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:17:12",
+                  "format2": "03:17:12 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "17",
+                  "format6": "12"
+                }
+              },
+              "order": null,
+              "radicationDate": {
+                "date": "2025-07-28T15:10:07Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:10:07",
+                "format4": "28/07/2025 03:10:07 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:10:07",
+                  "format2": "03:10:07 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "10",
+                  "format6": "07"
+                }
+              },
+              "receptionMedium": "LÍNEA TELEFÓNICA",
+              "service": null,
+              "subChannel": "TELEFÓNICO",
+              "suspensionDetail": null,
+              "solutionDate": null,
+              "cUN": "",
+              "cunMassiveFailure": "",
+              "cunRelated": "",
+              "customer": {
+                "aTDP": null,
+                "birthday": null,
+                "business": null,
+                "collectionCommunications": null,
+                "documentNumber": "52530339",
+                "documentType": "CC",
+                "email": "",
+                "mobilePhone": null,
+                "mobilePhone2": null,
+                "name": {
+                  "completeName": "OLGA CAROLINA CASTILLO ROMERO",
+                  "firstName": "OLGA",
+                  "firstSurname": "CASTILLO",
+                  "names": "OLGA CAROLINA",
+                  "secondName": "CAROLINA",
+                  "secondSurname": "ROMERO",
+                  "surnames": "CASTILLO ROMERO"
+                },
+                "segmentation": null,
+                "validationCode": null
+              },
+              "description": "NOMBRE: CAROLINA\nCEDULA: 52530339\nTEL: 3124853341  \nCORREO: condorcas@hotmail.com  \nDIRRECION: CL 74C SUR 12 20\nLINEA: SR-30593591 \t\nCUENTA: 12054363574\nMOTIVO: DESEA CANCELAR Y BA  A REALIZAR LA CARTA PARA QUE NO LE COBREN EL SERVICIO POR FALLA MASIVA YA QUE AL DIA DE HOY AUN NO SE LE SOLUCIONA LA FALLA \n",
+              "id": "MDM-PQR-52226815",
+              "idRemedy": "",
+              "isYoungFail": false,
+              "phone": "",
+              "response": "",
+              "serviceAccount": "CS-1375757",
+              "serviceId": "CS-1375757",
+              "solution": "CLIENTE INDIDICA QUE SE VA  HACERCAR A UN PUNTO HACER EL TRAMITE ",
+              "state": "Resuelto",
+              "stateTechnical": "Cerrado",
+              "typology": {
+                "causal": "REQUISITOS Y ESTADO DEL TRAMITE",
+                "class": "PETICION",
+                "cUN": false,
+                "extension": {
+                  "closeType": "ACCEDE",
+                  "notificationMedium": "TELEFONICO",
+                  "operator": "ETB S.A. ESP",
+                  "operatorLsp": "RECEPCIÓN",
+                  "receptionMedium": "LÍNEA TELEFÓNICA"
+                },
+                "product": "PAQUETE",
+                "reason": "INFORMACION Y/O DOCUMENTACION",
+                "remedy": false,
+                "symptom": "CANCELACIÓN",
+                "technology": "FTTC",
+                "type": "PRODUCTO",
+                "version": "31"
+              }
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "pqrs"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "pqrs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "activities",
+              "characteristics",
+              "creationDate",
+              "modificationDate",
+              "radicationDate",
+              "customer",
+              "typology"
+            ],
+            "properties": {
+              "agenda": {
+                "type": "null"
+              },
+              "agendas": {
+                "type": "null"
+              },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "expirationDate",
+                    "startDate"
+                  ],
+                  "properties": {
+                    "assignedUser": {
+                      "example": "laurros1",
+                      "type": "string"
+                    },
+                    "creationUser": {
+                      "example": "laurros1",
+                      "type": "string"
+                    },
+                    "description": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "expirationDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-08-02T15:12:32Z",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "02/08",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "02/08/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "02/08/2025 15:12:32",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "02/08/2025 03:12:32 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "02",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Sáb.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Sábado",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "08",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Ago.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Agosto",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "15:12:32",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "03:12:32 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "15",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "03 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "12",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "32",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "example": "MDM-PQR-ACT-108277393",
+                      "type": "string"
+                    },
+                    "management": {
+                      "example": "MIXTA",
+                      "type": "string"
+                    },
+                    "managementDescription": {
+                      "example": "PENDIENTE ENTREGA",
+                      "type": "string"
+                    },
+                    "name": {
+                      "example": "INSTANCIA ADMINISTRATIVA",
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-07-28T15:12:32Z",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "28/07",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "28/07/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "28/07/2025 15:12:32",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "28/07/2025 03:12:32 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "28",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Lun.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Lunes",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "07",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Jul.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Julio",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "15:12:32",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "03:12:32 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "15",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "03 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "12",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "32",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "state": {
+                      "example": "Cerrado",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "assignedUser": {
+                "example": "laurros1",
+                "type": "string"
+              },
+              "billingAccount": {
+                "example": "12054363574",
+                "type": "string"
+              },
+              "characteristics": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "null"
+                    },
+                    "name": {
+                      "example": "DescripcionTipologia",
+                      "type": "string"
+                    },
+                    "value": {
+                      "example": "Información con la  gestión y requisitos del trámite de  cancelación de los servicios suscritos",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "contactDocumentNumber": {
+                "example": "52530339",
+                "type": "string"
+              },
+              "contactDocumentType": {
+                "example": "CC",
+                "type": "string"
+              },
+              "creationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:12:34Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:12:34",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:12:34 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:12:34",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:12:34 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "12",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "34",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "creationUser": {
+                "example": "laurros1",
+                "type": "string"
+              },
+              "isAgendaSuspended": {
+                "example": false,
+                "type": "boolean"
+              },
+              "isSon": {
+                "example": false,
+                "type": "boolean"
+              },
+              "notificationMedium": {
+                "example": "TELEFONICO",
+                "type": "string"
+              },
+              "modificationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:17:12.542Z",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:17:12",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:17:12 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:17:12",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:17:12 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "17",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "12",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "order": {
+                "type": "null"
+              },
+              "radicationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:10:07Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:10:07",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:10:07 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:10:07",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:10:07 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "10",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "07",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "receptionMedium": {
+                "example": "LÍNEA TELEFÓNICA",
+                "type": "string"
+              },
+              "service": {
+                "type": "null"
+              },
+              "subChannel": {
+                "example": "TELEFÓNICO",
+                "type": "string"
+              },
+              "suspensionDetail": {
+                "type": "null"
+              },
+              "solutionDate": {
+                "type": "null"
+              },
+              "cUN": {
+                "example": "",
+                "type": "string"
+              },
+              "cunMassiveFailure": {
+                "example": "",
+                "type": "string"
+              },
+              "cunRelated": {
+                "example": "",
+                "type": "string"
+              },
+              "customer": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "aTDP": {
+                    "type": "null"
+                  },
+                  "birthday": {
+                    "type": "null"
+                  },
+                  "business": {
+                    "type": "null"
+                  },
+                  "collectionCommunications": {
+                    "type": "null"
+                  },
+                  "documentNumber": {
+                    "example": "52530339",
+                    "type": "string"
+                  },
+                  "documentType": {
+                    "example": "CC",
+                    "type": "string"
+                  },
+                  "email": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "mobilePhone": {
+                    "type": "null"
+                  },
+                  "mobilePhone2": {
+                    "type": "null"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "completeName": {
+                        "example": "OLGA CAROLINA CASTILLO ROMERO",
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "example": "OLGA",
+                        "type": "string"
+                      },
+                      "firstSurname": {
+                        "example": "CASTILLO",
+                        "type": "string"
+                      },
+                      "names": {
+                        "example": "OLGA CAROLINA",
+                        "type": "string"
+                      },
+                      "secondName": {
+                        "example": "CAROLINA",
+                        "type": "string"
+                      },
+                      "secondSurname": {
+                        "example": "ROMERO",
+                        "type": "string"
+                      },
+                      "surnames": {
+                        "example": "CASTILLO ROMERO",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "segmentation": {
+                    "type": "null"
+                  },
+                  "validationCode": {
+                    "type": "null"
+                  }
+                }
+              },
+              "description": {
+                "example": "NOMBRE: CAROLINA\nCEDULA: 52530339\nTEL: 3124853341  \nCORREO: condorcas@hotmail.com  \nDIRRECION: CL 74C SUR 12 20\nLINEA: SR-30593591 \t\nCUENTA: 12054363574\nMOTIVO: DESEA CANCELAR Y BA  A REALIZAR LA CARTA PARA QUE NO LE COBREN EL SERVICIO POR FALLA MASIVA YA QUE AL DIA DE HOY AUN NO SE LE SOLUCIONA LA FALLA \n",
+                "type": "string"
+              },
+              "id": {
+                "example": "MDM-PQR-52226815",
+                "type": "string"
+              },
+              "idRemedy": {
+                "example": "",
+                "type": "string"
+              },
+              "isYoungFail": {
+                "example": false,
+                "type": "boolean"
+              },
+              "phone": {
+                "example": "",
+                "type": "string"
+              },
+              "response": {
+                "example": "",
+                "type": "string"
+              },
+              "serviceAccount": {
+                "example": "CS-1375757",
+                "type": "string"
+              },
+              "serviceId": {
+                "example": "CS-1375757",
+                "type": "string"
+              },
+              "solution": {
+                "example": "CLIENTE INDIDICA QUE SE VA  HACERCAR A UN PUNTO HACER EL TRAMITE ",
+                "type": "string"
+              },
+              "state": {
+                "example": "Resuelto",
+                "type": "string"
+              },
+              "stateTechnical": {
+                "example": "Cerrado",
+                "type": "string"
+              },
+              "typology": {
+                "type": "object",
+                "required": [
+                  "extension"
+                ],
+                "properties": {
+                  "causal": {
+                    "example": "REQUISITOS Y ESTADO DEL TRAMITE",
+                    "type": "string"
+                  },
+                  "class": {
+                    "example": "PETICION",
+                    "type": "string"
+                  },
+                  "cUN": {
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "extension": {
+                    "type": "object",
+                    "properties": {
+                      "closeType": {
+                        "example": "ACCEDE",
+                        "type": "string"
+                      },
+                      "notificationMedium": {
+                        "example": "TELEFONICO",
+                        "type": "string"
+                      },
+                      "operator": {
+                        "example": "ETB S.A. ESP",
+                        "type": "string"
+                      },
+                      "operatorLsp": {
+                        "example": "RECEPCIÓN",
+                        "type": "string"
+                      },
+                      "receptionMedium": {
+                        "example": "LÍNEA TELEFÓNICA",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "product": {
+                    "example": "PAQUETE",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "example": "INFORMACION Y/O DOCUMENTACION",
+                    "type": "string"
+                  },
+                  "remedy": {
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "symptom": {
+                    "example": "CANCELACIÓN",
+                    "type": "string"
+                  },
+                  "technology": {
+                    "example": "FTTC",
+                    "type": "string"
+                  },
+                  "type": {
+                    "example": "PRODUCTO",
+                    "type": "string"
+                  },
+                  "version": {
+                    "example": "31",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_1": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
+          "message": {
+            "message": "Required query parameter document not specified"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
+            }
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "XXX-xapi-services",
+                "type": "string"
+              },
+              "message": {
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_2": {
+      "example": {
+        "pqr": {
+          "customer": {
+            "documentNumber": "87654321",
+            "documentType": "CC",
+            "phone": "3057000421",
+            "user": "USUARIO_SISTEMA"
+          },
+          "service": {
+            "product": "INTERNET_FIBRA"
+          },
+          "detailPqr": {
+            "contact": {
+              "documentNumber": "12345678",
+              "documentType": "CC",
+              "email": "cliente@email.com",
+              "phone": "3001234567"
+            },
+            "cunMassiveFailure": "CUN-MASIVA-001",
+            "cunRelated": "CUN-RELACIONADO-001",
+            "description": "Descripción detallada del problema",
+            "failure": {
+              "botPeticion": "FALLA_INTERNET",
+              "causal": "FALLA_TECNICA",
+              "class": "INTERNET",
+              "description": "No tengo conexión a internet",
+              "reason": "FALLA TECNICA",
+              "symptom": "SIN_CONEXION"
+            },
+            "solution": "Solución aplicada",
+            "state": "ABIERTA",
+            "attachment": [
+              {
+                "id": "",
+                "description": "",
+                "attachmentType": "",
+                "mimeType": "image/png",
+                "file": "JVBERi0xLjQKJcOkw7zDtsO...",
+                "name": "March Bill",
+                "size": "",
+                "url": ""
+              }
+            ]
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "pqr"
+      ],
+      "properties": {
+        "pqr": {
+          "type": "object",
+          "required": [
+            "customer",
+            "service",
+            "detailPqr"
+          ],
+          "properties": {
+            "customer": {
+              "type": "object",
+              "properties": {
+                "documentNumber": {
+                  "example": "87654321",
+                  "type": "string"
+                },
+                "documentType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "phone": {
+                  "example": "3057000421",
+                  "type": "string"
+                },
+                "user": {
+                  "example": "USUARIO_SISTEMA",
+                  "type": "string"
+                }
+              }
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "example": "INTERNET_FIBRA",
+                  "type": "string"
+                }
+              }
+            },
+            "detailPqr": {
+              "type": "object",
+              "required": [
+                "contact",
+                "failure",
+                "attachment"
+              ],
+              "properties": {
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "example": "12345678",
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "example": "CC",
+                      "type": "string"
+                    },
+                    "email": {
+                      "example": "cliente@email.com",
+                      "type": "string"
+                    },
+                    "phone": {
+                      "example": "3001234567",
+                      "type": "string"
+                    }
+                  }
+                },
+                "cunMassiveFailure": {
+                  "example": "CUN-MASIVA-001",
+                  "type": "string"
+                },
+                "cunRelated": {
+                  "example": "CUN-RELACIONADO-001",
+                  "type": "string"
+                },
+                "description": {
+                  "example": "Descripción detallada del problema",
+                  "type": "string"
+                },
+                "failure": {
+                  "type": "object",
+                  "properties": {
+                    "botPeticion": {
+                      "example": "FALLA_INTERNET",
+                      "type": "string"
+                    },
+                    "causal": {
+                      "example": "FALLA_TECNICA",
+                      "type": "string"
+                    },
+                    "class": {
+                      "example": "INTERNET",
+                      "type": "string"
+                    },
+                    "description": {
+                      "example": "No tengo conexión a internet",
+                      "type": "string"
+                    },
+                    "reason": {
+                      "example": "FALLA TECNICA",
+                      "type": "string"
+                    },
+                    "symptom": {
+                      "example": "SIN_CONEXION",
+                      "type": "string"
+                    }
+                  }
+                },
+                "solution": {
+                  "example": "Solución aplicada",
+                  "type": "string"
+                },
+                "state": {
+                  "example": "ABIERTA",
+                  "type": "string"
+                },
+                "attachment": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "description": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "attachmentType": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "mimeType": {
+                        "example": "image/png",
+                        "type": "string"
+                      },
+                      "file": {
+                        "example": "JVBERi0xLjQKJcOkw7zDtsO...",
+                        "type": "string"
+                      },
+                      "name": {
+                        "example": "March Bill",
+                        "type": "string"
+                      },
+                      "size": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "url": {
+                        "example": "",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_3": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "example": 200,
+          "type": "integer"
+        },
+        "code": {
+          "example": "Ok",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Se registro la pqr satisfactoriamente",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        }
+      }
+    },
+    "type_4": {
+      "example": {
+        "appoitment": {
+          "appoitmentDecision": ""
+        },
+        "customer": {
+          "documentNumber": "12345678",
+          "documentType": "CC",
+          "email": "cliente@email.com",
+          "phone": "3001234567"
+        },
+        "pqr": {
+          "attachment": [
+            {
+              "attachmentType": "",
+              "description": "",
+              "file": "JVBERi0xLjQKJcOkw7zDtsO...",
+              "id": "",
+              "mimeType": "image/png",
+              "name": "March Bill",
+              "size": "",
+              "url": ""
+            }
+          ],
+          "cunMassiveFailure": "CUN-MASIVA-001",
+          "cunRelated": "CUN-RELACIONADO-001",
+          "description": "Descripción detallada del problema",
+          "solution": "Solución aplicada",
+          "state": "ABIERTA",
+          "number": ""
+        },
+        "service": {
+          "product": "INTERNET_FIBRA"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "appoitment": {
+          "type": "object",
+          "properties": {
+            "appoitmentDecision": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "customer": {
+          "type": "object",
+          "properties": {
+            "documentNumber": {
+              "example": "12345678",
+              "type": "string"
+            },
+            "documentType": {
+              "example": "CC",
+              "type": "string"
+            },
+            "email": {
+              "example": "cliente@email.com",
+              "type": "string"
+            },
+            "phone": {
+              "example": "3001234567",
+              "type": "string"
+            }
+          }
+        },
+        "pqr": {
+          "type": "object",
+          "required": [
+            "attachment"
+          ],
+          "properties": {
+            "attachment": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attachmentType": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "file": {
+                    "example": "JVBERi0xLjQKJcOkw7zDtsO...",
+                    "type": "string"
+                  },
+                  "id": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "example": "image/png",
+                    "type": "string"
+                  },
+                  "name": {
+                    "example": "March Bill",
+                    "type": "string"
+                  },
+                  "size": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "url": {
+                    "example": "",
+                    "type": "string"
+                  }
+                }
+              }
+            },
+            "cunMassiveFailure": {
+              "example": "CUN-MASIVA-001",
+              "type": "string"
+            },
+            "cunRelated": {
+              "example": "CUN-RELACIONADO-001",
+              "type": "string"
+            },
+            "description": {
+              "example": "Descripción detallada del problema",
+              "type": "string"
+            },
+            "solution": {
+              "example": "Solución aplicada",
+              "type": "string"
+            },
+            "state": {
+              "example": "ABIERTA",
+              "type": "string"
+            },
+            "number": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "product": {
+              "example": "INTERNET_FIBRA",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "type_5": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "example": 200,
+          "type": "integer"
+        },
+        "code": {
+          "example": "Ok",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Se actualizo la pqr satisfactoriamente",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        }
+      }
+    },
+    "type_6": {
+      "example": {
+        "credentials": {
+          "username": "",
+          "password": ""
+        },
+        "authentication_type": "type bussiness",
+        "operation": "type bussiness"
+      },
+      "type": "object",
+      "required": [
+        "credentials"
+      ],
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "example": "",
+              "type": "string"
+            },
+            "password": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "authentication_type": {
+          "example": "type bussiness",
+          "type": "string"
+        },
+        "operation": {
+          "example": "type bussiness",
+          "type": "string"
+        }
+      }
+    },
+    "type_7": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "authentication": {
+          "token": "",
+          "detail_authentication": {
+            "name": "Juan Pérez",
+            "userIdentificacionNumber": "12345678",
+            "userIdentificationType": "CC",
+            "services": [
+              {
+                "lineType": "INTERNET",
+                "phone": "3001234567",
+                "subType": "INTERNET",
+                "state": "ACTIVO",
+                "technology": "FTTH"
+              }
+            ]
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "authentication"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "authentication": {
+          "type": "object",
+          "required": [
+            "detail_authentication"
+          ],
+          "properties": {
+            "token": {
+              "example": "",
+              "type": "string"
+            },
+            "detail_authentication": {
+              "type": "object",
+              "required": [
+                "services"
+              ],
+              "properties": {
+                "name": {
+                  "example": "Juan Pérez",
+                  "type": "string"
+                },
+                "userIdentificacionNumber": {
+                  "example": "12345678",
+                  "type": "string"
+                },
+                "userIdentificationType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lineType": {
+                        "example": "INTERNET",
+                        "type": "string"
+                      },
+                      "phone": {
+                        "example": "3001234567",
+                        "type": "string"
+                      },
+                      "subType": {
+                        "example": "INTERNET",
+                        "type": "string"
+                      },
+                      "state": {
+                        "example": "ACTIVO",
+                        "type": "string"
+                      },
+                      "technology": {
+                        "example": "FTTH",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_8": {
+      "example": {
+        "application": "DIJIN",
+        "ip": "192.168.1.100",
+        "browser": "Google Chrome",
+        "computerName": "PC-Oficina",
+        "sumaUser": "mrodriguez",
+        "queriedPhone": "2342342",
+        "downloadedFile": "archivo de 200 caracteres",
+        "registrationDateTime": "2025-08-14T17:45:00Z"
+      },
+      "type": "object",
+      "properties": {
+        "application": {
+          "example": "DIJIN",
+          "type": "string"
+        },
+        "ip": {
+          "example": "192.168.1.100",
+          "type": "string"
+        },
+        "browser": {
+          "example": "Google Chrome",
+          "type": "string"
+        },
+        "computerName": {
+          "example": "PC-Oficina",
+          "type": "string"
+        },
+        "sumaUser": {
+          "example": "mrodriguez",
+          "type": "string"
+        },
+        "queriedPhone": {
+          "example": "2342342",
+          "type": "string"
+        },
+        "downloadedFile": {
+          "example": "archivo de 200 caracteres",
+          "type": "string"
+        },
+        "registrationDateTime": {
+          "example": "2025-08-14T17:45:00Z",
+          "type": "string"
+        }
+      }
+    },
+    "type_9": {
+      "example": {
+        "id": "1",
+        "code": "200",
+        "message": "Successful operation"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "example": "1",
+          "type": "string"
+        },
+        "code": {
+          "example": "200",
+          "type": "string"
+        },
+        "message": {
+          "example": "Successful operation",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
+    }
+  }
+}

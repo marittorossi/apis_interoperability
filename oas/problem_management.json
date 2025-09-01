@@ -1,0 +1,1651 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "problem-management-xapi-services",
+    "description": "Service Problem Management API is used to manage problems in the Service domain. It can retrieve a Problem or a collection of Problems based on filter criteria; Partial update of Problems (including updating rules); Create a Problem (including default values and creation rules); Delete a Problem (for administration purposes) and Manage the notification of events",
+    "version": "v1"
+  },
+  "host": "problem-management-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/serviceProblem": {
+      "get": {
+        "operationId": "serviceProblem_0",
+        "description": "List or find ServiceProblem objects",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "documentType",
+            "required": true,
+            "in": "query",
+            "enum": [
+              "CC",
+              "CE",
+              "PASAPORTE",
+              "NIT",
+              "RUT",
+              "TI"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "document",
+            "required": true,
+            "in": "query",
+            "type": "string",
+            "pattern": "^[0-9]*$",
+            "maxLength": 30
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/serviceProblem/{id}": {
+      "patch": {
+        "operationId": "serviceProblem_1",
+        "description": "updates partially a ServiceProblem entity.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_3"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/problemGroup": {
+      "get": {
+        "operationId": "problemGroup",
+        "description": "massive failure consultation",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "FAILURE_ID",
+            "description": "number of massive failure",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "LIMIT",
+            "description": "Limit on orders to display",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "OFFSET",
+            "description": "used to organize information and establish a logical order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_4"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/service": {
+      "get": {
+        "operationId": "service",
+        "description": "resource service information",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "SERVICE_ACCOUNT",
+            "description": "number account service",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CONNECTION_NUMBER",
+            "description": "Number connection, this number is phone",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "RESOURCE_ID",
+            "description": "Network element to which the query is applied",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "RESOURCE_TYPE",
+            "description": "resource type",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "OPERATION",
+            "description": "operation on the requested query",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_5"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/serviceOrder": {
+      "post": {
+        "operationId": "service Inventory",
+        "description": "create order service",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_6"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_7"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "service Order",
+        "description": "View detailed information about a service using filters; receive service data and return service information.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "ORDER_NUMBER",
+            "description": "number of order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "LIMIT",
+            "description": "Limit on orders to display",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "OFFSET",
+            "description": "used to organize information and establish a logical order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_8"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "type": {
+      "example": {
+        "value": [
+          {
+            "id": "MDM-PQR-4156123",
+            "status": "pending",
+            "description": "Degradación del servicio de internet",
+            "characteristic": [
+              {
+                "name": "Causal",
+                "value": "FALLA INTERNET"
+              }
+            ],
+            "affectedService": [
+              {
+                "category": "Conectividad",
+                "id": "svc001",
+                "name": "Internet Empresarial Fibra 500Mbps",
+                "type": "BUNDLE"
+              }
+            ],
+            "priority": "",
+            "@type": "ServiceProblem"
+          }
+        ]
+      },
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "characteristic",
+          "affectedService"
+        ],
+        "properties": {
+          "id": {
+            "example": "MDM-PQR-4156123",
+            "type": "string"
+          },
+          "status": {
+            "example": "pending",
+            "type": "string"
+          },
+          "description": {
+            "example": "Degradación del servicio de internet",
+            "type": "string"
+          },
+          "characteristic": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "Causal",
+                  "type": "string"
+                },
+                "value": {
+                  "example": "FALLA INTERNET",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "affectedService": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "example": "Conectividad",
+                  "type": "string"
+                },
+                "id": {
+                  "example": "svc001",
+                  "type": "string"
+                },
+                "name": {
+                  "example": "Internet Empresarial Fibra 500Mbps",
+                  "type": "string"
+                },
+                "type": {
+                  "example": "BUNDLE",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "priority": {
+            "example": "",
+            "type": "string"
+          },
+          "@type": {
+            "example": "ServiceProblem",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "type_1": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
+          "message": {
+            "message": "Required query parameter document not specified"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
+            }
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "XXXX-xapi-services",
+                "type": "string"
+              },
+              "message": {
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_2": {
+      "example": {
+        "@type": "ServiceProblem",
+        "originatorParty": {
+          "partyOrPartyRole": {
+            "name": "ABCompany"
+          },
+          "role": "ServiceProvider"
+        },
+        "relatedEntity": [
+          {
+            "completionDate": "2025-05-29T19:10:47.078",
+            "description": "Se realiza operación de [Confirmación,Reagendamiento ó Cancelación] de agenda",
+            "id": "task-1001",
+            "name": "Gestión de agenda",
+            "role": "appoimentTask",
+            "status": "completed",
+            "type": "Task"
+          }
+        ]
+      },
+      "type": "object",
+      "required": [
+        "originatorParty",
+        "relatedEntity"
+      ],
+      "properties": {
+        "originatorParty": {
+          "type": "object",
+          "required": [
+            "partyOrPartyRole"
+          ],
+          "properties": {
+            "partyOrPartyRole": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "ABCompany",
+                  "type": "string"
+                }
+              }
+            },
+            "role": {
+              "example": "ServiceProvider",
+              "type": "string"
+            }
+          }
+        },
+        "relatedEntity": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "example": "task-1001",
+                "type": "string"
+              },
+              "name": {
+                "example": "Gestión de agenda",
+                "type": "string"
+              },
+              "status": {
+                "example": "completed",
+                "type": "string"
+              },
+              "completionDate": {
+                "example": "2025-05-29T19:10:47.078",
+                "type": "string"
+              },
+              "description": {
+                "example": "Se realiza operación de [Confirmación,Reagendamiento ó Cancelación] de agenda",
+                "type": "string"
+              },
+              "role": {
+                "example": "appoimentTask",
+                "type": "string"
+              },
+              "type": {
+                "example": "Task",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "@type": {
+          "example": "ServiceProblem",
+          "type": "string"
+        }
+      }
+    },
+    "type_3": {
+      "example": {
+        "value": {
+          "@type": "ServiceProblem",
+          "affectedService": [
+            {
+              "category": "Conectividad",
+              "id": "svc001",
+              "name": "Internet Empresarial Fibra 500Mbps",
+              "type": "BUNDLE"
+            }
+          ],
+          "characteristic": [
+            {
+              "name": "appointmentId",
+              "value": "24729984"
+            },
+            {
+              "name": "Causal",
+              "value": "FALLA INTERNET"
+            }
+          ],
+          "description": "Degradación del servicio de internet",
+          "id": "MDM-PQR-4156123",
+          "priority": "",
+          "status": "pending"
+        }
+      },
+      "type": "object",
+      "required": [
+        "affectedService",
+        "characteristic"
+      ],
+      "properties": {
+        "@type": {
+          "example": "ServiceProblem",
+          "type": "string"
+        },
+        "affectedService": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "example": "Conectividad",
+                "type": "string"
+              },
+              "id": {
+                "example": "svc001",
+                "type": "string"
+              },
+              "name": {
+                "example": "Internet Empresarial Fibra 500Mbps",
+                "type": "string"
+              },
+              "type": {
+                "example": "BUNDLE",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "characteristic": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "example": "appointmentId",
+                "type": "string"
+              },
+              "value": {
+                "example": "24729984",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": {
+          "example": "Degradación del servicio de internet",
+          "type": "string"
+        },
+        "id": {
+          "example": "MDM-PQR-4156123",
+          "type": "string"
+        },
+        "priority": {
+          "example": "",
+          "type": "string"
+        },
+        "status": {
+          "example": "pending",
+          "type": "string"
+        }
+      }
+    },
+    "type_4": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "massiveFailure": [
+          {
+            "affectation": "Internet",
+            "cun": "CUN12345",
+            "description": "Falla masiva en la zona norte",
+            "descriptionUser": "Estamos trabajando para restablecer el servicio.",
+            "descriptionTechnical": "Corte de fibra óptica",
+            "endDate": {
+              "date": "2024-06-01T18:00:00Z",
+              "format1": "01/06",
+              "format2": "01/06/2024",
+              "format3": "01/06/2024 18:00:00",
+              "format4": "01/06/2024 06:00:00 PM"
+            },
+            "id": "PQR98765",
+            "incident": "INC123456",
+            "priority": 1,
+            "product": "INTERNET",
+            "startDate": {
+              "date": "2024-06-01T10:00:00Z",
+              "format1": "01/06",
+              "format2": "01/06/2024",
+              "format3": "01/06/2024 10:00:00",
+              "format4": "01/06/2024 10:00:00 AM"
+            },
+            "tes": 120
+          }
+        ]
+      },
+      "type": "object",
+      "required": [
+        "massiveFailure"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "Consulta Exitosa",
+          "type": "string"
+        },
+        "massiveFailure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "endDate",
+              "startDate"
+            ],
+            "properties": {
+              "affectation": {
+                "example": "Internet",
+                "type": "string"
+              },
+              "cun": {
+                "example": "CUN12345",
+                "type": "string"
+              },
+              "description": {
+                "example": "Falla masiva en la zona norte",
+                "type": "string"
+              },
+              "descriptionUser": {
+                "example": "Estamos trabajando para restablecer el servicio.",
+                "type": "string"
+              },
+              "descriptionTechnical": {
+                "example": "Corte de fibra óptica",
+                "type": "string"
+              },
+              "endDate": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2024-06-01T18:00:00Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "01/06",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "01/06/2024",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "01/06/2024 18:00:00",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "01/06/2024 06:00:00 PM",
+                    "type": "string"
+                  }
+                }
+              },
+              "id": {
+                "example": "PQR98765",
+                "type": "string"
+              },
+              "incident": {
+                "example": "INC123456",
+                "type": "string"
+              },
+              "priority": {
+                "example": 1,
+                "type": "integer"
+              },
+              "product": {
+                "example": "INTERNET",
+                "type": "string"
+              },
+              "startDate": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2024-06-01T10:00:00Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "01/06",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "01/06/2024",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "01/06/2024 10:00:00",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "01/06/2024 10:00:00 AM",
+                    "type": "string"
+                  }
+                }
+              },
+              "tes": {
+                "example": 120,
+                "type": "integer"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_5": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "serviceResource": [
+          {
+            "numPqr": "string",
+            "service": {
+              "status": "string",
+              "message": "string"
+            },
+            "networks": [
+              {
+                "networkName": "string",
+                "networkState": "string",
+                "macAddress": "string",
+                "ontSerial": "string",
+                "frequency": "string"
+              }
+            ],
+            "equipment": {
+              "ontSerial": "string",
+              "model": "string",
+              "status": "string"
+            },
+            "status": "string",
+            "message": "string",
+            "additionalChannels": "string",
+            "additionalServices": "string",
+            "decos": "string",
+            "stateSubscriberId": "string"
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "serviceResource": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "numPqr": {
+                "example": "string",
+                "type": "string"
+              },
+              "service": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "message": {
+                    "example": "string",
+                    "type": "string"
+                  }
+                }
+              },
+              "networks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "networkName": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "networkState": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "macAddress": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "ontSerial": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "frequency": {
+                      "example": "string",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "equipment": {
+                "type": "object",
+                "properties": {
+                  "ontSerial": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "model": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "status": {
+                    "example": "string",
+                    "type": "string"
+                  }
+                }
+              },
+              "status": {
+                "example": "string",
+                "type": "string"
+              },
+              "message": {
+                "example": "string",
+                "type": "string"
+              },
+              "additionalChannels": {
+                "example": "string",
+                "type": "string"
+              },
+              "additionalServices": {
+                "example": "string",
+                "type": "string"
+              },
+              "decos": {
+                "example": "string",
+                "type": "string"
+              },
+              "stateSubscriberId": {
+                "example": "string",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_6": {
+      "example": {
+        "serviceOrder": {
+          "customer": {
+            "documentNumber": "1023456789",
+            "documentType": "CC",
+            "phone": "+57 3001234567"
+          },
+          "service": {
+            "serviceAccountNumber": "ACC-987654"
+          },
+          "orderType": "installation",
+          "causal": "customer request",
+          "operation": "create"
+        }
+      },
+      "type": "object",
+      "required": [
+        "serviceOrder"
+      ],
+      "properties": {
+        "serviceOrder": {
+          "type": "object",
+          "required": [
+            "customer",
+            "service"
+          ],
+          "properties": {
+            "customer": {
+              "type": "object",
+              "properties": {
+                "documentNumber": {
+                  "example": "1023456789",
+                  "type": "string"
+                },
+                "documentType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "phone": {
+                  "example": "+57 3001234567",
+                  "type": "string"
+                }
+              }
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "serviceAccountNumber": {
+                  "example": "ACC-987654",
+                  "type": "string"
+                }
+              }
+            },
+            "orderType": {
+              "example": "installation",
+              "type": "string"
+            },
+            "causal": {
+              "example": "customer request",
+              "type": "string"
+            },
+            "operation": {
+              "example": "create",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "type_7": {
+      "type": "object",
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "success",
+          "type": "string"
+        },
+        "order": {
+          "example": "order successfully created",
+          "type": "string"
+        }
+      }
+    },
+    "type_8": {
+      "example": {
+        "value": {
+          "codeResponse": "200",
+          "messageResponse": "",
+          "serviceOrder": [
+            {
+              "phone": "6013103732",
+              "billingAccount": "15052876387",
+              "status": "Activo",
+              "type": "Fijo",
+              "contractedOffer": {
+                "name": "Plan Hogar Plus",
+                "description": "Plan de internet y telefonía fija",
+                "value": 89000,
+                "currency": "COP"
+              }
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "serviceOrder"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "serviceOrder": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "contractedOffer"
+            ],
+            "properties": {
+              "phone": {
+                "example": "6013103732",
+                "type": "string"
+              },
+              "billingAccount": {
+                "example": "15052876387",
+                "type": "string"
+              },
+              "status": {
+                "example": "Activo",
+                "type": "string"
+              },
+              "type": {
+                "example": "Fijo",
+                "type": "string"
+              },
+              "contractedOffer": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "Plan Hogar Plus",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": "Plan de internet y telefonía fija",
+                    "type": "string"
+                  },
+                  "value": {
+                    "example": 89000,
+                    "type": "integer"
+                  },
+                  "currency": {
+                    "example": "COP",
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
+    }
+  }
+}

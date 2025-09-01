@@ -1,0 +1,699 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "resource-xapi-services",
+    "description": "Provisioning and lifecycle management of Resource Functions",
+    "version": "v1"
+  },
+  "host": "resource-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
+  ],
+  "paths": {
+    "/resourceFunction": {
+      "post": {
+        "operationId": "normaliceService",
+        "description": "perform an action to normalize service",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "type": {
+      "example": {
+        "businessSegment": "",
+        "serviceAccount": "",
+        "phone": "",
+        "resourceID": "",
+        "resourceType": "",
+        "functionType": "",
+        "operation": ""
+      },
+      "type": "object",
+      "properties": {
+        "businessSegment": {
+          "example": "",
+          "type": "string"
+        },
+        "serviceAccount": {
+          "example": "",
+          "type": "string"
+        },
+        "phone": {
+          "example": "",
+          "type": "string"
+        },
+        "resourceID": {
+          "example": "",
+          "type": "string"
+        },
+        "resourceType": {
+          "example": "",
+          "type": "string"
+        },
+        "functionType": {
+          "example": "",
+          "type": "string"
+        },
+        "operation": {
+          "example": "",
+          "type": "string"
+        }
+      }
+    },
+    "type_1": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "diagnostic": {
+          "ontOn": true,
+          "poorConnection": false,
+          "speedFault": false
+        },
+        "massiveFailure": {
+          "endDate": {
+            "date": "2025-08-19T23:52:57.427+00:00",
+            "format1": "19/08",
+            "format2": "19/08/2025",
+            "format3": "19/08/2025 23:52:57",
+            "format4": "19/08/2025 11:52:57 PM",
+            "day": {
+              "format1": "19",
+              "format2": "Mar.",
+              "format3": "Martes"
+            },
+            "month": {
+              "format1": "08",
+              "format2": "Ago.",
+              "format3": "Agosto"
+            },
+            "year": {
+              "format1": "25",
+              "format2": "2025",
+              "format3": "02025"
+            },
+            "hour": {
+              "format1": "23:52:57",
+              "format2": "11:52:57 PM",
+              "format3": "23",
+              "format4": "11 PM",
+              "format5": "52",
+              "format6": "57"
+            }
+          },
+          "expectedSolutionTime": 6,
+          "priority": 4,
+          "product": "INTERNET",
+          "numPqr": "MDM-PQR-4163009",
+          "startDate": {
+            "date": "2025-08-19T17:52:57.427+00:00",
+            "format1": "19/08",
+            "format2": "19/08/2025",
+            "format3": "19/08/2025 17:52:57",
+            "format4": "19/08/2025 05:52:57 PM",
+            "day": {
+              "format1": "19",
+              "format2": "Mar.",
+              "format3": "Martes"
+            },
+            "month": {
+              "format1": "08",
+              "format2": "Ago.",
+              "format3": "Agosto"
+            },
+            "year": {
+              "format1": "25",
+              "format2": "2025",
+              "format3": "02025"
+            },
+            "hour": {
+              "format1": "17:52:57",
+              "format2": "05:52:57 PM",
+              "format3": "17",
+              "format4": "05 PM",
+              "format5": "52",
+              "format6": "57"
+            }
+          }
+        },
+        "semaphore": {
+          "attenuation": "",
+          "modem": "Verde",
+          "noise": "",
+          "potency": "Verde"
+        }
+      },
+      "type": "object",
+      "required": [
+        "diagnostic",
+        "massiveFailure",
+        "semaphore"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "diagnostic": {
+          "type": "object",
+          "properties": {
+            "ontOn": {
+              "example": true,
+              "type": "boolean"
+            },
+            "poorConnection": {
+              "example": false,
+              "type": "boolean"
+            },
+            "speedFault": {
+              "example": false,
+              "type": "boolean"
+            }
+          }
+        },
+        "massiveFailure": {
+          "type": "object",
+          "required": [
+            "endDate",
+            "startDate"
+          ],
+          "properties": {
+            "endDate": {
+              "type": "object",
+              "required": [
+                "day",
+                "month",
+                "year",
+                "hour"
+              ],
+              "properties": {
+                "date": {
+                  "example": "2025-08-19T23:52:57.427+00:00",
+                  "type": "string"
+                },
+                "format1": {
+                  "example": "19/08",
+                  "type": "string"
+                },
+                "format2": {
+                  "example": "19/08/2025",
+                  "type": "string"
+                },
+                "format3": {
+                  "example": "19/08/2025 23:52:57",
+                  "type": "string"
+                },
+                "format4": {
+                  "example": "19/08/2025 11:52:57 PM",
+                  "type": "string"
+                },
+                "day": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "19",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "Mar.",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "Martes",
+                      "type": "string"
+                    }
+                  }
+                },
+                "month": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "08",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "Ago.",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "Agosto",
+                      "type": "string"
+                    }
+                  }
+                },
+                "year": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "25",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "2025",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "02025",
+                      "type": "string"
+                    }
+                  }
+                },
+                "hour": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "23:52:57",
+                      "type": "string",
+                      "format": "time"
+                    },
+                    "format2": {
+                      "example": "11:52:57 PM",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "23",
+                      "type": "string"
+                    },
+                    "format4": {
+                      "example": "11 PM",
+                      "type": "string"
+                    },
+                    "format5": {
+                      "example": "52",
+                      "type": "string"
+                    },
+                    "format6": {
+                      "example": "57",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "expectedSolutionTime": {
+              "example": 6,
+              "type": "integer"
+            },
+            "priority": {
+              "example": 4,
+              "type": "integer"
+            },
+            "product": {
+              "example": "INTERNET",
+              "type": "string"
+            },
+            "numPqr": {
+              "example": "MDM-PQR-4163009",
+              "type": "string"
+            },
+            "startDate": {
+              "type": "object",
+              "required": [
+                "day",
+                "month",
+                "year",
+                "hour"
+              ],
+              "properties": {
+                "date": {
+                  "example": "2025-08-19T17:52:57.427+00:00",
+                  "type": "string"
+                },
+                "format1": {
+                  "example": "19/08",
+                  "type": "string"
+                },
+                "format2": {
+                  "example": "19/08/2025",
+                  "type": "string"
+                },
+                "format3": {
+                  "example": "19/08/2025 17:52:57",
+                  "type": "string"
+                },
+                "format4": {
+                  "example": "19/08/2025 05:52:57 PM",
+                  "type": "string"
+                },
+                "day": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "19",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "Mar.",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "Martes",
+                      "type": "string"
+                    }
+                  }
+                },
+                "month": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "08",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "Ago.",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "Agosto",
+                      "type": "string"
+                    }
+                  }
+                },
+                "year": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "25",
+                      "type": "string"
+                    },
+                    "format2": {
+                      "example": "2025",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "02025",
+                      "type": "string"
+                    }
+                  }
+                },
+                "hour": {
+                  "type": "object",
+                  "properties": {
+                    "format1": {
+                      "example": "17:52:57",
+                      "type": "string",
+                      "format": "time"
+                    },
+                    "format2": {
+                      "example": "05:52:57 PM",
+                      "type": "string"
+                    },
+                    "format3": {
+                      "example": "17",
+                      "type": "string"
+                    },
+                    "format4": {
+                      "example": "05 PM",
+                      "type": "string"
+                    },
+                    "format5": {
+                      "example": "52",
+                      "type": "string"
+                    },
+                    "format6": {
+                      "example": "57",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "semaphore": {
+          "type": "object",
+          "properties": {
+            "attenuation": {
+              "example": "",
+              "type": "string"
+            },
+            "modem": {
+              "example": "Verde",
+              "type": "string"
+            },
+            "noise": {
+              "example": "",
+              "type": "string"
+            },
+            "potency": {
+              "example": "Verde",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "type_2": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
+          "message": {
+            "message": "Required query parameter document not specified"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
+            }
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "problem-management-xapi-services",
+                "type": "string"
+              },
+              "message": {
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
+    }
+  }
+}
