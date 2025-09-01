@@ -1,75 +1,42 @@
-/* Colores de fondo */
+/* Colores de la barra superior */
 .swagger-ui .topbar {
-  background-color: #2196F3; /* Azul primario */
+  background-color: #003366; /* Un tono azul oscuro para la barra superior */
+  border-bottom: 2px solid #0070c0; /* Un borde azul claro */
 }
-
-/* Color del texto del topbar */
-.swagger-ui .topbar .topbar-wrapper a span {
-  color: #ffffff; /* Texto blanco para el logo */
-}
-
-/* Colores de botones */
-.swagger-ui .btn {
-  background-color: #42A5F5; /* Azul más claro */
+/* El logo de Swagger se ocultó en la configuración del HTML, pero si lo tuvieras, este sería su color */
+.swagger-ui .topbar a {
   color: #ffffff;
-  border-color: #42A5F5;
 }
 
+/* Colores de los botones y secciones principales */
+.swagger-ui .btn {
+  background-color: #0070c0; /* Azul principal de la marca */
+  border-color: #0070c0;
+  color: #ffffff;
+}
 .swagger-ui .btn.authorize {
-  background-color: #1976D2; /* Azul más oscuro para autorizar */
-  border-color: #1976D2;
+  background-color: #005a9c; /* Un azul ligeramente más oscuro para el botón de Autorizar */
+  border-color: #005a9c;
 }
-
-/* Colores de los métodos HTTP (GET, POST, PUT, DELETE) */
-.swagger-ui .opblock.opblock-get {
-  background-color: #e3f2fd; /* Azul muy claro */
-  border-color: #90CAF9; /* Borde azul claro */
+.swagger-ui .opblock .opblock-summary-method {
+    font-size: 14px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #0070c0; /* Color de fondo de los verbos HTTP */
 }
-
-.swagger-ui .opblock.opblock-post {
-  background-color: #e8f5e9; /* Verde claro */
-  border-color: #A5D6A7; /* Se mantiene un tono verde para POST, puedes cambiarlo a azul si quieres */
-}
-
-.swagger-ui .opblock.opblock-put {
-  background-color: #fff3e0; /* Naranja claro */
-  border-color: #FFB74D; /* Se mantiene naranja para PUT */
-}
-
-.swagger-ui .opblock.opblock-delete {
-  background-color: #ffebee; /* Rojo claro */
-  border-color: #EF9A9A; /* Se mantiene rojo para DELETE */
-}
-
-/* Cambiar colores de los métodos a azules */
-.swagger-ui .opblock.opblock-get .opblock-summary-method {
-  background-color: #2196F3;
-}
-
+/* Colores de los verbos HTTP */
 .swagger-ui .opblock.opblock-post .opblock-summary-method {
-  background-color: #1976D2;
+  background-color: #005a9c; /* Azul para POST */
 }
 
 .swagger-ui .opblock.opblock-put .opblock-summary-method {
-  background-color: #1565C0;
+  background-color: #004d80; /* Azul para PUT */
 }
 
 .swagger-ui .opblock.opblock-delete .opblock-summary-method {
-  background-color: #0D47A1;
+  background-color: #003366; /* Azul para DELETE */
 }
 
-/* Colores de tags */
-.swagger-ui .opblock-tag {
-  background-color: #BBDEFB; /* Azul más claro */
-  color: #212121;
-}
-
-/* Colores de la barra de navegación lateral (si la habilitas) */
-.swagger-ui .scheme-container {
-  background-color: #E3F2FD;
-}
-
-.swagger-ui .parameters-col_header,
-.swagger-ui .responses-col_header {
-    background-color: #BBDEFB;
+.swagger-ui .opblock.opblock-get .opblock-summary-method {
+  background-color: #0070c0; /* Azul para GET */
 }
