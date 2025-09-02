@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "common-xapi-services",
-    "description": "The API supports the ability to send requests to create a new trouble ticket specifying the nature and severity of the trouble or issue as well as all necessary related information.",
+    "title": "Common XAPI Services",
+    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Trouble Ticket Management:** Create, update, and query customer service tickets (PQRs - Peticiones, Quejas, Reclamos) following TM Forum TMF621 standard\n- **User Authentication:** Validate user credentials and generate authentication tokens for Bot Service integration (TMF672 compliant)\n- **Audit Trail:** Create DIJIN audit records for compliance and security tracking\n\n**Integration Points:**\n- **bot-sapi-services:** Primary backend for PQR management and user authentication (port 8091)\n- **mongo-db-sapi-services:** MongoDB integration for audit record storage (port 8091)\n- **audits-oracle-sapi-services:** Oracle-based audit logging for transaction traceability (port 8091)\n\n**Standards Compliance:**\n- TM Forum TMF621 (Trouble Ticket Management) v1.3.1\n- TM Forum TMF672 (User Role & Permission Management) v1.4.1\n- RESTful API design principles\n- OAuth 2.0 security standards\n\n**Performance Metrics:**\n- Target response time: < 2 seconds for synchronous operations\n- Availability target: 99.5% monthly uptime\n- Maximum error rate: < 2% of transactions\n\n**Target Consumers:**\n- WhatsApp Business Channel\n- Customer Portal Applications\n- Mobile Applications\n- Internal Support Systems\n- Bot Service Integrations\n",
     "version": "v1"
   },
   "host": "common-xapi-services-{env}.us-e2.cloudhub.io",
@@ -10,11 +10,17 @@
   "schemes": [
     "https"
   ],
+  "externalDocs": {
+    "url": "http://",
+    "description": "## Architecture Overview\n\nThis API serves as the experience layer facade for common business operations across ETB's digital channels. It orchestrates calls to multiple system APIs (SAPIs) to provide unified, channel-optimized responses.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Bot Services:** Core system for PQR creation, updates, and user authentication\n- **MongoDB:** NoSQL database for audit trail and transaction logging\n- **Oracle Database:** Enterprise audit repository for compliance requirements\n\n**Data Flow Patterns:**\n- Synchronous request-response for all operations\n- Pass-through proxy pattern with data enrichment\n- Centralized error handling and transformation\n\n## Response Codes\n\n**API-Controlled Response Codes (in response body):**\n- `200`: Successful operation completion\n- `REQUEST_ERROR`: Malformed request or missing required parameters\n- `Unauthorized`: Invalid or expired authentication token\n- `NOT_FOUND`: Requested resource does not exist\n- `INTERNAL_SERVER_ERROR`: Backend system failure or timeout\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- Business-specific error codes in the response body\n- Detailed error messages for debugging\n- Origin tracking for multi-system error propagation\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Authentication operations: < 1 second\n- PQR creation: < 2 seconds\n- Query operations: < 1.5 seconds\n- Audit logging: Asynchronous (non-blocking)\n",
+    "x-amf-title": "Technical Architecture"
+  },
   "paths": {
     "/troubleTicket": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages customer service tickets (PQRs - Peticiones, Quejas, Reclamos) for ETB's telecommunications services. This resource provides complete lifecycle management for customer complaints, requests, and claims.\n\n**Data Integration:**\n- **bot-sapi-services:** Primary backend for PQR data persistence and business logic\n- **Bot Services:** External system providing PQR management capabilities\n\n**Business Intelligence Features:**\n- Automatic correlation of related PQRs through CUN (Código Único de Notificación) linkage\n- Massive failure tracking and correlation\n- Multi-channel support with origin tracking\n- File attachment support for evidence documentation\n",
       "get": {
-        "operationId": "Get troubleTicket",
-        "description": "get pqr data",
+        "operationId": "Query Trouble Tickets",
+        "description": "## Operation Summary\n\nRetrieves trouble ticket (PQR) information based on various search criteria. Supports flexible filtering to locate specific tickets or retrieve customer service history.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customers checking their PQR status through chatbot\n- **Portal Channel:** Web users viewing their complete service request history\n- **Mobile Channel:** App users tracking active complaints\n- **Agent Channel:** Support staff researching customer issues\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/get/v1` endpoint\n- Backend: Bot Services PQR management system\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds for single record queries\n- Caching: Not implemented (real-time data required)\n- Rate limits: 100 requests per second per client\n",
         "consumes": [
           "application/json"
         ],
@@ -24,21 +30,21 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose:** Identifies the channel or system originating the request for analytics and routing\n\n**Valid Values:** WHATSAPP, PORTAL, MOBILE_APP, AGENT_DESKTOP, IVR, WEB\n\n**Usage Examples:**\n- WHATSAPP: Requests from WhatsApp Business chatbot\n- PORTAL: Customer self-service web portal\n- MOBILE_APP: ETB mobile application\n\n**Channel Variations:** Required for all channels to ensure proper audit trail\n",
             "required": true,
             "in": "query",
             "type": "string"
           },
           {
             "name": "CUSTOMER_ID",
-            "description": "Customer identification number can be ID card or tax ID number",
+            "description": "**Business Purpose:** Primary customer identifier for retrieving associated PQRs\n\n**Validation Rules:**\n- Format: Numeric string\n- Length: 6-15 characters\n- Pattern: ^[0-9]{6,15}$\n\n**Usage Examples:**\n- Colombian ID: \"1234567890\"\n- NIT: \"900123456-1\"\n- Passport: \"ABC123456\"\n\n**Channel Variations:** Mobile and Portal channels auto-populate from session\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "CUSTOMER_ID_TYPE",
-            "description": "Type of customer identification document ",
+            "description": "**Business Purpose:** Specifies the type of identification document for validation\n\n**Valid Values:**\n- CC: Cédula de Ciudadanía (National ID)\n- CE: Cédula de Extranjería (Foreign ID)\n- PASAPORTE: Passport\n- NIT: Tax Identification Number (Business)\n- RUT: Registro Único Tributario\n- TI: Tarjeta de Identidad (Youth ID)\n\n**Business Meaning:** Required when CUSTOMER_ID is provided to ensure correct validation\n",
             "required": false,
             "in": "query",
             "enum": [
@@ -53,52 +59,60 @@
           },
           {
             "name": "FILTERS",
-            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "description": "**Business Purpose:** Advanced filtering mechanism for complex queries\n\n**Validation Rules:**\n- Format: key:value pairs separated by semicolons\n- Pattern: ^([A-Za-z]+:[^;]+)(;[A-Za-z]+:[^;]+)*$\n\n**Valid Filter Keys:**\n- Phone: Service phone number\n- AccountNumber: Billing account\n- Status: PQR status (OPEN, CLOSED, IN_PROGRESS)\n- Priority: Ticket priority (HIGH, MEDIUM, LOW)\n- DateRange: Creation date range (YYYY-MM-DD:YYYY-MM-DD)\n\n**Usage Examples:**\n- Single filter: \"Phone:3001234567\"\n- Multiple filters: \"Status:OPEN;Priority:HIGH\"\n- Date range: \"DateRange:2024-01-01:2024-12-31\"\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "CUN",
-            "description": "CUN number of the PQR",
+            "description": "**Business Purpose:** Unique notification code for direct PQR lookup\n\n**Validation Rules:**\n- Format: CUN followed by 10 digits\n- Pattern: ^CUN[0-9]{10}$\n\n**Business Meaning:** Primary key for PQR retrieval, supersedes all other filters when provided\n",
             "required": false,
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "pattern": "^CUN[0-9]{10}$"
           },
           {
             "name": "PQR_ID",
-            "description": "CUN number of the PQR",
+            "description": "**Business Purpose:** Alternative PQR identifier (legacy support)\n\n**Validation Rules:** Same as CUN parameter\n\n**Business Meaning:** Maintained for backward compatibility, maps to CUN internally\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "BILLING_ACCOUNT",
-            "description": "Billing account number to be consulted",
+            "description": "**Business Purpose:** Retrieves all PQRs associated with a billing account\n\n**Validation Rules:**\n- Format: Alphanumeric\n- Length: 8-12 characters\n\n**Usage Examples:** Used by agents to view all issues for a customer account\n",
             "required": false,
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[A-Z0-9]{8,12}$"
           },
           {
             "name": "PHONE",
-            "description": "Connection number to be consulted",
+            "description": "**Business Purpose:** Service line number for PQR association\n\n**Validation Rules:**\n- Format: 10 digits\n- Pattern: ^[0-9]{10}$\n\n**Business Meaning:** Retrieves PQRs related to specific service lines\n",
             "required": false,
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
           },
           {
             "name": "LIMIT",
-            "description": "Limit on orders to display",
+            "description": "**Business Purpose:** Controls pagination size for large result sets\n\n**Validation Rules:**\n- Minimum: 1\n- Maximum: 100\n- Default: 10\n\n**Channel Variations:**\n- WhatsApp: Limited to 5 for optimal display\n- Portal/Web: Up to 50 records\n- Agent Desktop: Up to 100 records\n",
             "required": false,
             "in": "query",
-            "type": "number"
+            "default": 10,
+            "type": "number",
+            "minimum": 1.0,
+            "maximum": 100.0
           },
           {
             "name": "OFFSET",
-            "description": "used to organize information and establish a logical order",
-            "required": false,
+            "description": "**Business Purpose:** Pagination offset for result navigation\n\n**Validation Rules:**\n- Format: Numeric string\n- Minimum: 0\n\n**Usage Examples:** Used with LIMIT for paginated results (e.g., OFFSET=20&LIMIT=10 for page 3)\n",
+            "required": true,
             "in": "query",
-            "type": "string"
+            "default": "0",
+            "type": "string",
+            "pattern": "^[0-9]+$"
           },
           {
             "name": "name",
@@ -144,35 +158,35 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "**API-Controlled Code:** `200` in response body\n\n**Response Structure:**\n- List of PQR records matching search criteria\n- Each record includes full ticket details, customer information, and status\n\n**Data Enrichment:**\n- Automatic timestamp formatting to ISO 8601\n- Status translation from codes to descriptive text\n- Related PQR linkage through CUN references\n\n**Business Context:**\n- Returns empty array if no matches found (not a 404 error)\n- Results sorted by creation date (newest first)\n- Sensitive data masked based on channel permissions\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type"
             }
           },
           "400": {
-            "description": "",
+            "description": "**API Error Code:** `REQUEST_ERROR`\n\n**Common Issues:**\n- Missing required ORIGIN parameter\n- Invalid enum value for CUSTOMER_ID_TYPE\n- Malformed FILTERS string syntax\n- LIMIT exceeds maximum allowed value\n- Invalid date format in filter ranges\n\n**System Context:** Validation performed at API Gateway level before backend call\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "401": {
-            "description": "",
+            "description": "**API Error Code:** `Unauthorized`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for operation\n- Client credentials not authorized for this resource\n\n**System Context:** Token validation performed against ETB OAuth provider\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "404": {
-            "description": "",
+            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Specific CUN does not exist in system\n- Customer ID has no associated PQRs\n- Invalid resource path (rare, usually caught as 400)\n\n**System Context:** Returned when specifically querying single resource by ID\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "500": {
-            "description": "",
+            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- bot-sapi-services timeout (> 30 seconds)\n- Bot Services backend unavailable\n- Database connection failure\n- Unexpected data format from backend\n\n**System Context:** Error details logged with correlation ID for support investigation\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
@@ -186,8 +200,8 @@
         ]
       },
       "post": {
-        "operationId": "troubleTicket",
-        "description": "create pqr",
+        "operationId": "Create Trouble Ticket",
+        "description": "## Operation Summary\n\nCreates a new trouble ticket (PQR) in the system for customer service management. Supports comprehensive ticket creation with customer details, service information, problem description, and file attachments.\n\n## Use Cases\n\n- **WhatsApp Channel:** Automated PQR creation from chatbot conversations\n- **Portal Channel:** Customer self-service ticket submission\n- **Mobile Channel:** In-app complaint registration with photo evidence\n- **Agent Channel:** Support staff creating tickets on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/create/v1` endpoint\n- Backend: Bot Services PQR management system for ticket persistence\n- Audit: audits-oracle-sapi-services for transaction logging\n\n## Performance Characteristics\n\n- Response time: < 2 seconds for ticket creation\n- File attachments: Maximum 5 files, 10MB each\n- Rate limits: 50 creations per minute per customer\n",
         "consumes": [
           "application/json"
         ],
@@ -298,8 +312,8 @@
     },
     "/troubleTicket/{id}": {
       "patch": {
-        "operationId": "troubleTicketUpdate",
-        "description": "update pqr client",
+        "operationId": "Update Trouble Ticket",
+        "description": "## Operation Summary\n\nUpdates an existing trouble ticket with new information, status changes, or additional attachments. Supports partial updates following PATCH semantics.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer adding information to open ticket\n- **Portal Channel:** Status updates and additional evidence submission\n- **Mobile Channel:** Customer feedback on resolution attempts\n- **Agent Channel:** Support staff updating ticket status and adding notes\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/update/v1` endpoint\n- Backend: Bot Services PQR management system\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds for updates\n- Partial updates supported (only send changed fields)\n- Audit trail maintained for all changes\n",
         "consumes": [
           "application/json"
         ],
@@ -316,9 +330,11 @@
           },
           {
             "name": "id",
+            "description": "**Business Purpose:** Unique identifier (CUN) of the PQR to update\n\n**Validation Rules:**\n- Format: CUN followed by 10 digits\n- Must exist in the system\n\n**Business Context:** Used for updating existing tickets with new information or status changes\n",
             "required": true,
             "in": "path",
-            "type": "string"
+            "type": "string",
+            "pattern": "^CUN[0-9]{10}$"
           },
           {
             "name": "name",
@@ -415,9 +431,10 @@
       }
     },
     "/permission": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages user authentication and authorization for ETB's digital services. Validates credentials and generates authentication tokens for secure access to customer accounts and services.\n\n**Data Integration:**\n- **bot-sapi-services:** Authentication service provider\n- **Bot Services:** External authentication system `/api/mietb/v1/authmail`\n\n**Business Intelligence Features:**\n- Multi-factor authentication support\n- Service-level permission mapping\n- Session management and token generation\n- User profile enrichment with associated services\n",
       "post": {
-        "operationId": "authenticateUser",
-        "description": "user authentication in the system",
+        "operationId": "Authenticate User",
+        "description": "## Operation Summary\n\nAuthenticates user credentials and returns an authorization token with user profile and associated services. Supports multiple authentication types for different business scenarios.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer authentication for secure operations\n- **Portal Channel:** Web login for account management\n- **Mobile Channel:** App authentication with biometric support\n- **Agent Channel:** Not applicable (agents use different authentication)\n\n## Data Sources\n\n- Primary: bot-sapi-services `/mietb/authmail/v1` endpoint\n- Backend: Bot Services authentication system\n- Enrichment: User profile and service catalog from MDM\n\n## Performance Characteristics\n\n- Response time: < 1 second for authentication\n- Token validity: 3600 seconds (1 hour)\n- Rate limits: 5 attempts per minute per user (brute force protection)\n",
         "consumes": [
           "application/json"
         ],
@@ -518,13 +535,19 @@
               "$ref": "#/definitions/type_1"
             }
           }
-        }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
       }
     },
     "/audit": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Creates audit records for DIJIN (Dirección de Investigación Criminal e INTERPOL) compliance, tracking sensitive operations and data access for regulatory requirements.\n\n**Data Integration:**\n- **mongo-db-sapi-services:** Primary storage for audit records\n- **MongoDB:** NoSQL database for flexible audit data structure\n\n**Business Intelligence Features:**\n- Compliance tracking for Colombian regulations\n- User activity monitoring\n- Sensitive data access logging\n- Forensic investigation support\n",
       "post": {
-        "operationId": "audits",
-        "description": "Create DIJIN audit",
+        "operationId": "Create DIJIN Audit Record",
+        "description": "## Operation Summary\n\nCreates an audit record in MongoDB for DIJIN compliance tracking. Records user actions, data access, and system operations for regulatory and security purposes.\n\n## Use Cases\n\n- **All Channels:** Automatic audit logging for sensitive operations\n- **Compliance:** DIJIN regulatory requirement fulfillment\n- **Security:** Forensic trail for incident investigation\n- **Internal:** System monitoring and usage analytics\n\n## Data Sources\n\n- Primary: mongo-db-sapi-services `/mongo/v1/audit/dijin` endpoint\n- Backend: MongoDB audit collection\n\n## Performance Characteristics\n\n- Response time: < 500ms (asynchronous preferred)\n- No rate limits (audit logging must not be restricted)\n- High availability requirement: 99.9% uptime\n\n## Security Notes\n\n- Authentication temporarily disabled for critical audit scenarios\n- All requests logged regardless of authentication status\n- Tamper-proof design with write-only access pattern\n",
         "consumes": [
           "application/json"
         ],

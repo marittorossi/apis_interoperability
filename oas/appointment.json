@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "appointment-admin-web-xapi-services",
-    "description": "API designed for appointment management, enabling the handling of various actions related to scheduling and agenda management.",
+    "title": "Appointment Admin Web XAPI Services",
+    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Appointment Creation:** Create and register service appointments linked to customer PQRs following TM Forum TMF646 standard\n- **Appointment Management:** Retrieve, update, and patch existing appointments with full lifecycle support\n- **Time Slot Search:** Advanced availability search with multi-day capacity, area-based filtering, and service category optimization\n- **PQR Integration:** Seamless integration with ETB's trouble ticket system for appointment-PQR correlation\n\n**Integration Points:**\n- **bot-sapi-services:** System layer for appointment operations via `/pqr/agenda/v1` endpoint (port 8091)\n- **oracle-sapi-services:** Oracle backend for capacity management and order assurance (port 8091)\n- **audits-oracle-sapi-services:** Oracle-based audit logging for compliance and traceability (port 8091)\n\n**Standards Compliance:**\n- TM Forum TMF646 (Appointment Management) v3.4.2\n- RESTful API design principles with PATCH support\n- OAuth 2.0 security standards\n\n**Performance Metrics:**\n- Target response time: < 2 seconds for appointment operations\n- Availability target: 99.5% monthly uptime\n- Maximum error rate: < 2% of transactions\n\n**Target Consumers:**\n- WhatsApp Business Channel\n- Customer Service Portal\n- Field Service Mobile Applications\n- Contact Center Agent Desktop\n- Third-party Integration Systems\n",
     "version": "v1"
   },
   "host": "appointment-admin-web-xapi-services-{env}.us-e2.cloudhub.io",
@@ -10,11 +10,17 @@
   "schemes": [
     "https"
   ],
+  "externalDocs": {
+    "url": "http://",
+    "description": "## Architecture Overview\n\nThis API serves as the experience layer for appointment management, orchestrating service scheduling operations across ETB's digital channels. It provides a unified interface for creating, managing, and searching appointments while ensuring proper integration with PQR management and capacity planning systems.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Bot Services:** Core appointment management via `/api/pqr/v2/agenda`\n- **Oracle Database:** Capacity management and order assurance tracking\n- **Audit System:** Comprehensive transaction logging for compliance\n\n**Data Flow Patterns:**\n- Synchronous request-response for all appointment operations\n- Real-time capacity checking for time slot availability\n- Event-driven PQR correlation for appointment tracking\n- Audit trail generation for all state changes\n\n## Response Codes\n\n**API-Controlled Response Codes (in response body):**\n- `200/Ok`: Successful operation completion\n- `REQUEST_ERROR`: Malformed request or validation failure\n- `Unauthorized`: Invalid or expired authentication token\n- `NOT_FOUND`: Appointment or resource not found\n- `INTERNAL_SERVER_ERROR`: Backend system failure or timeout\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- HTTP status code for transport-level status\n- Business-specific error codes in the response body\n- Detailed error messages for debugging\n- Origin tracking for multi-system error propagation\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Appointment creation: < 2 seconds\n- Appointment retrieval: < 1 second  \n- Time slot search: < 3 seconds (depends on date range)\n- Appointment updates: < 1.5 seconds\n- Audit logging: Asynchronous (non-blocking)\n",
+    "x-amf-title": "Technical Architecture"
+  },
   "paths": {
     "/appointment": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages service appointments for ETB's field operations, customer visits, and technical support activities. This resource provides complete lifecycle management for appointments linked to customer PQRs (Peticiones, Quejas, Reclamos) and service orders.\n\n**Data Integration:**\n- **bot-sapi-services:** Primary backend for appointment persistence via `/pqr/agenda/v1`\n- **Bot Services:** External system managing appointment scheduling via `/api/pqr/v2/agenda`\n- **Oracle Database:** Capacity management and order tracking integration\n\n**Business Intelligence Features:**\n- **PQR Correlation:** Automatic linking of appointments to trouble tickets\n- **Order Tracking:** Integration with service order lifecycle\n- **Customer History:** Access to previous appointments and preferences\n- **Capacity Optimization:** Real-time availability and resource allocation\n",
       "post": {
-        "operationId": "createAppointment",
-        "description": "Create an Appointment entity.\n",
+        "operationId": "Create Appointment",
+        "description": "## Operation Summary\n\nCreates a new appointment in the system linked to a customer PQR and service order. Validates customer information, checks time slot availability, and registers the appointment with all necessary tracking information.\n\n## Use Cases\n\n- **WhatsApp Channel:** Automated appointment scheduling through chatbot conversation\n- **Portal Channel:** Customer self-service appointment booking\n- **Mobile Channel:** Field technician scheduling follow-up visits\n- **Agent Channel:** Contact center scheduling on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/agenda/v1` endpoint\n- Backend: Bot Services appointment engine `/api/pqr/v2/agenda`\n- Validation: Oracle capacity management service\n- Audit: audits-oracle-sapi-services for transaction logging\n\n## Performance Characteristics\n\n- Response time: < 2 seconds for appointment creation\n- Validation time: < 500ms for availability check\n- Rate limits: 100 appointments per minute per channel\n- Timeout: 30 seconds for backend operations\n",
         "consumes": [
           "application/json"
         ],
@@ -24,7 +30,7 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose:** Identifies the channel or system originating the appointment request for analytics and routing\n\n**Valid Values:** WHATSAPP, PORTAL, MOBILE_APP, AGENT_DESKTOP, IVR, WEB, THIRD_PARTY\n\n**Usage Examples:**\n- WHATSAPP: Appointments scheduled via WhatsApp chatbot\n- PORTAL: Customer self-service web portal bookings\n- AGENT_DESKTOP: Contact center agent scheduling\n\n**Channel Variations:** Required for all channels to ensure proper audit trail and capacity allocation\n",
             "required": true,
             "in": "query",
             "type": "string"
@@ -75,7 +81,7 @@
             "in": "body",
             "name": "generated",
             "schema": {
-              "description": "The Appointment to be created",
+              "description": "## Request Body Structure\n\n**Customer Object:**\n- **documentNumber:** Customer identification number (8-15 digits)\n  - Format: Numeric string\n  - Example: \"87654321\"\n  - Business Logic: Must match billing system records\n\n- **documentType:** Type of identification document\n  - Valid Values: CC (Cédula), CE (Foreign ID), NIT, PASAPORTE, TI\n  - Default: CC for residential customers\n  - Business Logic: NIT required for corporate customers\n\n- **phone:** Contact phone number for appointment confirmation\n  - Format: 10 digits Colombian format\n  - Pattern: ^[0-9]{10}$\n  - Example: \"3057000421\"\n  - Usage: SMS notifications and appointment reminders\n\n- **name:** Name of user creating the appointment\n  - Format: Alphanumeric with spaces\n  - Example: \"USUARIO_SISTEMA\" for automated bookings\n  - Business Logic: Audit trail for appointment creation\n\n**Order Object:**\n- **id:** Service order identifier\n  - Format: Numeric string\n  - Example: \"12345\"\n  - Validation: Must exist in order management system\n\n- **CUN:** Unique business code (Código Único de Negocio)\n  - Format: CUN followed by 6-10 digits\n  - Pattern: ^CUN[0-9]{6,10}$\n  - Example: \"CUN001122\"\n  - Business Logic: Links appointment to master transaction\n\n- **orderType:** Category of service order\n  - Valid Values: installation, repair, maintenance, disconnection, upgrade\n  - Business Logic: Determines required technician skills and duration\n\n- **state:** Current order status\n  - Valid Values: pending, scheduled, in_progress, completed, cancelled\n  - Business Logic: Only pending orders can have new appointments\n\n- **creationDate:** Order creation timestamp\n  - Format: ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)\n  - Example: \"2025-07-23T10:00:00Z\"\n  - Usage: SLA calculation and priority routing\n\n**Appointment Object:**\n- **date:** Requested appointment date\n  - Format: YYYY-MM-DD\n  - Validation: Must be future date within booking window (typically 30 days)\n  - Business Logic: Subject to capacity availability\n\n- **timeSlot:** Preferred time window\n  - Valid Values: AM (8:00-12:00), PM (12:00-17:00), EVENING (17:00-20:00)\n  - Business Logic: Availability depends on service area and type\n\n- **duration:** Expected appointment duration in minutes\n  - Format: Numeric string\n  - Range: 30-240 minutes\n  - Default: Based on orderType (installation=120, repair=60)\n\n**PQR Object:**\n- **id:** Trouble ticket identifier\n  - Format: Numeric string\n  - Example: \"454\"\n  - Validation: Must exist in PQR system\n  - Business Logic: Required for complaint-related appointments\n\n**Operation Field:**\n- Purpose: Business operation context\n- Valid Values: FTTH, HFC, DTH, CORPORATE, RESIDENTIAL\n- Usage: Routing to specialized technician teams\n",
               "example": {
                 "customer": {
                   "documentNumber": "87654321",
@@ -190,38 +196,65 @@
         ],
         "responses": {
           "200": {
-            "description": "Created",
+            "description": "**API-Controlled Code:** `200/Ok` in response body\n\n**Response Structure:**\n- Status code confirming successful creation\n- Business code indicating operation result\n- Confirmation message with appointment details\n- Server messages for additional information\n\n**Data Enrichment:**\n- Appointment ID generated automatically\n- Confirmation number for customer reference\n- Estimated technician arrival time\n- SMS notification status\n\n**Business Context:**\n- Successful creation triggers SMS confirmation\n- Appointment visible in all channels immediately\n- Capacity automatically updated\n- PQR status updated to \"scheduled\"\n",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type"
+              "description": "**Response Fields:**\n- **status:** HTTP status code (always 200 for success)\n- **code:** Business operation code (\"Ok\" for success)\n- **message.message:** Confirmation text in Spanish\n- **messageServer:** Additional server information\n- **Data Source:** Bot Services appointment engine\n",
+              "type": "object",
+              "required": [
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "example": "Ok",
+                  "type": "string"
+                },
+                "messageServer": {
+                  "example": "",
+                  "type": "string"
+                },
+                "message": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "example": "Se registro la agenda satisfactoriamente",
+                      "type": "string"
+                    }
+                  }
+                },
+                "status": {
+                  "example": 200,
+                  "type": "integer"
+                }
+              }
             }
           },
           "400": {
             "description": "Bad Request",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "401": {
             "description": "Unauthorized",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "404": {
             "description": "Not Found",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           }
         },
@@ -234,8 +267,8 @@
     },
     "/appointment/{id}": {
       "get": {
-        "operationId": "retrieveAppointment",
-        "description": "Retrieves an Appointment entity by its ID.\n",
+        "operationId": "Retrieve Appointment",
+        "description": "## Operation Summary\n\nRetrieves complete appointment details including customer information, associated PQR, order details, and current status. Provides real-time appointment status and technician assignment information.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer checking appointment status via chatbot\n- **Portal Channel:** Viewing appointment details and updates\n- **Mobile Channel:** Technician accessing appointment information\n- **Agent Channel:** Support staff reviewing customer appointments\n\n## Data Sources\n\n- Primary: Bot Services appointment repository\n- Enrichment: Order management system for service details\n- Real-time: Technician location and ETA from field service system\n\n## Performance Characteristics\n\n- Response time: < 1 second\n- Cache TTL: 60 seconds for status information\n- Rate limits: 500 queries per minute per client\n",
         "consumes": [
           "application/json",
           "application/xml"
@@ -246,7 +279,7 @@
         "parameters": [
           {
             "name": "id",
-            "description": "Identifier of the Appointment",
+            "description": "**Business Purpose:** Unique identifier of the appointment to retrieve or update\n\n**Format:** Alphanumeric appointment ID or CUN reference\n- Pattern: ^[A-Z0-9]{8,15}$\n- Example: \"APT20250123456\" or \"CUN001122\"\n\n**Validation:** Must exist in appointment system\n\n**Business Context:** Can be appointment ID or associated CUN for flexible lookup\n",
             "required": true,
             "in": "path",
             "type": "string"
@@ -298,56 +331,56 @@
             "description": "Success",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_2"
+              "$ref": "#/definitions/type_1"
             }
           },
           "400": {
             "description": "Bad Request",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "401": {
             "description": "Unauthorized",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "403": {
             "description": "Forbidden",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "404": {
             "description": "Not Found",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "405": {
             "description": "Method Not Allowed",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "409": {
             "description": "Conflict",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           }
         },
@@ -358,8 +391,8 @@
         ]
       },
       "patch": {
-        "operationId": "patchAppointment",
-        "description": "Updates partially an Appointment entity.\n",
+        "operationId": "Update Appointment",
+        "description": "## Operation Summary\n\nPerforms partial updates to an existing appointment following PATCH semantics. Supports rescheduling, status updates, and modification of appointment details while maintaining audit trail.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer rescheduling via chatbot\n- **Portal Channel:** Self-service appointment modifications\n- **Mobile Channel:** Technician updating appointment status\n- **Agent Channel:** Support staff making changes on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services appointment update endpoint\n- Validation: Capacity service for new time slot availability\n- Notification: SMS service for change notifications\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds\n- Partial update support: Only send changed fields\n- Rate limits: 50 updates per minute per appointment\n",
         "consumes": [
           "application/json"
         ],
@@ -369,7 +402,7 @@
         "parameters": [
           {
             "name": "id",
-            "description": "Identifier of the Appointment",
+            "description": "**Business Purpose:** Unique identifier of the appointment to retrieve or update\n\n**Format:** Alphanumeric appointment ID or CUN reference\n- Pattern: ^[A-Z0-9]{8,15}$\n- Example: \"APT20250123456\" or \"CUN001122\"\n\n**Validation:** Must exist in appointment system\n\n**Business Context:** Can be appointment ID or associated CUN for flexible lookup\n",
             "required": true,
             "in": "path",
             "type": "string"
@@ -565,56 +598,56 @@
             "description": "Updated",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_2"
+              "$ref": "#/definitions/type_1"
             }
           },
           "400": {
             "description": "Bad Request",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "401": {
             "description": "Unauthorized",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "403": {
             "description": "Forbidden",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "404": {
             "description": "Not Found",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "405": {
             "description": "Method Not Allowed",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "409": {
             "description": "Conflict",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           }
         },
@@ -626,9 +659,10 @@
       }
     },
     "/searchTimeSlot": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Provides real-time availability search for appointment scheduling based on service area, category, and capacity constraints. Enables intelligent time slot recommendations optimized for field service efficiency.\n\n**Data Integration:**\n- **oracle-sapi-services:** Primary source for capacity data via `/oracle/v1/getCapacity`\n- **Oracle Database:** Real-time technician availability and routing information\n- **Bot Services:** Historical appointment patterns for optimization\n\n**Business Intelligence Features:**\n- **Dynamic Capacity:** Real-time adjustment based on technician availability\n- **Area Optimization:** Geographic clustering for efficient routing\n- **Category Filtering:** Service-specific time slot availability\n- **Multi-day Search:** Extended availability window for flexibility\n",
       "get": {
-        "operationId": "List or find SearchTimeSlot objects",
-        "description": "This operation lists or finds SearchTimeSlot entities",
+        "operationId": "Search Available Time Slots",
+        "description": "## Operation Summary\n\nSearches for available appointment time slots based on service requirements, geographic area, and capacity constraints. Returns optimized scheduling options considering technician skills, travel time, and workload balance.\n\n## Use Cases\n\n- **WhatsApp Channel:** Presenting available slots during appointment booking flow\n- **Portal Channel:** Calendar view of available appointments\n- **Mobile Channel:** Technician viewing available slots for rescheduling\n- **Agent Channel:** Finding optimal slots while customer is on call\n\n## Data Sources\n\n- Primary: oracle-sapi-services `/oracle/v1/getCapacity` endpoint\n- Real-time: Field service management system for live availability\n- Optimization: ML-based routing engine for slot recommendations\n\n## Performance Characteristics\n\n- Response time: < 3 seconds (depends on date range)\n- Cache TTL: 5 minutes for capacity data\n- Rate limits: 200 searches per minute per client\n- Maximum date range: 30 days\n",
         "consumes": [
           "application/json",
           "application/xml"
@@ -639,28 +673,35 @@
         "parameters": [
           {
             "name": "numDays",
+            "description": "**Business Purpose:** Number of days to search for available time slots\n\n**Validation Rules:**\n- Minimum: 1 day\n- Maximum: 30 days\n- Default: 7 days if not specified\n\n**Business Logic:** Longer ranges may have reduced accuracy due to dynamic scheduling\n\n**Channel Variations:**\n- WhatsApp: Limited to 7 days for quick selection\n- Portal: Full 30-day range available\n",
             "required": false,
             "in": "query",
-            "type": "integer"
+            "default": 7,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30
           },
           {
             "name": "categories",
-            "description": "Lista de categorías separadas por coma",
+            "description": "**Business Purpose:** Service categories to filter available technicians and time slots\n\n**Format:** Comma-separated list of category codes\n\n**Valid Values:**\n- MPPFTTH_Plata: FTTH Silver tier service\n- MPPFTTH_Oro: FTTH Gold tier service\n- MPPHFC: HFC service\n- MPPDTH: DTH satellite service\n- CORPORATE: Corporate services\n\n**Business Logic:** Categories determine required technician skills and appointment duration\n\n**Usage Example:** \"MPPFTTH_Plata,MPPFTTH_Oro\" for FTTH services\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "area",
+            "description": "**Business Purpose:** Geographic area code for technician routing and availability\n\n**Valid Values:**\n- NORTE: Northern Bogotá area\n- SUR: Southern Bogotá area\n- CENTRO: Central Bogotá area\n- CHICO: Chico neighborhood\n- SUBA: Suba locality\n- KENNEDY: Kennedy locality\n\n**Business Logic:** Area determines available technician pool and travel time calculations\n\n**Channel Variations:** Auto-detected based on customer address when available\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "date",
+            "description": "**Business Purpose:** Starting date for time slot search\n\n**Format:** YYYY-MM-DD (ISO 8601 date format)\n\n**Validation Rules:**\n- Must be today or future date\n- Cannot exceed 30 days from today\n- Pattern: ^\\\\d{4}-\\\\d{2}-\\\\d{2}$\n\n**Default:** Today's date if not specified\n\n**Business Logic:** Combined with numDays to define search window\n",
             "required": false,
             "in": "query",
-            "type": "string"
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
           },
           {
             "name": "name",
@@ -709,56 +750,56 @@
             "description": "Success",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_3"
+              "$ref": "#/definitions/type_2"
             }
           },
           "400": {
             "description": "Bad Request",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "401": {
             "description": "Unauthorized",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "403": {
             "description": "Forbidden",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "404": {
             "description": "Not Found",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "405": {
             "description": "Method Not Allowed",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "409": {
             "description": "Conflict",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           },
           "500": {
             "description": "Internal Server Error",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_1"
+              "$ref": "#/definitions/type"
             }
           }
         },
@@ -772,35 +813,6 @@
   },
   "definitions": {
     "type": {
-      "type": "object",
-      "required": [
-        "message"
-      ],
-      "properties": {
-        "status": {
-          "example": 200,
-          "type": "integer"
-        },
-        "code": {
-          "example": "Ok",
-          "type": "string"
-        },
-        "message": {
-          "type": "object",
-          "properties": {
-            "message": {
-              "example": "Se registro la agenda satisfactoriamente",
-              "type": "string"
-            }
-          }
-        },
-        "messageServer": {
-          "example": "",
-          "type": "string"
-        }
-      }
-    },
-    "type_1": {
       "x-amf-examples": {
         "example_0": {
           "status": 400,
@@ -904,7 +916,7 @@
         }
       }
     },
-    "type_2": {
+    "type_1": {
       "example": {
         "value": [
           {
@@ -1075,7 +1087,7 @@
         }
       }
     },
-    "type_3": {
+    "type_2": {
       "example": {
         "items": [
           {

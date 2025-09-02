@@ -1,8 +1,8 @@
 {
   "swagger": "2.0",
   "info": {
-    "title": "business-xapi-services",
-    "description": "manage information related to the organization's businesss",
+    "title": "Business Experience API Services",
+    "description": "# Business Experience API Services\n\n## Architecture Context\n**Layer**: XAPI (Experience Layer) - ETB's API-led connectivity architecture\n**Role**: Provides business experience and customer interaction management for multiple channels\n**Integration Pattern**: Orchestrates system APIs to deliver optimized business experiences for customer interaction and survey management\n\n## Core Capabilities\n- **Customer Interaction Management**: Track, create and update customer interactions across all channels\n- **Business Survey Management**: Create and manage customer satisfaction surveys with automated distribution\n- **Multi-Channel Support**: Unified experience across WhatsApp, Web Portal, Mobile App, and Agent channels\n- **Terms & Conditions Management**: Handle customer acceptance and subscription management workflows\n\n## Integration Points\n- **Bot SAPI Services**: WhatsApp integration and survey automation (`mule-worker-internal-bot-sapi-services-dev.us-e2.cloudhub.io:8091`)\n  - `/whatsapp/update/v1`: Subscription updates and terms acceptance\n  - `/scraping/satisfactionsurvey/v1`: Survey registration and distribution\n- **Audit System**: Oracle SAPI Services for transaction logging and regulatory compliance\n  - `audits-oracle-sapi-services` for comprehensive audit trails\n- **Data Sources**: Oracle database for customer data, MongoDB for interaction storage\n- **Security**: OAuth 2.0 with ETB authentication standards and JKS keystore configuration\n\n## Standards Compliance\n- **TM Forum TMF683**: Party Interaction Management API v5.0 for comprehensive interaction lifecycle management\n- **TMF683 5.1.3**: Subscription Update Interaction standards for terms and conditions management  \n- **TMF683 5.1.4**: Survey Registration standards for satisfaction measurement and customer feedback\n- **RESTful Principles**: HTTP methods, status codes, and resource-based URLs\n- **ETB Security Standards**: OAuth 2.0, JWT tokens, and encrypted communications via JKS keystore\n- **Colombian Telecommunications Standards**: Regulatory compliance for customer data and interaction management\n\n## Performance Metrics\n- **Response Time Target**: < 1500ms for GET operations, < 2500ms for POST operations, < 2000ms for PATCH operations\n- **Availability**: 99.5% uptime requirement with 24/7 monitoring via Anypoint Platform\n- **Throughput**: Up to 1000 requests per minute per worker with rate limiting policies\n- **Error Rate**: < 1% for business logic errors, < 0.5% for system integration failures\n- **Audit Coverage**: 100% of transactions logged for regulatory compliance and business intelligence\n- **Bot Services Timeout**: 62 seconds configuration timeout for backend integration\n\n## Target Consumers\n- **WhatsApp Business Platform**: Customer service and self-service interactions via Bot Services integration\n- **ETB Web Portal**: Customer self-service and account management with subscription workflows\n- **Mobile Applications**: iOS and Android apps for customer interaction and survey management\n- **Call Center Systems**: Agent-assisted customer service platforms with interaction tracking\n- **CRM Integration**: Automated business systems integration for customer lifecycle management\n\n## Technical Documentation\n\n### Architecture Overview\nThis XAPI service acts as the primary orchestrator for business interactions within ETB's telecommunications ecosystem. It abstracts the complexity of Bot Services backend system while providing a consistent, channel-optimized experience for customer interactions and business processes following TMF683 Party Interaction Management standards.\n\n### Data Integration\n- **Bot SAPI Services**: Handles WhatsApp-specific business logic, message processing, and survey distribution\n  - Integration endpoints: `/whatsapp/update/v1` and `/scraping/satisfactionsurvey/v1`\n  - Authentication: OAuth 2.0 with client_id/client_secret configuration\n  - Timeout configuration: 62 seconds for backend processing\n- **Oracle Database**: Primary customer data repository, transaction storage, and audit trail management\n- **MongoDB**: NoSQL storage for real-time interaction logs, survey responses, and customer journey tracking\n- **Audit System**: `audits-oracle-sapi-services` for comprehensive regulatory compliance logging\n- **Bot Services External System**: Core external system for WhatsApp automation and customer interaction processing\n\n### Response Codes (API-Controlled)\nAll responses include business-specific codes in the response body following TMF683 standards:\n- **200**: \"Ok\" - Operation completed successfully \n  - Survey success: \"Se registro la encuesta satisfactoriamente\"\n  - Update success: \"Se actualizó la decisión de términos y condiciones\"\n- **400**: \"REQUEST_ERROR\" - Invalid request parameters, missing required fields, or business rule validation failed\n- **401**: \"Unauthorized\" - Authentication failed, invalid token, or insufficient scope permissions\n- **404**: \"NOT_FOUND\" - Requested interaction resource not found or customer not registered in system\n- **500**: \"INTERNAL_SERVER_ERROR\" - Bot Services connectivity failure, Oracle database errors, or audit system unavailability\n\n### Error Handling\nStandardized error structure includes:\n- **Business Error Codes**: API-specific codes for client-side handling following TMF683 standards\n- **Detailed Messages**: Human-readable error descriptions in Spanish for customer-facing applications\n- **System Context**: Backend system identification (Bot Services, Oracle, MongoDB) for troubleshooting\n- **Cause Tracking**: Full error chain from source system to client with origin attribution\n\n### Performance Standards\n- **Interaction Queries**: < 1500ms average response time with pagination support for large datasets\n- **Interaction Creation**: < 2500ms for complete workflow including Bot SAPI integration and audit logging\n- **Survey Operations**: < 2000ms for creation with automated distribution via Bot Services\n- **Subscription Updates**: < 2000ms for terms and conditions processing and validation\n- **Audit Logging**: Real-time audit trail generation with 100% transaction coverage via audits-oracle-sapi-services\n- **System Dependencies**: Bot Services availability directly impacts all operation performance (62s timeout)\n- **Backend Integration**: Oracle and MongoDB response time optimization for data consistency\n",
     "version": "v1"
   },
   "host": "business-xapi-services-{env}.us-e2.cloudhub.io",
@@ -12,9 +12,10 @@
   ],
   "paths": {
     "/partyInteraction": {
+      "x-amf-description": "## Customer Interaction Management Resource\n\n**Business Purpose**: Comprehensive management of customer interactions across all ETB channels following TMF683 Party Interaction Management standards, providing unified tracking and lifecycle management for customer touchpoints.\n\n**Data Integration**: \n- **Oracle Database**: Primary customer profile and historical interaction data with Colombian document validation\n- **MongoDB**: Real-time interaction logs and session tracking with sub-second timestamps\n- **Bot SAPI Services**: WhatsApp and chatbot-specific interaction processing via `/whatsapp/update/v1` endpoint\n\n**Business Intelligence Features**: \n- Cross-channel interaction correlation and customer journey mapping\n- Real-time interaction analytics and customer behavior insights with audit trail integration\n- Automated interaction categorization and regulatory compliance tracking\n",
       "get": {
-        "operationId": "getCustomerInteractions",
-        "description": "view customer interactions",
+        "operationId": "Get Customer Interactions",
+        "description": "**Operation Summary**: Retrieves comprehensive customer interaction history with advanced filtering and pagination capabilities for business intelligence and customer service operations following TMF683 standards.\n\n**Use Cases**:\n- **WhatsApp Channel**: Customer service agents accessing interaction history during Bot Services automated chat sessions\n- **Web Portal**: Customers viewing their own interaction timeline and service history with real-time updates\n- **Mobile App**: Real-time interaction status updates and historical queries with offline capability\n- **Agent Desktop**: Call center agents accessing complete customer interaction context for service optimization\n- **Business Intelligence**: Data analytics teams accessing customer interaction patterns for service improvement\n\n**Data Sources**: \n- **Oracle Customer Database**: Validated customer profiles and master data with Colombian document standards\n- **MongoDB Interaction Store**: Real-time interaction logs with sub-second timestamps and channel attribution\n- **Bot SAPI Integration**: WhatsApp message history and automation interaction records via Bot Services\n\n**Performance Characteristics**: \n- **Response Time**: < 1500ms for queries with up to 1000 interactions including MongoDB aggregation\n- **Caching Strategy**: No caching for real-time interaction data to ensure data consistency\n- **Rate Limits**: 100 requests per minute per authenticated client with OAuth 2.0 validation\n- **Pagination**: Optimized cursor-based navigation for large datasets with LIMIT/OFFSET support\n",
         "consumes": [
           "application/json"
         ],
@@ -24,38 +25,38 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose**: Identifies the requesting channel for interaction context, security validation, and audit attribution\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business Platform requests via Bot Services integration\n- **PORTAL**: ETB Customer Web Portal requests for self-service interactions\n- **MOBILE**: iOS/Android mobile application requests with offline sync capability\n- **AGENT**: Call center agent desktop requests for assisted service\n- **CRM**: Automated CRM system requests for business intelligence\n\n**Usage Examples**: \n- Customer service: \"WHATSAPP\" for Bot Services chat-based support automation\n- Self-service: \"PORTAL\" for web-based account management and interaction history\n\n**Channel Variations**: Each channel receives optimized response structure and field filtering based on business requirements\n",
             "required": true,
             "in": "query",
             "type": "string"
           },
           {
             "name": "INTERACTION_ID",
-            "description": "Number Interaction",
+            "description": "**Business Purpose**: Retrieves specific interaction by unique system identifier for detailed analysis, follow-up actions, and audit trails\n\n**Validation Rules**: \n- Format: Numeric string or UUID format for MongoDB document references\n- Length: 6-36 characters supporting both sequential and UUID identifiers\n- Pattern: ^[0-9a-fA-F-]{6,36}$ for flexible identifier formats\n\n**Usage Examples**: \n- Follow-up queries: Agent accessing previous Bot Services interaction details for continuity\n- Audit trails: Compliance reporting for specific customer interactions with regulatory requirements\n- Business analytics: Interaction correlation across multiple channels and touchpoints\n\n**Channel Variations**: \n- **WHATSAPP**: Returns Bot Services-specific metadata and WhatsApp message threading context\n- **PORTAL**: Includes web session context and page interaction history for user experience optimization\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "FILTERS",
-            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "description": "**Business Purpose**: Advanced filtering for targeted interaction queries supporting business intelligence, customer service workflows, and regulatory reporting\n\n**Validation Rules**: \n- Format: Key:Value pairs separated by semicolons for multiple filter conditions\n- Pattern: ^([a-zA-Z]+:[^;]+)(;[a-zA-Z]+:[^;]+)*$ for structured filter syntax\n- Maximum: 10 filter conditions per query to optimize MongoDB performance\n\n**Valid Filter Types**: \n- **Phone**: Customer phone number (format: +57XXXXXXXXXX Colombian mobile numbers)\n- **CustomerId**: ETB customer identification number from Oracle database\n- **DocumentType**: CC, CE, TI, NIT, PA (Colombian national document types per regulatory standards)\n- **DocumentNumber**: Customer document identification with format validation\n- **Channel**: WHATSAPP, PORTAL, MOBILE, AGENT, CRM for channel-specific filtering\n- **InteractionType**: QUERY, COMPLAINT, PAYMENT, SUPPORT, SALES for business categorization\n- **Status**: OPEN, IN_PROGRESS, RESOLVED, CLOSED for interaction lifecycle tracking\n- **DateRange**: ISO date range (YYYY-MM-DD,YYYY-MM-DD) for temporal analysis\n- **AgentId**: Agent identifier for agent-assisted interactions and performance tracking\n\n**Usage Examples**: \n- Customer lookup: \"Phone:+573001234567;Status:OPEN\" for active customer service cases\n- Date-based reporting: \"DateRange:2025-01-01,2025-01-31;Channel:WHATSAPP\" for Bot Services analytics\n- Agent performance: \"AgentId:AGT001;InteractionType:SUPPORT\" for quality assurance reporting\n\n**Channel Variations**: \n- **WHATSAPP**: Phone number is primary filter with Bot Services message thread correlation\n- **PORTAL**: CustomerId is primary with web session correlation and user journey tracking\n- **AGENT**: AgentId filtering automatically applied based on OAuth 2.0 authentication scope\n",
             "required": false,
             "in": "query",
             "type": "string"
           },
           {
             "name": "LIMIT",
-            "description": "Limit on orders to display",
+            "description": "**Business Purpose**: Controls result set size for pagination and performance optimization in high-volume interaction queries with MongoDB aggregation\n\n**Validation Rules**: \n- Range: 1-1000 interactions per request to balance performance and data completeness\n- Default: 50 interactions if not specified for optimal response time\n- Maximum: 1000 for bulk operations and business intelligence data extraction\n\n**Usage Examples**: \n- Dashboard summaries: 10-25 recent interactions for real-time customer service dashboards\n- Detailed analysis: 100-500 interactions for comprehensive reporting and trend analysis\n- Bulk exports: 1000 for data migration, business intelligence, and regulatory reporting\n\n**Channel Variations**: \n- **WHATSAPP**: Optimized for 20-50 interactions per Bot Services chat session context\n- **PORTAL**: Customer self-service limited to 100 interactions for privacy and performance\n- **AGENT**: Up to 500 interactions for comprehensive customer history and service context\n",
             "required": false,
             "in": "query",
             "type": "number"
           },
           {
             "name": "OFFSET",
-            "description": "used to organize information and establish a logical order",
+            "description": "**Business Purpose**: Enables cursor-based pagination for large interaction datasets, supporting efficient data retrieval and optimal user experience\n\n**Validation Rules**: \n- Type: Non-negative integer for MongoDB skip operation\n- Range: 0 to maximum dataset size with performance considerations\n- Increment: Typically by LIMIT value for sequential pagination and optimal MongoDB performance\n\n**Usage Examples**: \n- First page: OFFSET=0, LIMIT=50 for initial data load\n- Second page: OFFSET=50, LIMIT=50 for sequential navigation\n- Jump to page 10: OFFSET=500, LIMIT=50 for direct navigation to specific dataset segments\n\n**Channel Variations**: \n- **PORTAL**: Web-based pagination with page numbers for user-friendly navigation\n- **MOBILE**: Infinite scroll with dynamic offset calculation for mobile user experience\n- **AGENT**: Large offset values for historical data access and comprehensive customer service context\n",
             "required": false,
             "in": "query",
-            "type": "string"
+            "type": "number"
           },
           {
             "name": "name",
@@ -101,35 +102,35 @@
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "**Success Response - Operation Completed Successfully**\n\n**API-Controlled Code**: \"200\" (in responseCode field)\n\n**Response Structure**: \n- **responseCode**: API-controlled success indicator (\"200\") following TMF683 standards\n- **responseMessage**: Optional descriptive message or empty string for custom messaging\n- **interactions**: Array of customer interaction objects with complete history and metadata\n\n**Data Enrichment**: \n- **System-Generated Fields**: Automatic timestamp normalization and interaction categorization\n- **Cross-Reference Data**: Customer profile enrichment from Oracle master data with validation\n- **Channel Context**: Channel-specific metadata and interaction threading for customer journey tracking\n- **Bot Services Integration**: WhatsApp-specific metadata from Bot Services when applicable\n\n**Business Context**: \n- **Customer Profile**: Complete customer identification with Colombian document validation\n- **Interaction History**: Chronological access log with action categorization and regulatory compliance\n- **Channel Correlation**: Multi-channel interaction linking for unified customer journey analytics\n- **Audit Trail**: Complete interaction audit trail for regulatory compliance and business intelligence\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type"
             }
           },
           "400": {
-            "description": "",
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for surveys or subscription updates\n- Business rule validation failures for terms and conditions acceptance\n\n**System Context**: Validation occurs at the XAPI layer before Bot Services backend system calls\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "401": {
-            "description": "",
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "404": {
-            "description": "",
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Interaction ID does not exist in MongoDB interaction store\n- Customer document number not found in Oracle customer database\n- Invalid endpoint path or resource identifier\n- Requested data not available for specified filters\n\n**System Context**: Resource lookup performed across Oracle customer database and MongoDB interaction storage\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "500": {
-            "description": "",
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Bot SAPI services connectivity failure (timeout > 62 seconds)\n- Oracle database connection timeout or unavailability\n- MongoDB cluster unavailability for interaction storage\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
@@ -143,8 +144,8 @@
         ]
       },
       "post": {
-        "operationId": "createInteraction",
-        "description": "operation that allows you to update the terms and conditions",
+        "operationId": "Create Customer Interaction",
+        "description": "**Operation Summary**: Creates new customer interaction records for terms and conditions acceptance, subscription management, and customer onboarding workflows. Follows TMF683-Party_Interaction standards with Bot Services integration for WhatsApp automation and comprehensive audit trail management.\n\n**Use Cases**:\n- **WhatsApp Channel**: Customer accepting terms and conditions during service activation via Bot Services automation\n- **Web Portal**: Online subscription activation with digital acceptance workflows and regulatory compliance\n- **Mobile App**: In-app terms acceptance for new service features, plan changes, and subscription updates\n- **Agent Desktop**: Agent-assisted customer onboarding with documented consent collection and audit trails\n- **Subscription Management**: Automated subscription lifecycle management with Bot Services integration for multi-channel consistency\n\n**Business Context**: Enables customer subscription lifecycle management with terms and conditions acceptance tracking, supporting ETB's regulatory compliance requirements and customer onboarding automation through Bot Services integration following Colombian telecommunications standards.\n\n**Data Sources**: \n- **Customer Validation**: Oracle database for customer profile verification, document validation, and subscription eligibility\n- **Bot Services Integration**: `/whatsapp/update/v1` endpoint for subscription processing and terms acceptance workflows\n- **Subscription Management**: Bot Services external system for service activation, subscription updates, and customer consent management\n- **Audit Logging**: `audits-oracle-sapi-services` for regulatory compliance, interaction audit trails, and business intelligence\n\n**Performance Characteristics**: \n- **Response Time**: < 2500ms for complete workflow including Bot SAPI integration, validation, and audit logging\n- **Transaction Safety**: Integration with Bot Services with 62-second timeout configuration for reliable processing\n- **Rate Limits**: 50 interaction creations per minute per customer to prevent abuse and ensure system stability\n- **Validation**: Real-time customer document verification against Oracle database and duplicate prevention\n",
         "consumes": [
           "application/json"
         ],
@@ -154,7 +155,7 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose**: Identifies the originating channel for interaction creation, enabling channel-specific processing rules, audit requirements, and Bot Services integration routing\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business chatbot interactions via Bot Services automation\n- **PORTAL**: ETB Customer Portal web interactions with self-service workflows\n- **MOBILE**: Mobile application interactions with offline capability\n- **AGENT**: Call center agent-assisted interactions with full audit trail\n- **CRM**: Automated CRM system interactions for business process integration\n\n**Usage Examples**: \n- Automated onboarding: \"WHATSAPP\" for Bot Services chatbot-driven service activation workflows\n- Self-service: \"PORTAL\" for web-based subscription management with customer authentication\n\n**Channel Variations**: Each channel triggers different validation rules, Bot Services routing, and downstream processing workflows\n",
             "required": true,
             "in": "query",
             "type": "string"
@@ -205,41 +206,81 @@
             "in": "body",
             "name": "generated",
             "schema": {
-              "$ref": "#/definitions/type_2"
+              "description": "**Request Body Structure**: Customer subscription and terms acceptance payload following TMF683-Party_Interaction schema\n\n**Required Fields**: \n- **subscription.client.documentNumber**: Customer identification number validated against Oracle database per Colombian standards\n- **subscription.client.documentType**: Colombian document type (CC, CE, TI, NIT, PA) following national identification standards\n- **subscription.acceptsTermsAndConditions**: Boolean flag for explicit terms acceptance (must be true for regulatory compliance)\n\n**Business Logic**: \n- Document validation against Oracle customer master data with real-time verification\n- Integration with Bot Services `/whatsapp/update/v1` for subscription processing automation\n- Duplicate interaction prevention within 24-hour window to avoid processing conflicts\n- Automatic audit trail creation via `audits-oracle-sapi-services` for regulatory compliance\n- Channel-specific metadata enrichment for multi-channel customer journey tracking\n\n**Validation Rules**: \n- Document number format validation per Colombian national identification standards\n- Customer existence verification in Oracle database with subscription eligibility check\n- Terms acceptance must be explicit boolean true value for legal compliance\n- Bot Services availability validation before processing subscription updates (62s timeout)\n",
+              "example": {
+                "subscription": {
+                  "client": {
+                    "documentNumber": "1234567890",
+                    "documentType": "CC"
+                  },
+                  "acceptsTermsAndConditions": true
+                }
+              },
+              "type": "object",
+              "required": [
+                "subscription"
+              ],
+              "properties": {
+                "subscription": {
+                  "type": "object",
+                  "required": [
+                    "client"
+                  ],
+                  "properties": {
+                    "client": {
+                      "type": "object",
+                      "properties": {
+                        "documentNumber": {
+                          "example": "1234567890",
+                          "type": "string"
+                        },
+                        "documentType": {
+                          "example": "CC",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "acceptsTermsAndConditions": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "**Success Response - Interaction Created Successfully**\n\n**API-Controlled Code**: \"200\" (in responseCode field)\n\n**Response Structure**: \n- **responseCode**: API-controlled success indicator (\"200\") following TMF683 standards\n- **responseMessage**: Success confirmation message or empty string\n- **interactionId**: System-generated unique identifier for created interaction\n- **timestamp**: ISO 8601 timestamp of interaction creation\n\n**Data Enrichment**: \n- **System-Generated ID**: Unique interaction identifier following TMF683 standards for future reference and correlation\n- **Bot Services Response**: Integration response from `/whatsapp/update/v1` with subscription processing status\n- **Audit Trail**: Automatic logging to `audits-oracle-sapi-services` for regulatory compliance and business intelligence\n- **Customer Correlation**: Link to Oracle customer master record with subscription history tracking\n\n**Business Context**: \n- **Terms Acceptance**: Legal record of customer consent with ISO 8601 timestamp for regulatory compliance\n- **Subscription Status**: Real-time subscription state update through Bot Services integration\n- **Channel Attribution**: Source channel attribution for multi-channel customer experience analytics\n- **Regulatory Compliance**: Colombian telecommunications standards compliance with complete audit trail\n",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_3"
+              "$ref": "#/definitions/type_2"
             }
           },
           "400": {
-            "description": "",
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for surveys or subscription updates\n- Business rule validation failures for terms and conditions acceptance\n\n**System Context**: Validation occurs at the XAPI layer before Bot Services backend system calls\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "401": {
-            "description": "",
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "404": {
-            "description": "",
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Interaction ID does not exist in MongoDB interaction store\n- Customer document number not found in Oracle customer database\n- Invalid endpoint path or resource identifier\n- Requested data not available for specified filters\n\n**System Context**: Resource lookup performed across Oracle customer database and MongoDB interaction storage\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "500": {
-            "description": "",
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Bot SAPI services connectivity failure (timeout > 62 seconds)\n- Oracle database connection timeout or unavailability\n- MongoDB cluster unavailability for interaction storage\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
@@ -255,8 +296,8 @@
     },
     "/partyInteraction/{id}": {
       "patch": {
-        "operationId": "updateInteraction",
-        "description": "operation that allows you to update the terms and conditions",
+        "operationId": "Update Customer Interaction",
+        "description": "**Operation Summary**: Updates existing customer interaction records for subscription modifications, terms and conditions changes, and interaction lifecycle management. Implements TMF683 5.1.3 Subscription Update standards with Bot Services integration for real-time processing.\n\n**Use Cases**:\n- **WhatsApp Channel**: Subscription updates and terms acceptance modifications via Bot Services automation\n- **Web Portal**: Customer-initiated subscription changes with updated terms and conditions acceptance\n- **Mobile App**: In-app subscription modifications with real-time validation and processing\n- **Agent Desktop**: Agent-assisted subscription updates with customer consent validation and documentation\n- **Contact Person Changes**: Supporting scenarios where subscription contact person changes require new terms acceptance\n\n**Business Context**: Enables dynamic subscription management where customer contact information changes or subscription terms require re-acceptance, particularly important for family plans, corporate account management, and regulatory compliance scenarios.\n\n**Data Sources**: \n- **Interaction Lookup**: MongoDB for existing interaction record retrieval, validation, and subscription history tracking\n- **Customer Validation**: Oracle database for customer profile verification and subscription eligibility validation\n- **Bot Services Integration**: `/whatsapp/update/v1` endpoint for subscription update processing and terms re-acceptance\n- **Audit Updates**: `audits-oracle-sapi-services` for modification audit trails, compliance logging, and regulatory requirements\n- **Subscription State**: Bot Services external system for real-time subscription status and terms acceptance updates\n\n**Performance Characteristics**: \n- **Response Time**: < 2000ms for standard updates including validation, Bot Services integration, and audit logging\n- **Concurrency Control**: MongoDB optimistic locking to prevent concurrent modification conflicts\n- **Rate Limits**: 30 updates per minute per interaction to prevent abuse and ensure system stability\n- **Version Control**: Automatic versioning of interaction changes for audit compliance and regulatory requirements\n",
         "consumes": [
           "application/json"
         ],
@@ -266,13 +307,14 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose**: Identifies the channel requesting the interaction update for proper audit attribution, Bot Services routing, and business rule application\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business Platform updates via Bot Services integration\n- **PORTAL**: ETB Customer Portal modifications with web session context\n- **MOBILE**: Mobile application updates with offline synchronization capability\n- **AGENT**: Call center agent modifications with full audit trail\n- **CRM**: Automated CRM system updates for business process automation\n\n**Usage Examples**: \n- Status updates: \"AGENT\" for resolution marking by customer service representative\n- Customer updates: \"PORTAL\" for customer-initiated subscription and information modifications\n\n**Channel Variations**: Different channels have varying update permissions, validation requirements, and Bot Services integration patterns\n",
             "required": true,
             "in": "query",
             "type": "string"
           },
           {
             "name": "id",
+            "description": "**Business Purpose**: Unique interaction identifier for targeted updates, modification tracking, and audit correlation\n\n**Validation Rules**: \n- Format: Numeric string or UUID format for MongoDB document references\n- Length: 6-36 characters supporting both sequential and UUID identifiers\n- Pattern: ^[0-9a-fA-F-]{6,36}$ for flexible identifier formats\n\n**Usage Examples**: \n- Sequential ID: \"12552454\" for simple interaction references\n- UUID format: \"550e8400-e29b-41d4-a716-446655440000\" for distributed system compatibility\n\n**Business Context**: References existing interaction record in MongoDB for status updates, modification history, and audit trail correlation\n",
             "required": true,
             "in": "path",
             "type": "string"
@@ -323,41 +365,136 @@
             "in": "body",
             "name": "generated",
             "schema": {
-              "$ref": "#/definitions/type_4"
+              "description": "**Request Body Structure**: Subscription update payload following TMF683 5.1.3 standards with modification tracking\n\n**Updateable Fields**: \n- **subscription.client.documentNumber**: Updated customer identification for contact person changes\n- **subscription.client.documentType**: Updated document type for new contact person per Colombian standards\n- **subscription.client.names**: Customer first names for contact person changes\n- **subscription.client.lastNames**: Customer last names for contact person changes\n- **subscription.client.email**: Updated email address for subscription communications\n- **subscription.acceptsTermsAndConditions**: New terms acceptance boolean (must be true for valid updates)\n\n**Business Logic**: \n- Existing interaction validation with MongoDB lookup before update processing\n- Integration with Bot Services `/whatsapp/update/v1` for subscription modification workflows\n- Contact person change validation ensuring new person accepts current terms and conditions\n- Automatic timestamp updates for modification tracking and audit trail generation\n- Channel-specific validation rules application based on originating system requirements\n\n**Validation Rules**: \n- Interaction ID must exist in MongoDB interaction store\n- Customer document validation against Oracle database for new contact person\n- Terms acceptance must be explicit true value for subscription update completion\n- Bot Services availability validation before processing subscription modifications (62s timeout)\n- Document format validation per Colombian national identification standards\n",
+              "example": {
+                "value": {
+                  "subscription": {
+                    "client": {
+                      "documentNumber": "1234567890",
+                      "documentType": "CC",
+                      "names": "sdff",
+                      "lastNames": "sdfsdf",
+                      "email": "sdfsdf@sdfsdf.com"
+                    },
+                    "acces": {
+                      "name": "",
+                      "parameters": [
+                        {
+                          "parameter": "",
+                          "value": ""
+                        }
+                      ]
+                    },
+                    "acceptsTermsAndConditions": true
+                  }
+                }
+              },
+              "type": "object",
+              "required": [
+                "subscription"
+              ],
+              "properties": {
+                "subscription": {
+                  "type": "object",
+                  "required": [
+                    "client",
+                    "acces"
+                  ],
+                  "properties": {
+                    "client": {
+                      "type": "object",
+                      "properties": {
+                        "documentNumber": {
+                          "example": "1234567890",
+                          "type": "string"
+                        },
+                        "documentType": {
+                          "example": "CC",
+                          "type": "string"
+                        },
+                        "names": {
+                          "example": "sdff",
+                          "type": "string"
+                        },
+                        "lastNames": {
+                          "example": "sdfsdf",
+                          "type": "string"
+                        },
+                        "email": {
+                          "example": "sdfsdf@sdfsdf.com",
+                          "type": "string"
+                        }
+                      }
+                    },
+                    "acces": {
+                      "type": "object",
+                      "required": [
+                        "parameters"
+                      ],
+                      "properties": {
+                        "name": {
+                          "example": "",
+                          "type": "string"
+                        },
+                        "parameters": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "parameter": {
+                                "example": "",
+                                "type": "string"
+                              },
+                              "value": {
+                                "example": "",
+                                "type": "string"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "acceptsTermsAndConditions": {
+                      "example": true,
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "**Success Response - Interaction Updated Successfully**\n\n**API-Controlled Code**: \"200\" (in responseCode field)\n\n**Response Structure**: \n- **responseCode**: API-controlled success indicator (\"200\") following TMF683 standards\n- **responseMessage**: Update confirmation message (\"Se actualizó la decisión de términos y condiciones\")\n- **interactionId**: Unique identifier of updated interaction\n- **version**: New version number for concurrency control\n- **lastModified**: ISO 8601 timestamp of last modification\n\n**Data Enrichment**: \n- **Version Control**: Automatic version increment following TMF683 standards for subscription change tracking\n- **Bot Services Response**: Integration response from `/whatsapp/update/v1` with subscription modification status\n- **Audit Trail**: Complete modification history logged to `audits-oracle-sapi-services` for regulatory compliance\n- **Subscription History**: Previous subscription states maintained for business intelligence and compliance reporting\n\n**Business Context**: \n- **Subscription Lifecycle**: Updated subscription terms acceptance and contact person management\n- **Regulatory Compliance**: Colombian telecommunications standards compliance for subscription modifications\n- **Contact Person Changes**: Supporting business scenarios where subscription ownership or contact information changes\n- **Terms Re-acceptance**: Ensuring legal compliance when subscription terms require customer re-acceptance\n",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_5"
+              "$ref": "#/definitions/type_3"
             }
           },
           "400": {
-            "description": "",
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for surveys or subscription updates\n- Business rule validation failures for terms and conditions acceptance\n\n**System Context**: Validation occurs at the XAPI layer before Bot Services backend system calls\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "401": {
-            "description": "",
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "404": {
-            "description": "",
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Interaction ID does not exist in MongoDB interaction store\n- Customer document number not found in Oracle customer database\n- Invalid endpoint path or resource identifier\n- Requested data not available for specified filters\n\n**System Context**: Resource lookup performed across Oracle customer database and MongoDB interaction storage\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "500": {
-            "description": "",
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Bot SAPI services connectivity failure (timeout > 62 seconds)\n- Oracle database connection timeout or unavailability\n- MongoDB cluster unavailability for interaction storage\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
@@ -372,9 +509,10 @@
       }
     },
     "/createSurvey": {
+      "x-amf-description": "## Customer Survey Management Resource\n\n**Business Purpose**: Comprehensive customer satisfaction survey creation and management for service quality measurement and business intelligence across all ETB service channels following TMF683-Party_Interaction standards.\n\n**Data Integration**: \n- **Oracle Database**: Customer profile validation, document verification, and survey eligibility determination\n- **Bot SAPI Services**: WhatsApp and chatbot survey automation via `/scraping/satisfactionsurvey/v1` endpoint\n- **MongoDB Survey Store**: Survey responses and metadata storage with real-time analytics capabilities\n- **Bot Services External System**: Core external system for survey format management and multi-channel distribution\n- **Audit Logging**: `audits-oracle-sapi-services` for survey creation audit trails and regulatory compliance\n\n**Business Intelligence Features**: \n- Real-time survey response analytics and sentiment analysis with business intelligence integration\n- Cross-channel survey correlation for unified customer experience measurement\n- Automated survey triggering based on interaction completion and customer journey milestones\n- Regulatory compliance tracking for customer feedback and satisfaction measurement\n",
       "post": {
-        "operationId": "createSurvey",
-        "description": "register survey",
+        "operationId": "Create Customer Survey",
+        "description": "**Operation Summary**: Creates customer satisfaction surveys with automated distribution and response collection capabilities following TMF683-Party_Interaction standards. Integrates with Bot Services for multi-channel survey automation and ETB's service quality measurement initiatives.\n\n**Use Cases**:\n- **WhatsApp Channel**: Automated post-interaction satisfaction surveys delivered via Bot Services chatbot automation\n- **Web Portal**: Customer feedback collection after service completion with integrated survey workflows\n- **Mobile App**: In-app survey prompts triggered by service milestones and customer interaction completion\n- **Agent Desktop**: Agent-initiated customer satisfaction surveys for quality assurance and experience measurement\n- **Automated Workflows**: System-triggered surveys based on interaction completion and customer journey events\n\n**Business Context**: Enables comprehensive customer satisfaction measurement across all ETB channels with automated survey distribution through Bot Services integration, supporting continuous service improvement and customer experience optimization.\n\n**Data Sources**: \n- **Customer Validation**: Oracle database for customer profile verification, document validation, and survey eligibility determination\n- **Bot Services Integration**: `/scraping/satisfactionsurvey/v1` endpoint for survey registration and automated distribution\n- **Interaction Context**: MongoDB interaction history for survey personalization, timing optimization, and customer journey tracking\n- **Survey Templates**: Bot Services external system for survey format management and multi-channel distribution\n- **Audit Logging**: `audits-oracle-sapi-services` for survey creation audit trails and regulatory compliance\n\n**Performance Characteristics**: \n- **Response Time**: < 2000ms for survey creation including template processing, Bot Services integration, and distribution setup\n- **Distribution Speed**: Automated survey delivery via Bot Services with real-time processing\n- **Rate Limits**: 10 surveys per customer per day to prevent survey fatigue and optimize response rates\n- **Analytics Processing**: Real-time response aggregation and sentiment analysis with business intelligence integration\n",
         "consumes": [
           "application/json"
         ],
@@ -384,7 +522,7 @@
         "parameters": [
           {
             "name": "ORIGIN",
-            "description": "Parameter that allows the origin of the request to be identified",
+            "description": "**Business Purpose**: Identifies the channel initiating the survey creation for proper distribution channel selection, Bot Services routing, and response attribution\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business Platform survey automation via Bot Services integration\n- **PORTAL**: ETB Customer Portal survey integration with web-based workflows\n- **MOBILE**: Mobile application survey functionality with offline capability\n- **AGENT**: Call center agent-initiated customer feedback collection with audit trail\n- **CRM**: Automated CRM system survey workflows for business intelligence\n\n**Usage Examples**: \n- Post-service feedback: \"WHATSAPP\" for Bot Services chatbot-delivered satisfaction surveys\n- Quality assurance: \"AGENT\" for agent-guided customer feedback collection and documentation\n\n**Channel Variations**: Each channel determines survey format, delivery method, response collection mechanisms, and Bot Services integration patterns\n",
             "required": true,
             "in": "query",
             "type": "string"
@@ -435,41 +573,107 @@
             "in": "body",
             "name": "generated",
             "schema": {
-              "$ref": "#/definitions/type_6"
+              "description": "**Request Body Structure**: Survey creation payload following TMF683-Party_Interaction standards with customer targeting and distribution configuration\n\n**Required Fields**: \n- **reasonSurvey**: Survey motivation and context description for business categorization and analytics\n- **trackingNumber**: Unique tracking identifier for survey correlation, audit trails, and business intelligence\n- **customer.documentNumber**: Customer identification number validated against Oracle database per Colombian standards\n- **customer.documentType**: Colombian document type (CC, CE, TI, NIT, PA) for customer verification and regulatory compliance\n- **survey**: Array of question-answer pairs for satisfaction measurement, feedback collection, and business intelligence\n\n**Business Logic**: \n- Customer document validation against Oracle customer master data with eligibility verification\n- Integration with Bot Services `/scraping/satisfactionsurvey/v1` for survey registration and automation\n- Survey frequency control to prevent customer fatigue and optimize response rates\n- Automatic survey categorization based on reasonSurvey field for business intelligence and analytics\n- Channel-specific survey formatting and delivery optimization through Bot Services integration\n\n**Validation Rules**: \n- Customer document format validation per Colombian national identification standards\n- Customer existence verification in Oracle database with survey participation eligibility\n- Survey question-answer pair validation for completeness and format consistency\n- Bot Services availability validation before survey registration processing (62s timeout)\n- Tracking number uniqueness validation for audit trail and correlation management\n",
+              "example": {
+                "reasonSurvey": "motivo encuesta",
+                "trackingNumber": "numero seguimiento",
+                "customer": {
+                  "documentNumber": "79657111",
+                  "documentType": "CC"
+                },
+                "survey": [
+                  {
+                    "question": "Origen",
+                    "answer": "ENCUESTA_BOT"
+                  },
+                  {
+                    "question": "Origen",
+                    "answer": "ENCUESTA_BOT"
+                  },
+                  {
+                    "question": "Origen",
+                    "answer": "ENCUESTA_BOT"
+                  }
+                ]
+              },
+              "type": "object",
+              "required": [
+                "customer",
+                "survey"
+              ],
+              "properties": {
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "example": "79657111",
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "example": "CC",
+                      "type": "string"
+                    }
+                  }
+                },
+                "reasonSurvey": {
+                  "example": "motivo encuesta",
+                  "type": "string"
+                },
+                "trackingNumber": {
+                  "example": "numero seguimiento",
+                  "type": "string"
+                },
+                "survey": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "question": {
+                        "example": "Origen",
+                        "type": "string"
+                      },
+                      "answer": {
+                        "example": "ENCUESTA_BOT",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "",
+            "description": "**Success Response - Survey Created Successfully**\n\n**API-Controlled Code**: \"200\" (in responseCode field)\n\n**Response Structure**: \n- **responseCode**: API-controlled success indicator (\"200\") following TMF683 standards\n- **responseMessage**: Survey creation confirmation message (\"Se registro la encuesta satisfactoriamente\")\n- **surveyId**: System-generated unique identifier for created survey\n- **distributionStatus**: Survey distribution status and delivery timeline via Bot Services\n- **expirationDate**: ISO 8601 timestamp when survey expires\n\n**Data Enrichment**: \n- **System-Generated ID**: Unique survey identifier following TMF683 standards for tracking, analytics, and correlation\n- **Bot Services Response**: Integration response from `/scraping/satisfactionsurvey/v1` with survey registration confirmation\n- **Distribution Tracking**: Multi-channel survey delivery status through Bot Services automation\n- **Analytics Setup**: Real-time response aggregation and business intelligence reporting configuration\n- **Audit Trail**: Complete survey creation logging via `audits-oracle-sapi-services` for regulatory compliance\n\n**Business Context**: \n- **Customer Engagement**: Survey participation tracking for comprehensive customer experience measurement\n- **Service Quality**: Integration with ETB service quality measurement framework and continuous improvement initiatives\n- **Regulatory Compliance**: Colombian telecommunications standards compliance with complete audit trail management\n- **Business Intelligence**: Survey response data contribution to customer satisfaction analytics and service enhancement\n",
             "x-amf-mediaType": "application/json",
             "schema": {
-              "$ref": "#/definitions/type_7"
+              "$ref": "#/definitions/type_4"
             }
           },
           "400": {
-            "description": "",
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for surveys or subscription updates\n- Business rule validation failures for terms and conditions acceptance\n\n**System Context**: Validation occurs at the XAPI layer before Bot Services backend system calls\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "401": {
-            "description": "",
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "404": {
-            "description": "",
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Interaction ID does not exist in MongoDB interaction store\n- Customer document number not found in Oracle customer database\n- Invalid endpoint path or resource identifier\n- Requested data not available for specified filters\n\n**System Context**: Resource lookup performed across Oracle customer database and MongoDB interaction storage\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
             }
           },
           "500": {
-            "description": "",
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Bot SAPI services connectivity failure (timeout > 62 seconds)\n- Oracle database connection timeout or unavailability\n- MongoDB cluster unavailability for interaction storage\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
             "x-amf-mediaType": "application/json",
             "schema": {
               "$ref": "#/definitions/type_1"
@@ -706,48 +910,6 @@
       }
     },
     "type_2": {
-      "example": {
-        "subscription": {
-          "client": {
-            "documentNumber": "1234567890",
-            "documentType": "CC"
-          },
-          "acceptsTermsAndConditions": true
-        }
-      },
-      "type": "object",
-      "required": [
-        "subscription"
-      ],
-      "properties": {
-        "subscription": {
-          "type": "object",
-          "required": [
-            "client"
-          ],
-          "properties": {
-            "client": {
-              "type": "object",
-              "properties": {
-                "documentNumber": {
-                  "example": "1234567890",
-                  "type": "string"
-                },
-                "documentType": {
-                  "example": "CC",
-                  "type": "string"
-                }
-              }
-            },
-            "acceptsTermsAndConditions": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        }
-      }
-    },
-    "type_3": {
       "type": "object",
       "required": [
         "message",
@@ -793,104 +955,7 @@
         }
       }
     },
-    "type_4": {
-      "example": {
-        "value": {
-          "subscription": {
-            "client": {
-              "documentNumber": "1234567890",
-              "documentType": "CC",
-              "names": "sdff",
-              "lastNames": "sdfsdf",
-              "email": "sdfsdf@sdfsdf.com"
-            },
-            "acces": {
-              "name": "",
-              "parameters": [
-                {
-                  "parameter": "",
-                  "value": ""
-                }
-              ]
-            },
-            "acceptsTermsAndConditions": true
-          }
-        }
-      },
-      "type": "object",
-      "required": [
-        "subscription"
-      ],
-      "properties": {
-        "subscription": {
-          "type": "object",
-          "required": [
-            "client",
-            "acces"
-          ],
-          "properties": {
-            "client": {
-              "type": "object",
-              "properties": {
-                "documentNumber": {
-                  "example": "1234567890",
-                  "type": "string"
-                },
-                "documentType": {
-                  "example": "CC",
-                  "type": "string"
-                },
-                "names": {
-                  "example": "sdff",
-                  "type": "string"
-                },
-                "lastNames": {
-                  "example": "sdfsdf",
-                  "type": "string"
-                },
-                "email": {
-                  "example": "sdfsdf@sdfsdf.com",
-                  "type": "string"
-                }
-              }
-            },
-            "acces": {
-              "type": "object",
-              "required": [
-                "parameters"
-              ],
-              "properties": {
-                "name": {
-                  "example": "",
-                  "type": "string"
-                },
-                "parameters": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "parameter": {
-                        "example": "",
-                        "type": "string"
-                      },
-                      "value": {
-                        "example": "",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              }
-            },
-            "acceptsTermsAndConditions": {
-              "example": true,
-              "type": "boolean"
-            }
-          }
-        }
-      }
-    },
-    "type_5": {
+    "type_3": {
       "type": "object",
       "required": [
         "message",
@@ -936,75 +1001,7 @@
         }
       }
     },
-    "type_6": {
-      "example": {
-        "reasonSurvey": "motivo encuesta",
-        "trackingNumber": "numero seguimiento",
-        "customer": {
-          "documentNumber": "79657111",
-          "documentType": "CC"
-        },
-        "survey": [
-          {
-            "question": "Origen",
-            "answer": "ENCUESTA_BOT"
-          },
-          {
-            "question": "Origen",
-            "answer": "ENCUESTA_BOT"
-          },
-          {
-            "question": "Origen",
-            "answer": "ENCUESTA_BOT"
-          }
-        ]
-      },
-      "type": "object",
-      "required": [
-        "customer",
-        "survey"
-      ],
-      "properties": {
-        "reasonSurvey": {
-          "example": "motivo encuesta",
-          "type": "string"
-        },
-        "trackingNumber": {
-          "example": "numero seguimiento",
-          "type": "string"
-        },
-        "customer": {
-          "type": "object",
-          "properties": {
-            "documentNumber": {
-              "example": "79657111",
-              "type": "string"
-            },
-            "documentType": {
-              "example": "CC",
-              "type": "string"
-            }
-          }
-        },
-        "survey": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "question": {
-                "example": "Origen",
-                "type": "string"
-              },
-              "answer": {
-                "example": "ENCUESTA_BOT",
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "type_7": {
+    "type_4": {
       "type": "object",
       "required": [
         "message",
