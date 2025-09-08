@@ -1,953 +1,564 @@
 {
-  "swagger": "2.0",
+  "openapi": "3.0.3",
   "info": {
-    "title": "Commerce XAPI Services",
-    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Product Catalog Management:** Query and filter product offerings following TM Forum TMF620 v2.0.1 standard\n- **Address Normalization:** Standardize and geocode addresses for service coverage validation (TMF673 v4)\n- **Coverage Verification:** Geographic coverage analysis for service availability (TMF675 v4)\n- **Promotion Management:** Dynamic promotion search and filtering capabilities (TMF671 v4.1)\n\n**Integration Points:**\n- **commerce-papi-services:** Process layer for commerce operations (port 8091)\n- **audits-oracle-sapi-services:** Oracle-based audit logging for compliance (port 8091)\n- **Backend Systems:** Product catalog, GIS systems, and promotion engines\n\n**Standards Compliance:**\n- TM Forum TMF620 (Product Catalog Management) v2.0.1\n- TM Forum TMF673 (Geographic Address Management) v4\n- TM Forum TMF675 (Geographic Site Management) v4\n- TM Forum TMF671 (Promotion Management) v4.1\n- RESTful API design principles\n\n**Performance Metrics:**\n- Target response time: < 2 seconds for catalog queries\n- Address normalization: < 1 second\n- Coverage check: < 1.5 seconds\n- Availability target: 99.5% monthly uptime\n\n**Target Consumers:**\n- E-commerce Portal\n- Mobile Applications\n- Sales Force Applications\n- WhatsApp Business Channel\n- Partner Integration Systems\n",
-    "version": "v1"
+    "title": "commerce-xapi-services",
+    "description": "The `commerce-xapi-services` API, part of ETB's Experience Layer (XAPI) and aligned with TM Forum Open APIs, provides core capabilities for ETB's telecommunications offerings.  This API-led connectivity architecture exposes four key endpoints for streamlined integration with external systems.\n\n`GET /productOffering` retrieves details of ETB's product catalog, including pricing, features, and bundles, enabling seamless integration with ordering and billing systems.  `GET /normalizeAddress` standardizes customer addresses, ensuring accurate service provisioning and billing.  This leverages ETB's geographic data to enhance address validation and consistency.\n\n`GET /geographicCoverage` checks service availability at a given location, crucial for accurate sales and marketing efforts.  This endpoint utilizes ETB's network coverage data to determine service feasibility. Finally, `GET /promotion` retrieves current promotional offers, allowing partners to display relevant deals to customers, enhancing the customer experience and driving sales.\n\nThis API facilitates efficient integration with various applications, enabling partners and internal systems to access ETB's core commerce functionalities in a standardized and consistent manner.  The architecture promotes agility and rapid innovation within ETB's digital ecosystem.",
+    "version": "v1",
+    "contact": {
+      "name": "ETB API Team",
+      "url": "https://www.etb.com.co",
+      "email": "api-support@etb.com.co"
+    },
+    "license": {
+      "name": "Proprietary - ETB"
+    },
+    "x-language": "en",
+    "x-compliance": "TM Forum Open APIs"
   },
-  "host": "commerce-xapi-services-{env}.us-e2.cloudhub.io",
-  "schemes": [
-    "https"
-  ],
-  "externalDocs": {
-    "url": "http://",
-    "description": "## Architecture Overview\n\nThis API serves as the experience layer for ETB's commerce operations, providing unified access to product catalog, address management, and promotional offerings. It orchestrates data from multiple backend systems to deliver a seamless commerce experience across all digital channels.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Product Catalog System:** Master repository for product definitions and pricing\n- **GIS Platform:** Geographic Information System for address normalization and coverage\n- **Promotion Engine:** Dynamic promotion calculation and eligibility verification\n- **Oracle Database:** Audit trail and transaction logging\n\n**Data Flow Patterns:**\n- Synchronous request-response for all operations\n- Real-time catalog queries with caching optimization\n- Dynamic promotion calculation based on customer context\n- Geographic validation through GIS integration\n\n## Response Codes\n\n**API-Controlled Response Codes:**\n- `200`: Successful operation with results\n- `400`: Invalid request parameters or business validation failure\n- `401`: Authentication failure\n- `404`: Resource not found\n- `500`: Internal server error or backend system failure\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- HTTP status code for transport-level status\n- Business-specific error codes\n- Detailed error messages for debugging\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Product catalog queries: < 2 seconds\n- Address normalization: < 1 second\n- Coverage verification: < 1.5 seconds\n- Promotion queries: < 2.5 seconds (complex calculations)\n",
-    "x-amf-title": "Technical Architecture"
-  },
-  "paths": {
-    "/v1": {},
-    "/v1/productOffering": {
-      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages ETB's product catalog, providing access to product offerings, configurations, and pricing information for all service types (FTTH, FTTC, HFC, DTH).\n\n**Data Integration:**\n- **commerce-papi-services:** Process layer for product catalog operations\n- **Product Catalog System:** Master repository for product definitions\n- **Pricing Engine:** Real-time pricing calculations with taxes\n\n**Business Intelligence Features:**\n- **Dynamic Filtering:** Multi-criteria product search capabilities\n- **Service Type Categorization:** Automatic classification by technology\n- **Price Optimization:** Real-time pricing with tax calculations\n- **Configuration Management:** Product configuration code tracking\n",
-      "get": {
-        "operationId": "Query Product Offerings",
-        "description": "## Operation Summary\n\nRetrieves product offerings from the catalog with advanced filtering capabilities. Supports multi-criteria searches for products by type, service, configuration, and pricing. Follows TM Forum TMF620 v2.0.1 standard for product catalog management.\n\n## Use Cases\n\n- **E-commerce Portal:** Display available products for online purchase\n- **Sales Applications:** Product search for sales representatives\n- **Mobile Apps:** Browse product catalog with filters\n- **WhatsApp Channel:** Query products for customer recommendations\n- **Partner Systems:** B2B product catalog access\n\n## Data Sources\n\n- Primary: commerce-papi-services `/v1/productOffering` endpoint\n- Backend: Product Catalog Management System\n- Enrichment: Pricing engine for real-time calculations\n\n## Performance Characteristics\n\n- Response time: < 2 seconds for filtered queries\n- Cache TTL: 300 seconds for product data\n- Rate limits: 100 requests per second per client\n- Maximum results: 500 products per query\n",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "producto",
-            "description": "**Business Purpose:** Search products by name or description\n\n**Validation Rules:**\n- Minimum length: 3 characters\n- Case-insensitive search\n- Supports partial matching\n\n**Usage Examples:**\n- \"DECODIFICADOR\" - finds all decoder products\n- \"FTTC 1\" - specific FTTC tier 1 products\n\n**Channel Variations:** WhatsApp uses simplified product names\n",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "cod_configuracion",
-            "description": "**Business Purpose:** Internal product configuration code for precise product identification\n\n**Format:** 11-digit numeric code\n- Pattern: ^[0-9]{11}$\n\n**Business Logic:** Unique identifier linking to billing and provisioning systems\n\n**Usage:** Used by internal systems and B2B integrations\n",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "tipo_servicio",
-            "description": "**Business Purpose:** Filter products by service technology type\n\n**Valid Values:**\n- FTTC: Fiber to the Cabinet\n- FTTH: Fiber to the Home\n- HFC: Hybrid Fiber-Coaxial\n- DTH: Direct to Home (Satellite)\n- GPON: Gigabit Passive Optical Network\n- ADSL: Asymmetric Digital Subscriber Line\n\n**Business Logic:** Determines available speeds and service features\n",
-            "required": false,
-            "in": "query",
-            "enum": [
-              "FTTC",
-              "FTTH",
-              "HFC",
-              "DTH",
-              "GPON",
-              "ADSL"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "tipo_producto",
-            "description": "**Business Purpose:** Product classification for bundling and pricing rules\n\n**Valid Values:**\n- Principal: Main service products\n- Adicional: Add-on products\n- Complementario: Complementary services\n- Bundle: Package deals\n\n**Business Logic:** Principal products required before Adicional can be added\n",
-            "required": false,
-            "in": "query",
-            "enum": [
-              "Principal",
-              "Adicional",
-              "Complementario",
-              "Bundle"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "subtipo_producto",
-            "description": "**Business Purpose:** Product sub-classification for hierarchy and dependencies\n\n**Valid Values:**\n- PRIMARIO: Primary product in category\n- SECUNDARIO: Secondary/dependent product\n- TERCIARIO: Third-level add-on\n\n**Business Logic:** Defines installation order and dependencies\n",
-            "required": false,
-            "in": "query",
-            "enum": [
-              "PRIMARIO",
-              "SECUNDARIO",
-              "TERCIARIO"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "subtipo_servicio",
-            "description": "**Business Purpose:** Service subcategory for detailed filtering\n\n**Format:** Technology + Service Type\n\n**Common Values:**\n- \"FTTC TV\": FTTC television service\n- \"FTTH Datos\": FTTH internet service\n- \"HFC Voice\": HFC voice service\n- \"DTH HD\": DTH high-definition service\n\n**Channel Variations:** Sales apps show technical names, customer portals show friendly names\n",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "precio_con_iva",
-            "description": "**Business Purpose:** Filter products by price including VAT (19% in Colombia)\n\n**Format:** Decimal number with up to 2 decimal places\n- Pattern: ^[0-9]+(\\.[0-9]{1,2})?$\n\n**Business Logic:** \n- Exact match or range queries supported\n- Prices in Colombian Pesos (COP)\n- Includes all applicable taxes\n\n**Usage Examples:**\n- \"50000\" - products priced at COP 50,000\n- \"1.0\" - promotional products at COP 1\n",
-            "required": false,
-            "in": "query",
-            "type": "string",
-            "pattern": "^[0-9]+(\\.[0-9]{1,2})?$"
-          },
-          {
-            "name": "name",
-            "description": "System of origin of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "X-CORRELATION-ID",
-            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "source",
-            "description": "Destination of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "systemId",
-            "description": "Auditing logs system identifier. Used for internal communication.",
-            "required": true,
-            "in": "header",
-            "enum": [
-              "MIGRACION",
-              "TRANSACCCIONES_OM",
-              "MAYORISTAS",
-              "OTINICIATIVAS"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "processName",
-            "description": "Auditing logs process name. Used for internal communication",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/productOffering"
-              }
-            }
-          },
-          "400": {
-            "description": "**API Error Code:** `BAD_REQUEST`\n\n**Common Issues:**\n- Invalid query parameter format\n- Missing required parameters\n- Invalid parameter values or combinations\n- Business validation failures\n\n**System Context:** Validation performed at API Gateway before backend processing\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "401": {
-            "description": "**API Error Code:** `UNAUTHORIZED`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for requested operation\n- Client credentials not authorized\n\n**System Context:** Token validation against ETB OAuth 2.0 provider\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "404": {
-            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Product or promotion not found\n- Invalid geographic coordinates\n- Address not in service area\n\n**System Context:** Resource validation at PAPI layer\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "500": {
-            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- Commerce PAPI timeout (> 62 seconds)\n- Backend catalog system unavailable\n- GIS service failure\n- Database connection issues\n\n**System Context:** Error logged with correlation ID for support investigation\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          }
-        },
-        "security": [
-          {
-            "oauth_2_0": []
-          }
-        ]
-      }
+  "servers": [
+    {
+      "url": "https://mock-commerce-xapi-services.etb-apis.com",
+      "description": "Mock Server - Documentation and Testing"
     },
-    "/v1/normalizeAddress": {
-      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Standardizes and geocodes Colombian addresses for service coverage validation and accurate service provisioning. Essential for determining service availability and technician routing.\n\n**Data Integration:**\n- **commerce-papi-services:** Process layer for address normalization\n- **GIS Platform:** Geographic Information System for geocoding\n- **Coverage Database:** Service availability mapping\n\n**Business Intelligence Features:**\n- **Address Standardization:** Converts free-text addresses to canonical format\n- **Geocoding:** Generates latitude/longitude coordinates\n- **Neighbor Discovery:** Finds nearby addresses for coverage expansion\n- **Validation:** Verifies address exists in service territory\n",
-      "get": {
-        "operationId": "Normalize and Geocode Address",
-        "description": "## Operation Summary\n\nNormalizes Colombian addresses to standard format and returns geocoded results with nearby addresses. Follows TM Forum TMF673 v4 standard for geographic address management. Critical for service eligibility verification.\n\n## Use Cases\n\n- **E-commerce Portal:** Validate customer address during signup\n- **Sales Applications:** Check service availability at prospect addresses  \n- **Mobile Apps:** Auto-complete and validate delivery addresses\n- **WhatsApp Channel:** Parse and validate addresses from chat\n- **Field Service:** Verify technician destination addresses\n\n## Data Sources\n\n- Primary: commerce-papi-services `/v1/normalizeAddress` endpoint\n- Backend: GIS geocoding service\n- Enrichment: Coverage database for service availability\n\n## Performance Characteristics\n\n- Response time: < 1 second for single address\n- Accuracy: 95% match rate for urban addresses\n- Rate limits: 200 requests per second per client\n- Cache TTL: 86400 seconds (24 hours) for geocoded results\n",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "address",
-            "description": "**Business Purpose:** Free-text address to normalize and geocode\n\n**Format:** Colombian address format\n- Supports: Calle, Carrera, Diagonal, Transversal, Avenida\n- Includes: Number, interior, apartment, building\n\n**Validation Rules:**\n- Minimum: 10 characters\n- Maximum: 200 characters\n- Special characters allowed: # - . spaces\n\n**Usage Examples:**\n- \"Diagonal 159B 14a 40 int 21\"\n- \"Calle 100 # 7-33 Torre 1 Apto 501\"\n- \"Carrera 7 No. 71-21 Edificio Avenida Chile\"\n\n**Business Logic:** Parsed using Colombian address patterns\n",
-            "required": true,
-            "in": "query",
-            "type": "string",
-            "minLength": 10,
-            "maxLength": 200
-          },
-          {
-            "name": "municipalityCod",
-            "description": "**Business Purpose:** DANE municipality code for address context\n\n**Format:** 5-digit DANE code\n- Pattern: ^[0-9]{5}$\n\n**Common Values:**\n- \"11001\": Bogotá D.C.\n- \"05001\": Medellín\n- \"76001\": Cali\n- \"08001\": Barranquilla\n\n**Business Logic:** Required for disambiguating addresses across municipalities\n",
-            "required": true,
-            "in": "query",
-            "type": "string",
-            "pattern": "^[0-9]{5}$"
-          },
-          {
-            "name": "departamentCod",
-            "description": "**Business Purpose:** DANE department code for regional context\n\n**Format:** 2-digit DANE code\n- Pattern: ^[0-9]{2}$\n\n**Common Values:**\n- \"11\": Bogotá D.C.\n- \"05\": Antioquia\n- \"76\": Valle del Cauca\n- \"08\": Atlántico\n\n**Business Logic:** Used with municipalityCod for complete geographic context\n",
-            "required": true,
-            "in": "query",
-            "type": "string",
-            "pattern": "^[0-9]{2}$"
-          },
-          {
-            "name": "name",
-            "description": "System of origin of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "X-CORRELATION-ID",
-            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "source",
-            "description": "Destination of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "systemId",
-            "description": "Auditing logs system identifier. Used for internal communication.",
-            "required": true,
-            "in": "header",
-            "enum": [
-              "MIGRACION",
-              "TRANSACCCIONES_OM",
-              "MAYORISTAS",
-              "OTINICIATIVAS"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "processName",
-            "description": "Auditing logs process name. Used for internal communication",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/geographicAddress"
-              }
-            }
-          },
-          "400": {
-            "description": "**API Error Code:** `BAD_REQUEST`\n\n**Common Issues:**\n- Invalid query parameter format\n- Missing required parameters\n- Invalid parameter values or combinations\n- Business validation failures\n\n**System Context:** Validation performed at API Gateway before backend processing\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "401": {
-            "description": "**API Error Code:** `UNAUTHORIZED`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for requested operation\n- Client credentials not authorized\n\n**System Context:** Token validation against ETB OAuth 2.0 provider\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "404": {
-            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Product or promotion not found\n- Invalid geographic coordinates\n- Address not in service area\n\n**System Context:** Resource validation at PAPI layer\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "500": {
-            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- Commerce PAPI timeout (> 62 seconds)\n- Backend catalog system unavailable\n- GIS service failure\n- Database connection issues\n\n**System Context:** Error logged with correlation ID for support investigation\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          }
-        },
-        "security": [
-          {
-            "oauth_2_0": []
-          }
-        ]
-      }
+    {
+      "url": "https://commerce-xapi-services-prod.us-e2.cloudhub.io",
+      "description": "Production Server - Live Environment"
     },
-    "/v1/geographicCoverage": {
-      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Determines service coverage availability at specific geographic locations. Critical for sales qualification and service feasibility assessment.\n\n**Data Integration:**\n- **GIS Platform:** Coverage maps and service boundaries\n- **Network Inventory:** Available infrastructure and capacity\n- **Planning Systems:** Future coverage expansion areas\n\n**Business Intelligence Features:**\n- **Multi-technology Coverage:** Check FTTH, FTTC, HFC, DTH availability\n- **Capacity Analysis:** Available bandwidth at location\n- **Competition Mapping:** Identify competitive service areas\n- **Expansion Planning:** Flag addresses for future coverage\n",
-      "get": {
-        "operationId": "Check Geographic Coverage",
-        "description": "## Operation Summary\n\nVerifies service coverage availability at a normalized address or geographic coordinates. Returns available service types, technologies, and speeds. Follows TM Forum TMF675 v4 standard for geographic site management.\n\n## Use Cases\n\n- **E-commerce Portal:** Real-time coverage check during signup\n- **Sales Applications:** Qualify prospects before offering services\n- **Mobile Apps:** Show service availability on maps\n- **WhatsApp Channel:** Instant coverage verification for customers\n- **Planning Systems:** Identify coverage gaps and expansion opportunities\n\n## Data Sources\n\n- Primary: GIS coverage database\n- Secondary: Network inventory for capacity\n- Enrichment: Competitive intelligence data\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds\n- Accuracy: 99% for existing coverage areas\n- Rate limits: 150 requests per second per client\n- Cache TTL: 3600 seconds (1 hour) for coverage data\n",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "address",
-            "description": "Dirección a consultar",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "municipality",
-            "description": "Código de Municipio asociado a la dirección",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "departament",
-            "description": "Código de departamento asociado a la dirección",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "latitude",
-            "description": "Latitud asociada a la ubicacion geografica",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "longitude",
-            "description": "Longitud asociada a la ubicacion geografica",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "name",
-            "description": "System of origin of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "X-CORRELATION-ID",
-            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "source",
-            "description": "Destination of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "systemId",
-            "description": "Auditing logs system identifier. Used for internal communication.",
-            "required": true,
-            "in": "header",
-            "enum": [
-              "MIGRACION",
-              "TRANSACCCIONES_OM",
-              "MAYORISTAS",
-              "OTINICIATIVAS"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "processName",
-            "description": "Auditing logs process name. Used for internal communication",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "**API Error Code:** `BAD_REQUEST`\n\n**Common Issues:**\n- Invalid query parameter format\n- Missing required parameters\n- Invalid parameter values or combinations\n- Business validation failures\n\n**System Context:** Validation performed at API Gateway before backend processing\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "401": {
-            "description": "**API Error Code:** `UNAUTHORIZED`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for requested operation\n- Client credentials not authorized\n\n**System Context:** Token validation against ETB OAuth 2.0 provider\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "404": {
-            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Product or promotion not found\n- Invalid geographic coordinates\n- Address not in service area\n\n**System Context:** Resource validation at PAPI layer\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "500": {
-            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- Commerce PAPI timeout (> 62 seconds)\n- Backend catalog system unavailable\n- GIS service failure\n- Database connection issues\n\n**System Context:** Error logged with correlation ID for support investigation\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          }
-        },
-        "security": [
-          {
-            "oauth_2_0": []
-          }
-        ]
-      }
-    },
-    "/v1/promotion": {
-      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages promotional offerings, discounts, and special deals for ETB services. Enables dynamic promotion calculation based on customer eligibility and business rules.\n\n**Data Integration:**\n- **commerce-papi-services:** Process layer for promotion management\n- **Promotion Engine:** Business rules for eligibility and calculation\n- **Billing System:** Customer eligibility verification\n\n**Business Intelligence Features:**\n- **Dynamic Eligibility:** Real-time promotion qualification\n- **Bundle Optimization:** Intelligent package recommendations\n- **Campaign Management:** Time-based and targeted promotions\n- **Retention Offers:** Customer-specific retention promotions\n",
-      "get": {
-        "operationId": "Query Available Promotions",
-        "description": "## Operation Summary\n\nRetrieves available promotions based on service type, customer segment, and eligibility criteria. Supports complex filtering for targeted promotional campaigns. Follows TM Forum TMF671 v4.1 standard for promotion management.\n\n## Use Cases\n\n- **E-commerce Portal:** Display applicable promotions during checkout\n- **Sales Applications:** Offer promotions to close deals\n- **Mobile Apps:** Push personalized promotional notifications\n- **WhatsApp Channel:** Automated promotion recommendations\n- **Retention Systems:** Targeted offers to prevent churn\n\n## Data Sources\n\n- Primary: commerce-papi-services `/v1/promotion` endpoint\n- Backend: Promotion engine with business rules\n- Validation: Billing system for customer eligibility\n\n## Performance Characteristics\n\n- Response time: < 2.5 seconds (includes eligibility calculation)\n- Cache TTL: 600 seconds for promotion catalog\n- Rate limits: 50 requests per second per client\n- Pagination: Supports offset/limit for large result sets\n",
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
-          {
-            "name": "ID_Servicio",
-            "description": "ID del servicio relacionado a la promoción",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "ID_Tipo_Servicio",
-            "description": "ID del tipo de servicio",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "Canales",
-            "description": "Canal por el cual se ofrece la promoción",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "ID_Tipo_Activacion",
-            "description": "Tipo de activación para aplicar la promoción",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "ID_Tipo_Promocion",
-            "description": "Tipo de promoción",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "ID_Convenio",
-            "description": "ID de convenio asociado",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "Planes_Aplicar",
-            "description": "Código de plan al que se le aplica la promoción",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "Tramites_Aplicar",
-            "description": "Trámite que activa la promoción",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "Caracteristicas",
-            "description": "Características que definen condiciones para aplicar la promoción",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "fields",
-            "description": "Campos específicos que se desean en la respuesta",
-            "required": false,
-            "in": "query",
-            "type": "string"
-          },
-          {
-            "name": "offset",
-            "description": "Índice desde donde se empieza a devolver resultados",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "limit",
-            "description": "Cantidad máxima de resultados a devolver",
-            "required": false,
-            "in": "query",
-            "type": "integer"
-          },
-          {
-            "name": "name",
-            "description": "System of origin of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "X-CORRELATION-ID",
-            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "source",
-            "description": "Destination of the request.",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "systemId",
-            "description": "Auditing logs system identifier. Used for internal communication.",
-            "required": true,
-            "in": "header",
-            "enum": [
-              "MIGRACION",
-              "TRANSACCCIONES_OM",
-              "MAYORISTAS",
-              "OTINICIATIVAS"
-            ],
-            "type": "string"
-          },
-          {
-            "name": "processName",
-            "description": "Auditing logs process name. Used for internal communication",
-            "required": false,
-            "in": "header",
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "**API Error Code:** `BAD_REQUEST`\n\n**Common Issues:**\n- Invalid query parameter format\n- Missing required parameters\n- Invalid parameter values or combinations\n- Business validation failures\n\n**System Context:** Validation performed at API Gateway before backend processing\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "401": {
-            "description": "**API Error Code:** `UNAUTHORIZED`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for requested operation\n- Client credentials not authorized\n\n**System Context:** Token validation against ETB OAuth 2.0 provider\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "404": {
-            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Product or promotion not found\n- Invalid geographic coordinates\n- Address not in service area\n\n**System Context:** Resource validation at PAPI layer\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          },
-          "500": {
-            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- Commerce PAPI timeout (> 62 seconds)\n- Backend catalog system unavailable\n- GIS service failure\n- Database connection issues\n\n**System Context:** Error logged with correlation ID for support investigation\n",
-            "x-amf-mediaType": "application/json",
-            "schema": {
-              "$ref": "#/definitions/error-response"
-            }
-          }
-        },
-        "security": [
-          {
-            "oauth_2_0": []
-          }
-        ]
-      }
+    {
+      "url": "https://commerce-xapi-services-qa.us-e2.cloudhub.io",
+      "description": "QA Test Server - Validation Environment"
     }
-  },
-  "definitions": {
-    "productOffering": {
-      "title": "ProductOffering",
-      "description": "Simplified TMF620 v2.0.1 ProductOffering response",
-      "type": "object",
-      "required": [
-        "id",
-        "name",
-        "description",
-        "lifecycleStatus",
-        "productSpecification",
-        "productOfferingPrice",
-        "validFor",
-        "isBundle",
-        "bundle",
-        "@type",
-        "@baseType",
-        "href"
-      ],
-      "properties": {
-        "id": {
-          "example": "5c0012184379b104c4469539",
-          "type": "string"
-        },
-        "name": {
-          "example": "DECODIFICADOR 2",
-          "type": "string"
-        },
-        "description": {
-          "example": "DECODIFICADOR 2",
-          "type": "string"
-        },
-        "lifecycleStatus": {
-          "enum": [
-            "Active",
-            "Inactive",
-            "Obsolete"
-          ],
-          "example": "Active",
-          "type": "string"
-        },
-        "productSpecification": {
-          "type": "object",
-          "required": [
-            "id",
-            "name",
-            "tipoProducto",
-            "tipoServicio",
-            "subtipoServicio",
-            "@type",
-            "href"
-          ],
-          "properties": {
-            "id": {
-              "type": "string"
-            },
-            "name": {
-              "type": "string"
-            },
-            "tipoProducto": {
-              "type": "string"
-            },
-            "tipoServicio": {
-              "type": "string"
-            },
-            "subtipoServicio": {
-              "type": "string"
-            },
-            "subtipoProducto": {
-              "type": "string"
-            },
-            "@type": {
-              "type": "string"
-            },
-            "href": {
-              "type": "string"
-            }
-          }
-        },
-        "productOfferingPrice": {
-          "example": [],
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
-        },
-        "validFor": {
-          "type": "object",
-          "properties": {
-            "startDateTime": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "endDateTime": {
-              "type": "string",
-              "format": "date-time"
-            }
-          }
-        },
-        "isBundle": {
-          "example": false,
-          "type": "boolean"
-        },
-        "bundle": {
-          "example": [],
-          "type": "array",
-          "items": {
-            "type": "object"
-          }
-        },
-        "place": {
-          "type": "array",
-          "items": {}
-        },
-        "relatedParty": {
-          "type": "array",
-          "items": {}
-        },
-        "serviceCandidate": {
-          "type": "array",
-          "items": {}
-        },
-        "@type": {
-          "example": "ProductOffering",
-          "type": "string"
-        },
-        "@baseType": {
-          "example": "Entity",
-          "type": "string"
-        },
-        "href": {
-          "example": "https://api.miempresa.com/tmf-api/v2/productOffering/5c0012184379b104c4469539",
-          "type": "string"
-        },
-        "category": {
-          "type": "array",
-          "items": {}
-        },
-        "attachment": {
-          "type": "array",
-          "items": {}
-        },
-        "channel": {
-          "type": "array",
-          "items": {}
-        },
-        "marketSegment": {
-          "type": "array",
-          "items": {}
-        },
-        "productOfferingTerm": {
-          "type": "array",
-          "items": {}
-        },
-        "resourceCandidate": {
-          "type": "array",
-          "items": {}
-        },
-        "serviceLevelAgreement": {
-          "type": "array",
-          "items": {}
-        },
-        "agreement": {
-          "type": "array",
-          "items": {}
-        },
-        "characteristic": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "required": [
-              "name",
-              "value"
-            ],
-            "properties": {
-              "name": {
-                "type": "string"
-              },
-              "value": {
-                "type": "string"
-              }
-            }
-          }
-        }
-      }
-    },
-    "error-response": {
-      "title": "Error",
-      "description": "Standard error object defined by TM Forum Open APIs",
-      "type": "object",
-      "required": [
-        "code",
-        "reason",
-        "message",
-        "status"
-      ],
-      "properties": {
-        "code": {
-          "example": "400",
-          "type": "string"
-        },
-        "reason": {
-          "example": {
-            "value": "Invalid field value"
+  ],
+  "paths": {
+    "/productOffering": {
+      "get": {
+        "operationId": "get_productOffering",
+        "summary": "Retrieve Productoffering",
+        "description": "The GET /productOffering operation within ETB's commerce-xapi-services retrieves detailed information on available telecommunication product offerings.  This RESTful API endpoint is crucial for various ETB systems and external integrations.\n\n**Business Use Cases:**\n\n* **Customer Self-Service Portal:**  Allows customers to browse available mobile plans, internet packages, and bundled services, comparing features and pricing before purchase.\n* **ETB Sales Systems:**  Empowers sales representatives with real-time access to product details, enabling accurate quoting and order processing.\n* **Third-Party Partner Integrations:**  Facilitates integration with billing systems, CRM platforms, and partner websites, enabling seamless product discovery and ordering.\n\nThe response includes comprehensive product details such as pricing, features (data allowance, call minutes, speed), eligibility criteria, and associated add-ons.  This ensures accurate information is consistently available across all channels, enhancing customer experience and operational efficiency for ETB.\n",
+        "tags": [
+          "Commerce Xapi Services"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CorrelationId"
           },
-          "type": "string"
-        },
-        "message": {
-          "example": {
-            "value": "The value provided for 'lifecycleStatus' is not valid."
-          },
-          "type": "string"
-        },
-        "status": {
-          "example": "Bad Request",
-          "type": "string"
-        },
-        "referenceError": {
-          "example": "ERR-PO-001",
-          "type": "string"
-        },
-        "timestamp": {
-          "example": "2024-05-30T13:25:48Z",
-          "type": "string",
-          "format": "date-time"
-        },
-        "@type": {
-          "description": "The type of the error object",
-          "example": "Error",
-          "type": "string"
-        },
-        "@baseType": {
-          "description": "The base type of this entity",
-          "example": "Entity",
-          "type": "string"
-        },
-        "@schemaLocation": {
-          "description": "A link to the JSON schema describing this object",
-          "example": "https://mydomain.com/schema/Error",
-          "type": "string"
-        }
-      }
-    },
-    "geographicAddress": {
-      "title": "geographicAddress",
-      "description": "TMF673-aligned response with a list of geographic addresses",
-      "type": "object",
-      "required": [
-        "Success",
-        "DataSingle"
-      ],
-      "properties": {
-        "Success": {
-          "example": true,
-          "type": "boolean"
-        },
-        "DataList": {
-          "example": null
-        },
-        "DataArray": {
-          "example": null
-        },
-        "DataSingle": {
-          "type": "object",
-          "required": [
-            "Addresses"
-          ],
-          "properties": {
-            "Addresses": {
-              "type": "array",
-              "items": {
-                "type": "object",
-                "required": [
-                  "id",
-                  "fullAddress",
-                  "Direccion_Actual",
-                  "residentialType",
-                  "municipalityCode",
-                  "Check"
-                ],
-                "properties": {
-                  "id": {
-                    "description": "Identificador único de dirección",
-                    "example": "612802304622340077",
-                    "type": "string"
-                  },
-                  "fullAddress": {
-                    "description": "Dirección detallada",
-                    "example": "CL 94A 67A 74 LC 18",
-                    "type": "string"
-                  },
-                  "Direccion_Actual": {
-                    "description": "Dirección inicial o base",
-                    "example": "CL 94A 67A 74",
-                    "type": "string"
-                  },
-                  "residentialType": {
-                    "description": "Estrato Catastro",
-                    "example": "6",
-                    "type": "string"
-                  },
-                  "municipalityCode": {
-                    "description": "Id Municipio",
-                    "example": "11001",
-                    "type": "string"
-                  },
-                  "Check": {
-                    "example": false,
-                    "type": "boolean"
+          {
+            "$ref": "#/components/parameters/SystemId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ProductofferingModel"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "ETB001234",
+                    "name": "Ejemplo ETB",
+                    "created": "2025-07-23T10:00:00Z"
                   }
                 }
               }
             }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         },
-        "Message": {
-          "example": "",
+        "security": [
+          {
+            "etb_oauth2": []
+          }
+        ]
+      }
+    },
+    "/normalizeAddress": {
+      "get": {
+        "operationId": "get_normalizeAddress",
+        "summary": "Retrieve Normalizeaddress",
+        "description": "The `/normalizeAddress` GET operation within ETB's commerce-xapi-services standardizes customer addresses for improved accuracy in billing and service provisioning.  This is crucial for ETB's telecommunications infrastructure, ensuring accurate location data for network connectivity and troubleshooting.\n\nBusiness use cases include:\n\n* **Order processing:**  Accurate addresses prevent delivery failures and streamline the onboarding of new subscribers for services like internet and fixed-line telephony.\n* **Billing and invoicing:** Correct addresses ensure timely and accurate billing, reducing disputes and improving customer satisfaction.\n* **Customer service:**  Normalized addresses facilitate efficient customer support, enabling quick identification of service issues based on precise location data.\n\nThis operation integrates with ETB's CRM and order management systems, enabling seamless data flow and automated address validation.  The API returns a standardized address format, including components like street address, city, postal code, and potentially geographic coordinates, enhancing data quality across ETB's systems.\n",
+        "tags": [
+          "Commerce Xapi Services"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CorrelationId"
+          },
+          {
+            "$ref": "#/components/parameters/SystemId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/NormalizeaddressModel"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "ETB001234",
+                    "name": "Ejemplo ETB",
+                    "created": "2025-07-23T10:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "etb_oauth2": []
+          }
+        ]
+      }
+    },
+    "/geographicCoverage": {
+      "get": {
+        "operationId": "get_geographicCoverage",
+        "summary": "Retrieve Geographiccoverage",
+        "description": "The GET /geographicCoverage operation within ETB's commerce-xapi-services retrieves available telecommunications service areas.  This RESTful API endpoint provides crucial data for various ETB applications and external integrations.\n\n**Business Use Cases:**\n\n* **Customer Self-Service Portal:**  Allows customers to check service availability at a specific address before ordering, enhancing the online experience and reducing support calls.\n* **Sales & Marketing:**  Identifies potential customer segments based on geographic coverage, enabling targeted marketing campaigns and efficient resource allocation.\n* **Network Planning:**  Supports network expansion planning by visualizing coverage gaps and identifying areas requiring infrastructure investment.\n* **Third-party Integrations:**  Enables integration with external mapping services or CRM systems to display ETB's service areas dynamically, improving customer experience and operational efficiency.\n\nThis operation returns a structured response detailing service availability (e.g., broadband, mobile) for specified geographic coordinates or addresses, facilitating seamless integration into various ETB systems and partner applications.\n",
+        "tags": [
+          "Commerce Xapi Services"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CorrelationId"
+          },
+          {
+            "$ref": "#/components/parameters/SystemId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/GeographiccoverageModel"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "ETB001234",
+                    "name": "Ejemplo ETB",
+                    "created": "2025-07-23T10:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "etb_oauth2": []
+          }
+        ]
+      }
+    },
+    "/promotion": {
+      "get": {
+        "operationId": "get_promotion",
+        "summary": "Retrieve Promotion",
+        "description": "The `/promotion` GET operation within ETB's commerce-xapi-services retrieves active promotional offers for telecommunication services.  This RESTful endpoint is crucial for ETB's online and mobile applications, enabling dynamic display of relevant promotions to customers.\n\nBusiness use cases include: showcasing bundled internet and mobile deals on the ETB website, presenting targeted offers based on customer usage patterns in the MyETB app, and powering personalized promotional banners within the ETB self-service portal.  The API integrates with ETB's CRM system to personalize offers and with the billing system to ensure accurate promotion application.  Responses include promotion details (ID, description, eligibility criteria, discount type, validity period), allowing seamless integration with various front-end systems.  This ensures customers are always presented with the most up-to-date and relevant promotional opportunities.\n",
+        "tags": [
+          "Commerce Xapi Services"
+        ],
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/CorrelationId"
+          },
+          {
+            "$ref": "#/components/parameters/SystemId"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Operation completed successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "example": 200
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/PromotionModel"
+                      }
+                    },
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "example": {
+                  "status": "success",
+                  "data": {
+                    "id": "ETB001234",
+                    "name": "Ejemplo ETB",
+                    "created": "2025-07-23T10:00:00Z"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
+          }
+        },
+        "security": [
+          {
+            "etb_oauth2": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ErrorResponse": {
+        "type": "object",
+        "required": [
+          "status",
+          "code",
+          "message"
+        ],
+        "properties": {
+          "status": {
+            "type": "integer",
+            "description": "HTTP status code",
+            "example": 400
+          },
+          "code": {
+            "type": "string",
+            "description": "Business-specific error code",
+            "example": "VALIDATION_ERROR"
+          },
+          "message": {
+            "type": "object",
+            "properties": {
+              "message": {
+                "type": "string",
+                "description": "Detailed error message",
+                "example": "Invalid request parameters"
+              }
+            }
+          },
+          "cause": {
+            "type": "array",
+            "description": "Error cause information",
+            "items": {
+              "type": "object",
+              "properties": {
+                "origin": {
+                  "type": "string",
+                  "example": "XAPI-Services"
+                },
+                "message": {
+                  "type": "string",
+                  "example": "Validation failed"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "CorrelationId": {
+        "name": "X-CORRELATION-ID",
+        "in": "header",
+        "required": false,
+        "description": "Correlation ID for transaction traceability",
+        "schema": {
+          "type": "string",
+          "format": "uuid"
+        }
+      },
+      "SystemId": {
+        "name": "systemId",
+        "in": "header",
+        "required": true,
+        "description": "Source system identifier for audit purposes",
+        "schema": {
+          "type": "string",
+          "enum": [
+            "MIGRACION",
+            "TRANSACCCIONES_OM",
+            "MAYORISTAS",
+            "OTINICIATIVAS"
+          ]
+        }
+      },
+      "ProcessName": {
+        "name": "processName",
+        "in": "header",
+        "required": false,
+        "description": "Process name for internal audit",
+        "schema": {
           "type": "string"
-        },
-        "Results": {
-          "example": 0,
-          "type": "integer"
-        },
-        "MessageObj": {
-          "example": null
+        }
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Invalid request - Missing or incorrect parameters",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 400,
+              "code": "REQUEST_ERROR",
+              "message": {
+                "message": "Required query parameters not specified"
+              },
+              "cause": [
+                {
+                  "origin": "XAPI-Services",
+                  "message": "Validation failed"
+                }
+              ]
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized - Invalid or expired token",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 401,
+              "code": "Unauthorized",
+              "message": {
+                "message": "Invalid or expired access token"
+              }
+            }
+          }
+        }
+      },
+      "Forbidden": {
+        "description": "Access forbidden - Insufficient permissions",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 403,
+              "code": "FORBIDDEN",
+              "message": {
+                "message": "You do not have permissions to access this resource"
+              }
+            }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 404,
+              "code": "NOT_FOUND",
+              "message": {
+                "message": "The requested resource does not exist"
+              }
+            }
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal server error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/ErrorResponse"
+            },
+            "example": {
+              "status": 500,
+              "code": "INTERNAL_SERVER_ERROR",
+              "message": {
+                "message": "Internal error processing the request"
+              }
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "etb_oauth2": {
+        "type": "oauth2",
+        "description": "ETB OAuth 2.0 Authentication",
+        "flows": {
+          "clientCredentials": {
+            "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+            "scopes": {
+              "read": "Data read access permissions",
+              "write": "Write and modification permissions"
+            }
+          }
         }
       }
     }
   },
-  "securityDefinitions": {
-    "oauth_2_0": {
-      "type": "oauth2",
-      "description": "OAuth 2.0 security for API access",
-      "authorizationUrl": "https://api.etb.com.co/oauth/authorize",
-      "tokenUrl": "https://api.etb.com.co/oauth/token",
-      "flow": "accessCode",
-      "scopes": {
-        "commerce:read": "null",
-        "commerce:write": "null"
-      },
-      "x-amf-settings": {
-        "authorizationGrants": [
-          "authorization_code",
-          "client_credentials"
-        ]
-      }
+  "security": [
+    {
+      "etb_oauth2": []
     }
-  }
+  ],
+  "tags": [
+    {
+      "name": "Commerce Xapi Services",
+      "description": "Main operations for Commerce Xapi Services"
+    }
+  ]
 }

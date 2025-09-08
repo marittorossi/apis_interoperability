@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.3",
   "info": {
-    "title": "Resource XAPI Services",
-    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** resource-xapi-services\n**Total Operations:** 2\n**Documentation Quality:** 60% RAML Coverage\n\n## Core Capabilities\n\n## API Overview\n  \n  **Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n  \n  **Core Capabilities:**\n  - **Service Normalization:** Internet service recovery and normalization operations following TM Forum TMF664 standard\n  - **Network Diagnostics:** Real-time ONT (Optical Network Terminal) status monitoring and connection quality assessment\n  - **Failure Management:** Massive failure detection, tracking, and priority-based resolution management\n  - **Network Semaphore:** Visual indicators for network status including attenuation, modem health, noise levels, and signal potency\n  \n  **Integration Points:**\n  - **resource-papi-services:** Process layer for resource management orchestration (port 8091)\n  - **bot-sapi-services:** System layer integration with Bot Services backend via `/soporte1n/normalizeinternet/v1`\n  - **audits-oracle-sapi-services:** Oracle-based audit logging for compliance and traceability (port 8091)\n  \n  **Standards Compliance:**\n  - TM Forum TMF664 (Resource Function Activation & Configuration) v6.1.1\n  - RESTful API design principles\n  - OAuth 2.0 security standards\n  \n  **Performance Metrics:**\n  - Target response time: < 3 seconds for normalization operations\n  - Availability target: 99.5% monthly uptime\n  - Maximum error rate: < 2% of transactions\n  \n  **Target Consumers:**\n  - WhatsApp Business Channel\n  - Customer Support Portal\n  - Field Service Mobile Applications\n  - Technical Support Agent Desktop\n  - Automated Service Recovery Systems\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
+    "title": "service-xapi-services",
+    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** service-xapi-services\n**Total Operations:** 1\n**Documentation Quality:** 60% RAML Coverage\n\n## Core Capabilities\n\n# Service Experience API Services\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
     "version": "v1",
     "contact": {
       "name": "ETB API Team",
@@ -17,26 +17,26 @@
   },
   "servers": [
     {
-      "url": "https://mock-resource-xapi-services.etb-apis.com",
+      "url": "https://mock-service-xapi-services.etb-apis.com",
       "description": "Mock Server - Documentation and Testing"
     },
     {
-      "url": "https://resource-xapi-services-prod.us-e2.cloudhub.io",
+      "url": "https://service-xapi-services-prod.us-e2.cloudhub.io",
       "description": "Production Server - Live Environment"
     },
     {
-      "url": "https://resource-xapi-services-qa.us-e2.cloudhub.io",
+      "url": "https://service-xapi-services-qa.us-e2.cloudhub.io",
       "description": "QA Test Server - Validation Environment"
     }
   ],
   "paths": {
-    "/resourceFunction": {
+    "/serviceOrder": {
       "post": {
-        "operationId": "post_resourceFunction",
-        "summary": "Create Resourcefunction",
-        "description": "The `/resourceFunction` POST operation within ETB's `resource-xapi-services` allows provisioning and management of telecommunications resources.  This RESTful API enables dynamic allocation of bandwidth, IP addresses, and virtual circuits for various ETB services.  Business use cases include:  on-demand provisioning of broadband for new subscribers, automated scaling of network resources based on real-time demand (e.g., during peak usage hours), and integration with third-party billing systems for accurate resource consumption tracking.  The API integrates with ETB's Network Management System (NMS) and OSS/BSS platforms, facilitating automated workflows and reducing manual intervention.  Specific examples include provisioning MPLS circuits for enterprise customers or dynamically allocating IP addresses for IoT devices connected to ETB's network.  Error responses provide detailed information for troubleshooting and remediation.\n",
+        "operationId": "post_serviceOrder",
+        "summary": "Create Serviceorder",
+        "description": "The `/serviceOrder` POST operation within ETB's `service-xapi-services` allows for the creation and management of telecommunication service orders.  This RESTful API facilitates the provisioning of new services, such as activating a new broadband connection, upgrading an existing mobile data plan, or adding international roaming to a postpaid account.  It integrates with ETB's internal order management system (OMS) and billing systems, ensuring seamless order processing and accurate invoicing.  \n\nBusiness use cases include:  online self-service portals where customers can place orders independently;  third-party applications integrating with ETB's systems for automated provisioning; and internal ETB systems for managing orders placed via call centers or retail stores.  The API supports various service parameters, including customer details, service type, address information, and optional add-ons.  Successful requests return an order ID and status, enabling tracking and monitoring of the order lifecycle.\n",
         "tags": [
-          "Resource Xapi Services"
+          "Service Xapi Services"
         ],
         "parameters": [
           {
@@ -72,7 +72,7 @@
                       }
                     },
                     "data": {
-                      "$ref": "#/components/schemas/ResourcefunctionModel"
+                      "$ref": "#/components/schemas/ServiceorderModel"
                     }
                   }
                 },
@@ -153,15 +153,13 @@
             }
           }
         }
-      }
-    },
-    "/setWifiPassword": {
-      "post": {
-        "operationId": "post_setWifiPassword",
-        "summary": "Create Setwifipassword",
-        "description": "The `/setWifiPassword` POST operation within ETB's resource-xapi-services allows authorized users or systems to remotely configure the Wi-Fi password for ETB-provided customer premises equipment (CPE), such as routers or gateways.  This is crucial for:\n\n* **Customer self-service:**  Empowering customers to change their Wi-Fi password through ETB's online portal or mobile app, enhancing security and control.\n* **Technician provisioning:** Enabling ETB field technicians to remotely configure Wi-Fi passwords during installations or troubleshooting, streamlining service delivery and reducing truck rolls.\n* **Automated provisioning:** Integrating with ETB's back-office systems for automated password assignment during new service activations, ensuring consistent and secure initial configurations.\n\nThe operation accepts the new password (encrypted for security) and potentially the CPE's identification details.  Successful execution returns a confirmation; failures provide error codes for troubleshooting.  This API integrates with ETB's customer relationship management (CRM) and network management systems.\n",
+      },
+      "get": {
+        "operationId": "get_serviceOrder",
+        "summary": "Retrieve Serviceorder",
+        "description": "The GET /serviceOrder operation within ETB's service-xapi-services retrieves detailed information about a specific telecommunications service order.  This RESTful API endpoint is crucial for various ETB internal systems and external partner integrations.\n\nBusiness use cases include:\n\n* **Customer Service Representatives:** Accessing real-time order status (e.g., order creation date, installation schedule, current status - pending, in progress, completed) to efficiently address customer inquiries.\n* **Network Operations:** Monitoring service order progress for proactive network management and resource allocation.  This allows for efficient provisioning and troubleshooting.\n* **Billing Systems:** Retrieving order details for accurate billing and invoicing, ensuring correct charges are applied based on service features and activation dates.\n* **Third-party Integrations:**  Partners offering value-added services can integrate with this API to access order information, enabling automated processes like provisioning of supplementary services or offering tailored support.\n\nThe response includes comprehensive order data, including customer details, service specifications, and associated equipment.  This ensures a single source of truth for all service order related information within ETB.\n",
         "tags": [
-          "Resource Xapi Services"
+          "Service Xapi Services"
         ],
         "parameters": [
           {
@@ -172,7 +170,7 @@
           }
         ],
         "responses": {
-          "201": {
+          "200": {
             "description": "Operation completed successfully",
             "content": {
               "application/json": {
@@ -183,31 +181,34 @@
                       "type": "integer",
                       "example": 200
                     },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/ServiceorderModel"
                       }
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/SetwifipasswordModel"
+                    "pagination": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        }
+                      }
                     }
                   }
                 },
                 "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
+                  "status": "success",
+                  "data": {
+                    "id": "ETB001234",
+                    "name": "Ejemplo ETB",
+                    "created": "2025-07-23T10:00:00Z"
                   }
                 }
               }
@@ -230,54 +231,7 @@
           {
             "etb_oauth2": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     }
   },
@@ -483,8 +437,8 @@
   ],
   "tags": [
     {
-      "name": "Resource Xapi Services",
-      "description": "Main operations for Resource Xapi Services"
+      "name": "Service Xapi Services",
+      "description": "Main operations for Service Xapi Services"
     }
   ]
 }
