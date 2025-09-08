@@ -1,490 +1,706 @@
 {
-  "openapi": "3.0.3",
+  "swagger": "2.0",
   "info": {
     "title": "Resource XAPI Services",
-    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** resource-xapi-services\n**Total Operations:** 2\n**Documentation Quality:** 60% RAML Coverage\n\n## Core Capabilities\n\n## API Overview\n  \n  **Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n  \n  **Core Capabilities:**\n  - **Service Normalization:** Internet service recovery and normalization operations following TM Forum TMF664 standard\n  - **Network Diagnostics:** Real-time ONT (Optical Network Terminal) status monitoring and connection quality assessment\n  - **Failure Management:** Massive failure detection, tracking, and priority-based resolution management\n  - **Network Semaphore:** Visual indicators for network status including attenuation, modem health, noise levels, and signal potency\n  \n  **Integration Points:**\n  - **resource-papi-services:** Process layer for resource management orchestration (port 8091)\n  - **bot-sapi-services:** System layer integration with Bot Services backend via `/soporte1n/normalizeinternet/v1`\n  - **audits-oracle-sapi-services:** Oracle-based audit logging for compliance and traceability (port 8091)\n  \n  **Standards Compliance:**\n  - TM Forum TMF664 (Resource Function Activation & Configuration) v6.1.1\n  - RESTful API design principles\n  - OAuth 2.0 security standards\n  \n  **Performance Metrics:**\n  - Target response time: < 3 seconds for normalization operations\n  - Availability target: 99.5% monthly uptime\n  - Maximum error rate: < 2% of transactions\n  \n  **Target Consumers:**\n  - WhatsApp Business Channel\n  - Customer Support Portal\n  - Field Service Mobile Applications\n  - Technical Support Agent Desktop\n  - Automated Service Recovery Systems\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
-    "version": "v1",
-    "contact": {
-      "name": "ETB API Team",
-      "url": "https://www.etb.com.co",
-      "email": "api-support@etb.com.co"
-    },
-    "license": {
-      "name": "Proprietary - ETB"
-    },
-    "x-language": "en",
-    "x-compliance": "TM Forum Open APIs"
+    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Service Normalization:** Internet service recovery and normalization operations following TM Forum TMF664 standard\n- **Network Diagnostics:** Real-time ONT (Optical Network Terminal) status monitoring and connection quality assessment\n- **Failure Management:** Massive failure detection, tracking, and priority-based resolution management\n- **Network Semaphore:** Visual indicators for network status including attenuation, modem health, noise levels, and signal potency\n\n**Integration Points:**\n- **resource-papi-services:** Process layer for resource management orchestration (port 8091)\n- **bot-sapi-services:** System layer integration with Bot Services backend via `/soporte1n/normalizeinternet/v1`\n- **audits-oracle-sapi-services:** Oracle-based audit logging for compliance and traceability (port 8091)\n\n**Standards Compliance:**\n- TM Forum TMF664 (Resource Function Activation & Configuration) v6.1.1\n- RESTful API design principles\n- OAuth 2.0 security standards\n\n**Performance Metrics:**\n- Target response time: < 3 seconds for normalization operations\n- Availability target: 99.5% monthly uptime\n- Maximum error rate: < 2% of transactions\n\n**Target Consumers:**\n- WhatsApp Business Channel\n- Customer Support Portal\n- Field Service Mobile Applications\n- Technical Support Agent Desktop\n- Automated Service Recovery Systems\n",
+    "version": "v1"
   },
-  "servers": [
-    {
-      "url": "https://mock-resource-xapi-services.etb-apis.com",
-      "description": "Mock Server - Documentation and Testing"
-    },
-    {
-      "url": "https://resource-xapi-services-prod.us-e2.cloudhub.io",
-      "description": "Production Server - Live Environment"
-    },
-    {
-      "url": "https://resource-xapi-services-qa.us-e2.cloudhub.io",
-      "description": "QA Test Server - Validation Environment"
-    }
+  "host": "resource-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
   ],
+  "externalDocs": {
+    "url": "http://",
+    "description": "## Architecture Overview\n\nThis API serves as the experience layer for network resource management and service normalization. It orchestrates technical support operations through integration with Bot Services, providing real-time diagnostics and automated recovery capabilities for ETB's internet services.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Bot Services:** Core system for service normalization via `/api/soporte1n/v3/normalizeinternet`\n- **Resource PAPI:** Process orchestration layer for complex resource operations\n- **Oracle Database:** Enterprise audit repository for compliance and operational tracking\n\n**Data Flow Patterns:**\n- Synchronous request-response for normalization operations\n- Real-time diagnostic data retrieval\n- Event-driven massive failure notifications\n- Audit trail generation for all operations\n\n## Response Codes\n\n**API-Controlled Response Codes (in response body):**\n- `200`: Successful normalization operation\n- `REQUEST_ERROR`: Invalid request parameters or business validation failure\n- `Unauthorized`: Invalid or expired authentication token\n- `NOT_FOUND`: Service or resource not found in system\n- `INTERNAL_SERVER_ERROR`: Backend system failure or timeout\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- Business-specific error codes in the response body\n- Detailed error messages for troubleshooting\n- Origin tracking for multi-system error propagation\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Normalization operations: < 3 seconds\n- Diagnostic retrieval: < 1 second\n- Massive failure queries: < 2 seconds\n- Audit logging: Asynchronous (non-blocking)\n",
+    "x-amf-title": "Technical Architecture"
+  },
   "paths": {
     "/resourceFunction": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages resource functions for internet service normalization and recovery. This resource provides automated technical support capabilities to restore service functionality, diagnose network issues, and track massive failures affecting multiple customers.\n\n**Data Integration:**\n- **resource-papi-services:** Process layer orchestration for resource operations\n- **bot-sapi-services:** System layer integration with Bot Services for normalization execution\n- **Bot Services:** External backend system performing actual service recovery via `/api/soporte1n/v3/normalizeinternet`\n\n**Business Intelligence Features:**\n- **Real-time Diagnostics:** ONT status, connection quality, and speed fault detection\n- **Massive Failure Correlation:** Automatic detection and tracking of area-wide service disruptions\n- **Network Health Indicators:** Visual semaphore system for quick status assessment\n- **Priority-based Resolution:** Automated prioritization based on failure impact and customer segment\n",
       "post": {
-        "operationId": "post_resourceFunction",
-        "summary": "Create Resourcefunction",
-        "description": "The `/resourceFunction` POST operation within ETB's `resource-xapi-services` allows provisioning and management of telecommunications resources.  This RESTful API enables dynamic allocation of bandwidth, IP addresses, and virtual circuits for various ETB services.  Business use cases include:  on-demand provisioning of broadband for new subscribers, automated scaling of network resources based on real-time demand (e.g., during peak usage hours), and integration with third-party billing systems for accurate resource consumption tracking.  The API integrates with ETB's Network Management System (NMS) and OSS/BSS platforms, facilitating automated workflows and reducing manual intervention.  Specific examples include provisioning MPLS circuits for enterprise customers or dynamically allocating IP addresses for IoT devices connected to ETB's network.  Error responses provide detailed information for troubleshooting and remediation.\n",
-        "tags": [
-          "Resource Xapi Services"
+        "operationId": "Normalize Internet Service",
+        "description": "## Operation Summary\n\nExecutes a normalization operation to restore internet service functionality. This operation performs automated technical recovery procedures, provides real-time diagnostics, and returns comprehensive network status information including massive failure indicators when applicable.\n\n## Use Cases\n\n- **WhatsApp Channel:** Automated service recovery initiated through chatbot interaction\n- **Portal Channel:** Customer self-service normalization from web portal\n- **Mobile Channel:** Field technician service normalization during on-site visits\n- **Agent Channel:** Support staff executing recovery procedures for escalated cases\n- **Automated Recovery:** System-triggered normalization for proactive service restoration\n\n## Data Sources\n\n- Primary: resource-papi-services `/v1/resourceFunction` endpoint\n- Secondary: bot-sapi-services `/soporte1n/normalizeinternet/v1` endpoint\n- Backend: Bot Services normalization engine `/api/soporte1n/v3/normalizeinternet`\n- Audit: audits-oracle-sapi-services for operation logging\n\n## Performance Characteristics\n\n- Response time: < 3 seconds for normalization execution\n- Success rate: > 85% for automated recovery\n- Rate limits: 10 normalizations per service per hour\n- Timeout: 30 seconds for backend operations\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "**Business Purpose:** Identifies the channel or system originating the normalization request for analytics and routing optimization\n\n**Valid Values:** WHATSAPP, PORTAL, MOBILE_APP, AGENT_DESKTOP, IVR, AUTOMATED_SYSTEM\n\n**Usage Examples:**\n- WHATSAPP: Service recovery initiated via WhatsApp chatbot\n- PORTAL: Customer self-service from web portal\n- MOBILE_APP: Field technician using mobile application\n- AUTOMATED_SYSTEM: Proactive recovery triggered by monitoring\n\n**Channel Variations:** Required for all channels to ensure proper audit trail and success metrics tracking\n",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "description": "## Request Body Structure\n\n**Business Segment (businessSegment):**\n- **Purpose:** Customer segment classification for priority routing\n- **Valid Values:** RESIDENTIAL, CORPORATE, SMB, GOVERNMENT, VIP\n- **Business Logic:** VIP and GOVERNMENT segments receive priority processing\n\n**Service Account (serviceAccount):**\n- **Purpose:** Unique account identifier for service association\n- **Format:** Alphanumeric, 10-15 characters\n- **Validation:** Must exist in billing system\n- **Example:** ACC1234567890\n\n**Phone (phone):**\n- **Purpose:** Service line number requiring normalization\n- **Format:** 10 digits (Colombian mobile/fixed format)\n- **Pattern:** ^[0-9]{10}$\n- **Example:** 3001234567\n\n**Resource ID (resourceID):**\n- **Purpose:** Unique identifier of the network resource (ONT/Modem)\n- **Format:** Equipment serial number or MAC address\n- **Validation:** Must be registered in inventory\n- **Example:** ONT-ABC123456 or AA:BB:CC:DD:EE:FF\n\n**Resource Type (resourceType):**\n- **Purpose:** Classification of network equipment\n- **Valid Values:** ONT, MODEM, ROUTER, SWITCH, GATEWAY\n- **Business Logic:** Determines specific normalization procedures\n\n**Function Type (functionType):**\n- **Purpose:** Category of normalization function to execute\n- **Valid Values:** RESET, RESTART, RECONFIGURE, DIAGNOSE, OPTIMIZE\n- **Business Logic:** RESET performs full factory reset, RESTART does soft reboot\n\n**Operation (operation):**\n- **Purpose:** Specific technical operation within function type\n- **Valid Values:** FULL_RESET, SOFT_RESET, PORT_RESET, SYNC_RESET, CACHE_CLEAR\n- **Dependencies:** Must be compatible with selected functionType\n- **Example:** FULL_RESET for functionType=RESET\n",
+              "example": {
+                "businessSegment": "",
+                "serviceAccount": "",
+                "phone": "",
+                "resourceID": "",
+                "resourceType": "",
+                "functionType": "",
+                "operation": ""
+              },
+              "type": "object",
+              "properties": {
+                "functionType": {
+                  "example": "",
+                  "type": "string"
+                },
+                "businessSegment": {
+                  "example": "",
+                  "type": "string"
+                },
+                "operation": {
+                  "example": "",
+                  "type": "string"
+                },
+                "phone": {
+                  "example": "",
+                  "type": "string"
+                },
+                "serviceAccount": {
+                  "example": "",
+                  "type": "string"
+                },
+                "resourceType": {
+                  "example": "",
+                  "type": "string"
+                },
+                "resourceID": {
+                  "example": "",
+                  "type": "string"
+                }
+              }
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
+          "200": {
+            "description": "**API-Controlled Code:** `200` in codeResponse field\n\n**Response Structure:**\n- **codeResponse:** API success code (always \"200\" for successful operations)\n- **messageResponse:** Human-readable success message or operation details\n- **diagnostic:** Real-time network diagnostic information\n- **massiveFailure:** Area-wide failure information if applicable\n- **semaphore:** Visual network health indicators\n\n**Data Enrichment:**\n- Automatic timestamp formatting in multiple formats for UI flexibility\n- Priority calculation based on failure impact and customer segment\n- Expected resolution time estimation using ML models\n- Network health color coding (Verde/Green, Amarillo/Yellow, Rojo/Red)\n\n**Business Context:**\n- Successful normalization doesn't guarantee immediate service restoration\n- Massive failure information supersedes individual diagnostics\n- Semaphore indicators provide quick visual status for support agents\n- Multiple date/time formats support various UI requirements\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "description": "## Response Fields Documentation\n\n**Diagnostic Object:**\n- **ontOn (boolean):** ONT power status - true indicates device is powered\n- **poorConnection (boolean):** Connection quality indicator - true indicates degraded service\n- **speedFault (boolean):** Speed test failure indicator - true indicates bandwidth issues\n- **Data Source:** Real-time polling from network monitoring system\n\n**Massive Failure Object:**\n- **startDate/endDate:** Failure window with multiple format options for UI flexibility\n- **expectedSolutionTime (integer):** Minutes until expected resolution\n- **priority (integer):** 1-5 scale (1=highest priority)\n- **product (string):** Affected service type (INTERNET, TV, VOICE)\n- **numPqr (string):** Master ticket number for failure tracking\n- **Business Logic:** Only populated when service is part of identified massive failure\n\n**Semaphore Object:**\n- **attenuation (string):** Signal loss indicator (Verde/Amarillo/Rojo)\n- **modem (string):** Modem health status\n- **noise (string):** Line noise level indicator\n- **potency (string):** Signal strength indicator\n- **Interpretation:** Verde=Good, Amarillo=Warning, Rojo=Critical\n",
+              "example": {
+                "codeResponse": "200",
+                "messageResponse": "",
+                "diagnostic": {
+                  "ontOn": true,
+                  "poorConnection": false,
+                  "speedFault": false
+                },
+                "massiveFailure": {
+                  "endDate": {
+                    "date": "2025-08-19T23:52:57.427+00:00",
+                    "format1": "19/08",
+                    "format2": "19/08/2025",
+                    "format3": "19/08/2025 23:52:57",
+                    "format4": "19/08/2025 11:52:57 PM",
+                    "day": {
+                      "format1": "19",
+                      "format2": "Mar.",
+                      "format3": "Martes"
                     },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
                     },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/ResourcefunctionModel"
+                    "hour": {
+                      "format1": "23:52:57",
+                      "format2": "11:52:57 PM",
+                      "format3": "23",
+                      "format4": "11 PM",
+                      "format5": "52",
+                      "format6": "57"
+                    }
+                  },
+                  "expectedSolutionTime": 6,
+                  "priority": 4,
+                  "product": "INTERNET",
+                  "numPqr": "MDM-PQR-4163009",
+                  "startDate": {
+                    "date": "2025-08-19T17:52:57.427+00:00",
+                    "format1": "19/08",
+                    "format2": "19/08/2025",
+                    "format3": "19/08/2025 17:52:57",
+                    "format4": "19/08/2025 05:52:57 PM",
+                    "day": {
+                      "format1": "19",
+                      "format2": "Mar.",
+                      "format3": "Martes"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "17:52:57",
+                      "format2": "05:52:57 PM",
+                      "format3": "17",
+                      "format4": "05 PM",
+                      "format5": "52",
+                      "format6": "57"
                     }
                   }
                 },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
+                "semaphore": {
+                  "attenuation": "",
+                  "modem": "Verde",
+                  "noise": "",
+                  "potency": "Verde"
+                }
+              },
+              "type": "object",
+              "required": [
+                "semaphore",
+                "diagnostic",
+                "massiveFailure"
+              ],
+              "properties": {
+                "semaphore": {
+                  "type": "object",
+                  "properties": {
+                    "attenuation": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "modem": {
+                      "example": "Verde",
+                      "type": "string"
+                    },
+                    "noise": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "potency": {
+                      "example": "Verde",
+                      "type": "string"
+                    }
                   }
+                },
+                "diagnostic": {
+                  "type": "object",
+                  "properties": {
+                    "ontOn": {
+                      "example": true,
+                      "type": "boolean"
+                    },
+                    "poorConnection": {
+                      "example": false,
+                      "type": "boolean"
+                    },
+                    "speedFault": {
+                      "example": false,
+                      "type": "boolean"
+                    }
+                  }
+                },
+                "codeResponse": {
+                  "example": "200",
+                  "type": "string"
+                },
+                "massiveFailure": {
+                  "type": "object",
+                  "required": [
+                    "endDate",
+                    "startDate"
+                  ],
+                  "properties": {
+                    "endDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-08-19T23:52:57.427+00:00",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "19/08",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "19/08/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "19/08/2025 23:52:57",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "19/08/2025 11:52:57 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "19",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Mar.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Martes",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "08",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Ago.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Agosto",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "23:52:57",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "11:52:57 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "23",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "11 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "52",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "57",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "expectedSolutionTime": {
+                      "example": 6,
+                      "type": "integer"
+                    },
+                    "priority": {
+                      "example": 4,
+                      "type": "integer"
+                    },
+                    "product": {
+                      "example": "INTERNET",
+                      "type": "string"
+                    },
+                    "numPqr": {
+                      "example": "MDM-PQR-4163009",
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-08-19T17:52:57.427+00:00",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "19/08",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "19/08/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "19/08/2025 17:52:57",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "19/08/2025 05:52:57 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "19",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Mar.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Martes",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "08",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Ago.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Agosto",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "17:52:57",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "05:52:57 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "17",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "05 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "52",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "57",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "messageResponse": {
+                  "example": "",
+                  "type": "string"
                 }
               }
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**API Error Code:** `REQUEST_ERROR`\n\n**Common Issues:**\n- Missing required fields (all request fields are technically optional but business-required)\n- Invalid phone number format (must be 10 digits)\n- Service account not found in billing system\n- Invalid resource type or function type combination\n- Resource ID not registered in inventory\n\n**System Context:** Validation performed at XAPI layer before PAPI invocation\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**API Error Code:** `Unauthorized`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for normalization operations\n- Client not authorized for technical support operations\n\n**System Context:** OAuth validation against ETB identity provider\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Service account does not exist\n- Phone number not associated with account\n- Resource ID not found in network inventory\n- Service in terminated or suspended state\n\n**System Context:** Resource validation at Bot Services integration point\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- Bot Services timeout (> 30 seconds)\n- Resource PAPI services unavailable\n- Network infrastructure communication failure\n- Database connection timeout\n- Unexpected response format from backend\n\n**System Context:** Error logged with correlation ID, automatic incident creation for critical failures\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/setWifiPassword": {
-      "post": {
-        "operationId": "post_setWifiPassword",
-        "summary": "Create Setwifipassword",
-        "description": "The `/setWifiPassword` POST operation within ETB's resource-xapi-services allows authorized users or systems to remotely configure the Wi-Fi password for ETB-provided customer premises equipment (CPE), such as routers or gateways.  This is crucial for:\n\n* **Customer self-service:**  Empowering customers to change their Wi-Fi password through ETB's online portal or mobile app, enhancing security and control.\n* **Technician provisioning:** Enabling ETB field technicians to remotely configure Wi-Fi passwords during installations or troubleshooting, streamlining service delivery and reducing truck rolls.\n* **Automated provisioning:** Integrating with ETB's back-office systems for automated password assignment during new service activations, ensuring consistent and secure initial configurations.\n\nThe operation accepts the new password (encrypted for security) and potentially the CPE's identification details.  Successful execution returns a confirmation; failures provide error codes for troubleshooting.  This API integrates with ETB's customer relationship management (CRM) and network management systems.\n",
-        "tags": [
-          "Resource Xapi Services"
-        ],
-        "parameters": [
-          {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/SetwifipasswordModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        },
-        "security": [
-          {
-            "etb_oauth2": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     }
   },
-  "components": {
-    "schemas": {
-      "ErrorResponse": {
-        "type": "object",
-        "required": [
-          "status",
-          "code",
-          "message"
-        ],
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "HTTP status code",
-            "example": 400
-          },
-          "code": {
-            "type": "string",
-            "description": "Business-specific error code",
-            "example": "VALIDATION_ERROR"
-          },
+  "definitions": {
+    "type": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
           "message": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "description": "Detailed error message",
-                "example": "Invalid request parameters"
-              }
-            }
+            "message": "Required query parameter document not specified"
           },
-          "cause": {
-            "type": "array",
-            "description": "Error cause information",
-            "items": {
-              "type": "object",
-              "properties": {
-                "origin": {
-                  "type": "string",
-                  "example": "XAPI-Services"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Validation failed"
-                }
-              }
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
             }
-          }
-        }
-      }
-    },
-    "parameters": {
-      "CorrelationId": {
-        "name": "X-CORRELATION-ID",
-        "in": "header",
-        "required": false,
-        "description": "Correlation ID for transaction traceability",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
-      "SystemId": {
-        "name": "systemId",
-        "in": "header",
-        "required": true,
-        "description": "Source system identifier for audit purposes",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "MIGRACION",
-            "TRANSACCCIONES_OM",
-            "MAYORISTAS",
-            "OTINICIATIVAS"
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
           ]
         }
       },
-      "ProcessName": {
-        "name": "processName",
-        "in": "header",
-        "required": false,
-        "description": "Process name for internal audit",
-        "schema": {
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
           "type": "string"
-        }
-      }
-    },
-    "responses": {
-      "BadRequest": {
-        "description": "Invalid request - Missing or incorrect parameters",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 400,
-              "code": "REQUEST_ERROR",
-              "message": {
-                "message": "Required query parameters not specified"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "problem-management-xapi-services",
+                "type": "string"
               },
-              "cause": [
-                {
-                  "origin": "XAPI-Services",
-                  "message": "Validation failed"
-                }
-              ]
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized - Invalid or expired token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 401,
-              "code": "Unauthorized",
               "message": {
-                "message": "Invalid or expired access token"
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
               }
-            }
-          }
-        }
-      },
-      "Forbidden": {
-        "description": "Access forbidden - Insufficient permissions",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 403,
-              "code": "FORBIDDEN",
-              "message": {
-                "message": "You do not have permissions to access this resource"
-              }
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 404,
-              "code": "NOT_FOUND",
-              "message": {
-                "message": "The requested resource does not exist"
-              }
-            }
-          }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 500,
-              "code": "INTERNAL_SERVER_ERROR",
-              "message": {
-                "message": "Internal error processing the request"
-              }
-            }
-          }
-        }
-      }
-    },
-    "securitySchemes": {
-      "etb_oauth2": {
-        "type": "oauth2",
-        "description": "ETB OAuth 2.0 Authentication",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
-            "scopes": {
-              "read": "Data read access permissions",
-              "write": "Write and modification permissions"
             }
           }
         }
       }
     }
   },
-  "security": [
-    {
-      "etb_oauth2": []
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
     }
-  ],
-  "tags": [
-    {
-      "name": "Resource Xapi Services",
-      "description": "Main operations for Resource Xapi Services"
-    }
-  ]
+  }
 }

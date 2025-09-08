@@ -1,699 +1,1655 @@
 {
-  "openapi": "3.0.3",
+  "swagger": "2.0",
   "info": {
     "title": "Problem Management Experience API Services",
-    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** problem-management-xapi-services\n**Total Operations:** 4\n**Documentation Quality:** 90% RAML Coverage\n\n## Core Capabilities\n\n# Problem Management Experience API Services\n  \n  ## Architecture Context\n  **Layer**: XAPI (Experience Layer) - ETB's API-led connectivity architecture\n  **Role**: Provides comprehensive problem management and service resolution experience for customer support and operational teams across multiple channels\n  **Integration Pattern**: Orchestrates Problem Management PAPI and Bot Services to deliver optimized problem resolution experiences\n  \n  ## Core Capabilities\n  - **Service Problem Management**: Complete lifecycle management of service problems and failures following TMF656 standards\n  - **Massive Failure Consultation**: Real-time consultation of massive service failures affecting multiple customers\n  - **Service Inventory Management**: Service resource information and inventory queries for problem resolution\n  - **Service Order Management**: Creation and tracking of service restoration orders and reconnection workflows\n  - **Multi-Channel Support**: Unified experience across WhatsApp Bot Services, Web Portal, Mobile App, and Agent channels\n  \n  ## Integration Points\n  - **Problem Management PAPI Services**: Core problem management orchestration (`mule-worker-internal-problem-management-papi-services-qa.us-e2.cloudhub.io:8091`)\n    - `/v1/serviceProblem`: Service problem lifecycle management\n    - `/v1/problemGroup`: Massive failure consultation and management\n    - `/v1/service`: Service resource information and inventory queries\n    - `/v1/serviceOrder`: Service restoration order creation and tracking\n  - **Bot Services Integration**: WhatsApp automation and customer communication for problem notifications\n  - **Audit System**: Oracle SAPI Services for transaction logging and regulatory compliance\n    - `audits-oracle-sapi-services` for comprehensive problem management audit trails\n  - **Data Sources**: Oracle database for customer and service data, service inventory systems\n  - **Security**: OAuth 2.0 with ETB authentication standards and JKS keystore configuration\n  \n  ## Standards Compliance\n  - **TM Forum TMF656**: Service Problem Management API v5.0 for complete problem lifecycle management\n  - **TMF656 5.1.1**: Service Problem Query and Retrieval standards for multi-criteria problem searches\n  - **TMF656 5.1.2**: Problem Group Management standards for massive failure coordination and communication\n  - **TMF656 5.1.3**: Service Order Integration standards for problem resolution workflow automation\n  - **RESTful Principles**: HTTP methods, status codes, and resource-based URLs\n  - **ETB Security Standards**: OAuth 2.0, JWT tokens, and encrypted communications via JKS keystore\n  - **Colombian Telecommunications Standards**: Regulatory compliance for service problem management and customer communication\n  \n  ## Performance Metrics\n  - **Response Time Target**: < 1500ms for GET operations, < 2500ms for POST operations, < 2000ms for PATCH operations\n  - **Availability**: 99.5% uptime requirement with 24/7 monitoring via Anypoint Platform\n  - **Throughput**: Up to 500 requests per minute per worker with rate limiting policies for problem management operations\n  - **Error Rate**: < 1% for business logic errors, < 0.5% for system integration failures\n  - **Audit Coverage**: 100% of problem management transactions logged for regulatory compliance\n  - **PAPI Services Timeout**: Standard ETB timeout configuration for backend integration reliability\n  \n  ## Target Consumers\n  - **WhatsApp Bot Services**: Automated customer notifications for service problems and massive failures\n  - **ETB Web Portal**: Customer self-service for problem reporting and service status queries\n  - **Mobile Applications**: iOS and Android apps for real-time problem status and service restoration tracking\n  - **Call Center Systems**: Agent-assisted customer support with complete problem management context\n  - **Network Operations Center (NOC)**: Operational teams managing service problems and massive failures\n  - **CRM Integration**: Automated business systems integration for customer lifecycle and problem resolution\n  \n  ## Technical Documentation\n  \n  ### Architecture Overview\n  This XAPI service acts as the primary orchestrator for problem management within ETB's telecommunications ecosystem. It abstracts the complexity of Problem Management PAPI Services and Bot Services backend systems while providing a consistent, channel-optimized experience for service problem resolution following TMF656 Service Problem Management standards.\n  \n  ### Data Integration\n  - **Problem Management PAPI Services**: Core business logic for problem management, service problem lifecycle, and resolution workflows\n    - Integration endpoints: `/v1/serviceProblem`, `/v1/problemGroup`, `/v1/service`, `/v1/serviceOrder`\n    - Authentication: OAuth 2.0 with client_id/client_secret configuration\n    - Timeout configuration: Standard ETB integration patterns for reliable backend processing\n  - **Oracle Database**: Primary service data repository, customer information, and problem history storage\n  - **Service Inventory Systems**: Real-time service resource information and network element data\n  - **Audit System**: `audits-oracle-sapi-services` for comprehensive regulatory compliance logging\n  - **Bot Services External System**: Customer communication and notification automation for problem updates\n  \n  ### Response Codes (API-Controlled)\n  All responses include business-specific codes in the response body following TMF656 standards:\n  - **200**: \"200\" - Operation completed successfully \n    - Problem query success: \"codeResponse\": \"200\" with comprehensive problem data\n    - Service order success: Problem resolution workflow initiated successfully\n  - **400**: \"REQUEST_ERROR\" - Invalid request parameters, missing required fields, or business rule validation failed\n  - **401**: \"Unauthorized\" - Authentication failed, invalid token, or insufficient scope permissions\n  - **404**: \"NOT_FOUND\" - Requested problem resource not found or service not registered in inventory\n  - **500**: \"INTERNAL_SERVER_ERROR\" - Problem Management PAPI connectivity failure, Oracle database errors, or audit system unavailability\n  \n  ### Error Handling\n  Standardized error structure includes:\n  - **Business Error Codes**: API-specific codes for client-side handling following TMF656 standards\n  - **Detailed Messages**: Human-readable error descriptions in Spanish for customer-facing applications\n  - **System Context**: Backend system identification (Problem Management PAPI, Oracle, Bot Services) for troubleshooting\n  - **Cause Tracking**: Full error chain from source system to client with origin attribution\n  \n  ### Performance Standards\n  - **Problem Queries**: < 1500ms average response time with pagination support for large problem datasets\n  - **Problem Creation**: < 2500ms for complete workflow including PAPI integration and audit logging\n  - **Massive Failure Queries**: < 1500ms for real-time failure status with Bot Services notification preparation\n  - **Service Orders**: < 2500ms for service restoration order creation with inventory validation\n  - **Audit Logging**: Real-time audit trail generation with 100% transaction coverage via audits-oracle-sapi-services\n  - **System Dependencies**: Problem Management PAPI availability directly impacts all operation performance\n  - **Backend Integration**: Oracle and service inventory response time optimization for data consistency\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
-    "version": "v1",
-    "contact": {
-      "name": "ETB API Team",
-      "url": "https://www.etb.com.co",
-      "email": "api-support@etb.com.co"
-    },
-    "license": {
-      "name": "Proprietary - ETB"
-    },
-    "x-language": "en",
-    "x-compliance": "TM Forum Open APIs"
+    "description": "# Problem Management Experience API Services\n\n## Architecture Context\n**Layer**: XAPI (Experience Layer) - ETB's API-led connectivity architecture\n**Role**: Provides comprehensive problem management and service resolution experience for customer support and operational teams across multiple channels\n**Integration Pattern**: Orchestrates Problem Management PAPI and Bot Services to deliver optimized problem resolution experiences\n\n## Core Capabilities\n- **Service Problem Management**: Complete lifecycle management of service problems and failures following TMF656 standards\n- **Massive Failure Consultation**: Real-time consultation of massive service failures affecting multiple customers\n- **Service Inventory Management**: Service resource information and inventory queries for problem resolution\n- **Service Order Management**: Creation and tracking of service restoration orders and reconnection workflows\n- **Multi-Channel Support**: Unified experience across WhatsApp Bot Services, Web Portal, Mobile App, and Agent channels\n\n## Integration Points\n- **Problem Management PAPI Services**: Core problem management orchestration (`mule-worker-internal-problem-management-papi-services-qa.us-e2.cloudhub.io:8091`)\n  - `/v1/serviceProblem`: Service problem lifecycle management\n  - `/v1/problemGroup`: Massive failure consultation and management\n  - `/v1/service`: Service resource information and inventory queries\n  - `/v1/serviceOrder`: Service restoration order creation and tracking\n- **Bot Services Integration**: WhatsApp automation and customer communication for problem notifications\n- **Audit System**: Oracle SAPI Services for transaction logging and regulatory compliance\n  - `audits-oracle-sapi-services` for comprehensive problem management audit trails\n- **Data Sources**: Oracle database for customer and service data, service inventory systems\n- **Security**: OAuth 2.0 with ETB authentication standards and JKS keystore configuration\n\n## Standards Compliance\n- **TM Forum TMF656**: Service Problem Management API v5.0 for complete problem lifecycle management\n- **TMF656 5.1.1**: Service Problem Query and Retrieval standards for multi-criteria problem searches\n- **TMF656 5.1.2**: Problem Group Management standards for massive failure coordination and communication\n- **TMF656 5.1.3**: Service Order Integration standards for problem resolution workflow automation\n- **RESTful Principles**: HTTP methods, status codes, and resource-based URLs\n- **ETB Security Standards**: OAuth 2.0, JWT tokens, and encrypted communications via JKS keystore\n- **Colombian Telecommunications Standards**: Regulatory compliance for service problem management and customer communication\n\n## Performance Metrics\n- **Response Time Target**: < 1500ms for GET operations, < 2500ms for POST operations, < 2000ms for PATCH operations\n- **Availability**: 99.5% uptime requirement with 24/7 monitoring via Anypoint Platform\n- **Throughput**: Up to 500 requests per minute per worker with rate limiting policies for problem management operations\n- **Error Rate**: < 1% for business logic errors, < 0.5% for system integration failures\n- **Audit Coverage**: 100% of problem management transactions logged for regulatory compliance\n- **PAPI Services Timeout**: Standard ETB timeout configuration for backend integration reliability\n\n## Target Consumers\n- **WhatsApp Bot Services**: Automated customer notifications for service problems and massive failures\n- **ETB Web Portal**: Customer self-service for problem reporting and service status queries\n- **Mobile Applications**: iOS and Android apps for real-time problem status and service restoration tracking\n- **Call Center Systems**: Agent-assisted customer support with complete problem management context\n- **Network Operations Center (NOC)**: Operational teams managing service problems and massive failures\n- **CRM Integration**: Automated business systems integration for customer lifecycle and problem resolution\n\n## Technical Documentation\n\n### Architecture Overview\nThis XAPI service acts as the primary orchestrator for problem management within ETB's telecommunications ecosystem. It abstracts the complexity of Problem Management PAPI Services and Bot Services backend systems while providing a consistent, channel-optimized experience for service problem resolution following TMF656 Service Problem Management standards.\n\n### Data Integration\n- **Problem Management PAPI Services**: Core business logic for problem management, service problem lifecycle, and resolution workflows\n  - Integration endpoints: `/v1/serviceProblem`, `/v1/problemGroup`, `/v1/service`, `/v1/serviceOrder`\n  - Authentication: OAuth 2.0 with client_id/client_secret configuration\n  - Timeout configuration: Standard ETB integration patterns for reliable backend processing\n- **Oracle Database**: Primary service data repository, customer information, and problem history storage\n- **Service Inventory Systems**: Real-time service resource information and network element data\n- **Audit System**: `audits-oracle-sapi-services` for comprehensive regulatory compliance logging\n- **Bot Services External System**: Customer communication and notification automation for problem updates\n\n### Response Codes (API-Controlled)\nAll responses include business-specific codes in the response body following TMF656 standards:\n- **200**: \"200\" - Operation completed successfully \n  - Problem query success: \"codeResponse\": \"200\" with comprehensive problem data\n  - Service order success: Problem resolution workflow initiated successfully\n- **400**: \"REQUEST_ERROR\" - Invalid request parameters, missing required fields, or business rule validation failed\n- **401**: \"Unauthorized\" - Authentication failed, invalid token, or insufficient scope permissions\n- **404**: \"NOT_FOUND\" - Requested problem resource not found or service not registered in inventory\n- **500**: \"INTERNAL_SERVER_ERROR\" - Problem Management PAPI connectivity failure, Oracle database errors, or audit system unavailability\n\n### Error Handling\nStandardized error structure includes:\n- **Business Error Codes**: API-specific codes for client-side handling following TMF656 standards\n- **Detailed Messages**: Human-readable error descriptions in Spanish for customer-facing applications\n- **System Context**: Backend system identification (Problem Management PAPI, Oracle, Bot Services) for troubleshooting\n- **Cause Tracking**: Full error chain from source system to client with origin attribution\n\n### Performance Standards\n- **Problem Queries**: < 1500ms average response time with pagination support for large problem datasets\n- **Problem Creation**: < 2500ms for complete workflow including PAPI integration and audit logging\n- **Massive Failure Queries**: < 1500ms for real-time failure status with Bot Services notification preparation\n- **Service Orders**: < 2500ms for service restoration order creation with inventory validation\n- **Audit Logging**: Real-time audit trail generation with 100% transaction coverage via audits-oracle-sapi-services\n- **System Dependencies**: Problem Management PAPI availability directly impacts all operation performance\n- **Backend Integration**: Oracle and service inventory response time optimization for data consistency\n",
+    "version": "v1"
   },
-  "servers": [
-    {
-      "url": "https://mock-problem-management-xapi-services.etb-apis.com",
-      "description": "Mock Server - Documentation and Testing"
-    },
-    {
-      "url": "https://problem-management-xapi-services-prod.us-e2.cloudhub.io",
-      "description": "Production Server - Live Environment"
-    },
-    {
-      "url": "https://problem-management-xapi-services-qa.us-e2.cloudhub.io",
-      "description": "QA Test Server - Validation Environment"
-    }
+  "host": "problem-management-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
   ],
   "paths": {
     "/serviceProblem": {
+      "x-amf-description": "## Service Problem Management Resource\n\n**Business Purpose**: Comprehensive management of service problems following TMF656 Service Problem Management standards, providing complete problem lifecycle management for ETB telecommunications services.\n\n**Data Integration**: \n- **Oracle Database**: Primary customer profile and service data with Colombian document validation\n- **Problem Management PAPI Services**: Core problem management business logic via `/v1/serviceProblem` endpoint\n- **Service Inventory Systems**: Real-time service status and resource information for problem correlation\n\n**Business Intelligence Features**: \n- Service problem trend analysis and pattern recognition for proactive problem management\n- Customer impact assessment and service quality measurement with regulatory compliance tracking\n- Problem resolution workflow automation and service restoration coordination\n",
       "get": {
-        "operationId": "get_serviceProblem",
-        "summary": "Retrieve Serviceproblem",
-        "description": "The GET /serviceProblem operation retrieves detailed information about a specific service problem within ETB's telecommunications network, accessed via the problem-management-xapi-services API.  This is crucial for ETB's network operations center (NOC) to monitor and resolve service disruptions affecting customers.  Business use cases include:\n\n* **Real-time monitoring:** NOC engineers use this operation to track the status, impact, and resolution progress of active service outages, enabling proactive intervention.\n* **Root cause analysis:**  Detailed problem data facilitates identifying recurring issues and implementing preventative measures, improving overall network reliability.\n* **Service level agreement (SLA) management:**  The operation provides the data necessary to track performance against SLAs and ensure timely resolution of customer impacting incidents.\n* **Integration with external systems:**  This API integrates with ETB's customer relationship management (CRM) system, automatically updating customer tickets with problem status updates, improving communication and transparency.  It also feeds into reporting dashboards for management oversight.  The response includes details such as impact, location, affected services, and assigned technicians.\n",
-        "tags": [
-          "Problem Management Xapi Services"
+        "operationId": "Get Service Problems",
+        "description": "**Operation Summary**: Retrieves comprehensive service problem information based on customer identification for problem resolution and service management following TMF656 Service Problem Management standards.\n\n**Use Cases**:\n- **WhatsApp Bot Services**: Automated customer problem status queries and resolution updates\n- **Web Portal**: Customer self-service problem tracking and service status information\n- **Mobile App**: Real-time problem status updates and resolution notifications with offline capability\n- **Agent Desktop**: Call center agents accessing complete customer problem history for service support\n- **Network Operations Center**: Operational teams monitoring service problems and resolution workflows\n\n**Data Sources**: \n- **Oracle Customer Database**: Validated customer profiles and service associations with Colombian document standards\n- **Problem Management PAPI**: Real-time service problem data and resolution status via PAPI integration\n- **Service Inventory**: Service resource information and network element correlation for problem context\n\n**Performance Characteristics**: \n- **Response Time**: < 1500ms for comprehensive problem queries including PAPI integration and data enrichment\n- **Caching Strategy**: No caching for real-time problem data to ensure service status accuracy\n- **Rate Limits**: 100 requests per minute per authenticated client with OAuth 2.0 validation\n- **Validation**: Real-time customer document verification against Oracle database with service association check\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "documentType",
+            "description": "**Business Purpose**: Colombian national identification document type for customer verification and service problem correlation\n\n**Validation Rules**: \n- Format: Alphanumeric string from predefined Colombian document types\n- Length: 2-10 characters following national identification standards\n- Pattern: Must match Colombian national document type regulations\n\n**Valid Values**: \n- **CC**: Cédula de Ciudadanía (National Identity Card) for Colombian citizens\n- **CE**: Cédula de Extranjería (Foreign Identity Card) for foreign residents\n- **PASAPORTE**: International passport identification for temporary visitors\n- **NIT**: Número de Identificación Tributaria (Tax Identification Number) for legal entities\n- **RUT**: Registro Único Tributario (Unified Tax Registry) for business entities\n- **TI**: Tarjeta de Identidad (Identity Card) for minors under 18 years\n\n**Usage Examples**: \n- Individual customer: \"CC\" for Colombian citizens accessing personal service problem information\n- Business customer: \"NIT\" for corporate entities managing enterprise service problems\n\n**Channel Variations**: All channels require document type validation for Colombian regulatory compliance and service association\n",
+            "required": true,
+            "in": "query",
+            "enum": [
+              "CC",
+              "CE",
+              "PASAPORTE",
+              "NIT",
+              "RUT",
+              "TI"
+            ],
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "document",
+            "description": "**Business Purpose**: Customer identification document number for precise service problem lookup and customer service correlation\n\n**Validation Rules**: \n- Format: Numeric string only for Colombian identification standards\n- Length: 5-30 characters depending on document type (CC: 6-10, NIT: 9-15, etc.)\n- Pattern: ^[0-9]*$ for numeric validation following Colombian national standards\n\n**Usage Examples**: \n- Colombian citizen: \"12314235\" for Cédula de Ciudadanía lookup with service problem correlation\n- Business entity: \"900123456-1\" for NIT identification with enterprise service problem management\n\n**Channel Variations**: \n- **WhatsApp**: Document number validation before Bot Services problem status updates\n- **Portal**: Integration with customer authentication for problem history access\n- **Agent**: Agent-assisted verification with complete customer service problem context\n\n**Business Context**: Document number must exist in Oracle customer database with active service associations for problem management access\n",
+            "required": true,
+            "in": "query",
+            "type": "string",
+            "pattern": "^[0-9]*$",
+            "maxLength": 30
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ServiceproblemModel"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "status": "success",
-                  "data": {
-                    "id": "ETB001234",
-                    "name": "Ejemplo ETB",
-                    "created": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "**Success Response - Service Problems Retrieved Successfully**\n\n**API-Controlled Code**: \"200\" or similar (in response field structure)\n\n**Response Structure**: \n- **Service Problems Array**: Complete service problem information following TMF656 standards\n- **Problem Metadata**: Problem categorization, severity, and resolution status information\n- **Service Context**: Service resource information and customer service association data\n\n**Data Enrichment**: \n- **System-Generated Fields**: Automatic problem categorization and severity assessment from PAPI services\n- **Cross-Reference Data**: Customer profile enrichment from Oracle master data with service correlation\n- **Problem Context**: Service problem history and resolution timeline for comprehensive customer service\n- **Service Association**: Active service correlation with network resource identification\n\n**Business Context**: \n- **Customer Profile**: Complete customer identification with Colombian document validation\n- **Service Problems**: Comprehensive problem information with TMF656 standard compliance\n- **Resolution Status**: Real-time problem resolution workflow status and estimated resolution time\n- **Service Impact**: Service availability and customer impact assessment for problem prioritization\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN, document, documentType)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for service problem updates or service orders\n- Business rule validation failures for problem management operations\n\n**System Context**: Validation occurs at the XAPI layer before Problem Management PAPI backend system calls\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested problem management operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Service problem ID does not exist in problem management system\n- Customer document number not found in Oracle customer database\n- Service account or resource not found in service inventory systems\n- Invalid endpoint path or resource identifier for problem management operations\n\n**System Context**: Resource lookup performed across Oracle customer database, service inventory, and Problem Management PAPI services\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Problem Management PAPI services connectivity failure or timeout\n- Oracle database connection timeout or unavailability\n- Service inventory system unavailability for resource queries\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
         ]
       }
     },
-    "/{id}": {
+    "/serviceProblem/{id}": {
       "patch": {
-        "operationId": "patch_id",
-        "summary": "Modify {Id}",
-        "description": "The `/problem-management-xapi-services/{id}` PATCH operation updates existing problem records within ETB's telecommunications network management system.  This RESTful API endpoint allows for modification of critical fault details, impacting services like broadband internet, fixed-line telephony, and mobile connectivity.  Business use cases include updating problem status (e.g., from \"in progress\" to \"resolved\"), assigning technicians, adding notes detailing troubleshooting steps, or modifying the impacted customer's information.  This operation is crucial for efficient fault resolution and service restoration.  It integrates with ETB's internal ticketing system, customer relationship management (CRM) platform, and potentially external monitoring tools, enabling seamless data flow and real-time updates across various systems.  Successful PATCH requests trigger automated notifications to relevant teams and customers, enhancing service responsiveness and transparency.\n",
-        "tags": [
-          "Problem Management Xapi Services"
+        "operationId": "Update Service Problem",
+        "description": "**Operation Summary**: Updates existing service problem records for resolution workflow management, status changes, and problem lifecycle tracking following TMF656 Service Problem Management standards.\n\n**Use Cases**:\n- **Network Operations Center**: NOC teams updating problem resolution status and technical resolution details\n- **Agent Desktop**: Customer service agents updating customer communication status and resolution progress\n- **Automated Workflows**: System-triggered problem status updates from service restoration and network recovery processes\n- **Mobile App**: Field technician updates on problem resolution progress and service restoration status\n- **Service Management**: Problem escalation, priority changes, and resource assignment for service problem resolution\n\n**Business Context**: Enables dynamic service problem management where resolution status, customer communication, or technical details require updates during the problem resolution lifecycle.\n\n**Data Sources**: \n- **Problem Lookup**: Problem Management PAPI for existing problem record retrieval and validation\n- **Service Validation**: Oracle database and service inventory for service association and impact assessment\n- **Resolution Workflow**: Problem Management PAPI `/v1/serviceProblem/{id}` endpoint for problem update processing\n- **Audit Updates**: `audits-oracle-sapi-services` for modification audit trails and regulatory compliance\n- **Service Status**: Service inventory systems for real-time service status and restoration confirmation\n\n**Performance Characteristics**: \n- **Response Time**: < 2000ms for standard updates including validation, PAPI integration, and audit logging\n- **Concurrency Control**: Problem Management PAPI optimistic locking to prevent concurrent modification conflicts\n- **Rate Limits**: 30 updates per minute per problem to prevent abuse and ensure system stability\n- **Version Control**: Automatic versioning of problem changes for audit compliance and regulatory requirements\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "description": "**Business Purpose**: Unique service problem identifier for targeted updates, resolution tracking, and audit correlation\n\n**Validation Rules**: \n- Format: Alphanumeric string or UUID format for TMF656 problem identification standards\n- Length: 6-36 characters supporting both sequential and UUID identifiers\n- Pattern: ^[0-9a-zA-Z-]{6,36}$ for flexible identifier formats following TMF656 standards\n\n**Usage Examples**: \n- Sequential ID: \"PRB123456\" for simple problem references in NOC operations\n- UUID format: \"550e8400-e29b-41d4-a716-446655440000\" for distributed system compatibility\n\n**Business Context**: References existing service problem record in Problem Management PAPI for status updates, resolution workflows, and audit trail correlation\n",
             "required": true,
-            "description": "Unique identifier for id",
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
             "schema": {
-              "type": "string"
-            },
-            "example": "ETB001234567"
-          },
-          {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
+              "description": "**Request Body Structure**: Service problem update payload following TMF656 Service Problem Management schema\n\n**Updateable Fields**: \n- **status**: Problem resolution status (OPEN, IN_PROGRESS, RESOLVED, CLOSED) for workflow management\n- **priority**: Problem priority level (1-5) for resource allocation and escalation management\n- **description**: Problem description updates for technical details and resolution information\n- **resolution**: Resolution details and technical information for knowledge management\n- **assignedTo**: Resource assignment for problem resolution and escalation workflows\n- **customerCommunication**: Customer notification status and communication tracking\n\n**Business Logic**: \n- Existing problem validation with Problem Management PAPI lookup before update processing\n- Service problem status workflow validation ensuring proper TMF656 lifecycle compliance\n- Customer impact assessment for problem priority and resolution timeline adjustments\n- Automatic timestamp updates for modification tracking and audit trail generation\n- Integration with service inventory for service status correlation and restoration validation\n\n**Validation Rules**: \n- Problem ID must exist in Problem Management PAPI system\n- Status transitions must follow TMF656 Service Problem Management workflow standards\n- Priority levels must be within valid range (1-5) with business justification for changes\n- Problem Management PAPI availability validation before processing updates\n- Resolution information required for RESOLVED status transitions\n",
+              "example": {
+                "@type": "ServiceProblem",
+                "originatorParty": {
+                  "partyOrPartyRole": {
+                    "name": "ABCompany"
+                  },
+                  "role": "ServiceProvider"
+                },
+                "relatedEntity": [
+                  {
+                    "completionDate": "2025-05-29T19:10:47.078",
+                    "description": "Se realiza operación de [Confirmación,Reagendamiento ó Cancelación] de agenda",
+                    "id": "task-1001",
+                    "name": "Gestión de agenda",
+                    "role": "appoimentTask",
+                    "status": "completed",
+                    "type": "Task"
+                  }
+                ]
+              },
+              "type": "object",
+              "required": [
+                "originatorParty",
+                "relatedEntity"
+              ],
+              "properties": {
+                "originatorParty": {
                   "type": "object",
+                  "required": [
+                    "partyOrPartyRole"
+                  ],
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
+                    "partyOrPartyRole": {
                       "type": "object",
                       "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
+                        "name": {
+                          "example": "ABCompany",
+                          "type": "string"
                         }
                       }
                     },
-                    "data": {
-                      "$ref": "#/components/schemas/ResourceModel"
+                    "role": {
+                      "example": "ServiceProvider",
+                      "type": "string"
                     }
                   }
                 },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
+                "relatedEntity": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "example": "task-1001",
+                        "type": "string"
+                      },
+                      "name": {
+                        "example": "Gestión de agenda",
+                        "type": "string"
+                      },
+                      "status": {
+                        "example": "completed",
+                        "type": "string"
+                      },
+                      "completionDate": {
+                        "example": "2025-05-29T19:10:47.078",
+                        "type": "string"
+                      },
+                      "description": {
+                        "example": "Se realiza operación de [Confirmación,Reagendamiento ó Cancelación] de agenda",
+                        "type": "string"
+                      },
+                      "role": {
+                        "example": "appoimentTask",
+                        "type": "string"
+                      },
+                      "type": {
+                        "example": "Task",
+                        "type": "string"
+                      }
+                    }
                   }
+                },
+                "@type": {
+                  "example": "ServiceProblem",
+                  "type": "string"
                 }
               }
             }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "**Success Response - Service Problem Updated Successfully**\n\n**API-Controlled Code**: \"201\" or similar (in response field structure)\n\n**Response Structure**: \n- **Updated Problem**: Complete service problem information with applied changes\n- **Version Information**: New version number and modification timestamp for concurrency control\n- **Resolution Status**: Updated problem resolution workflow status and estimated completion time\n\n**Data Enrichment**: \n- **Version Control**: Automatic version increment following TMF656 standards for problem change tracking\n- **PAPI Response**: Integration response from Problem Management PAPI with problem modification confirmation\n- **Audit Trail**: Complete modification history logged to `audits-oracle-sapi-services` for regulatory compliance\n- **Service Correlation**: Updated service status information for customer impact assessment\n\n**Business Context**: \n- **Problem Lifecycle**: Updated service problem following TMF656 workflow standards with proper status transitions\n- **Regulatory Compliance**: Colombian telecommunications standards compliance for service problem resolution tracking\n- **Service Restoration**: Integration with service inventory for service status correlation and customer impact assessment\n- **Customer Communication**: Updated customer notification status and communication history for service quality management\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
+            }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN, document, documentType)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for service problem updates or service orders\n- Business rule validation failures for problem management operations\n\n**System Context**: Validation occurs at the XAPI layer before Problem Management PAPI backend system calls\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested problem management operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Service problem ID does not exist in problem management system\n- Customer document number not found in Oracle customer database\n- Service account or resource not found in service inventory systems\n- Invalid endpoint path or resource identifier for problem management operations\n\n**System Context**: Resource lookup performed across Oracle customer database, service inventory, and Problem Management PAPI services\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Problem Management PAPI services connectivity failure or timeout\n- Oracle database connection timeout or unavailability\n- Service inventory system unavailability for resource queries\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/problemGroup": {
+      "x-amf-description": "## Massive Failure Consultation Resource\n\n**Business Purpose**: Real-time consultation of massive service failures affecting multiple customers, providing comprehensive failure information for customer communication and service restoration coordination following TMF656 Problem Group Management standards.\n\n**Data Integration**: \n- **Problem Management PAPI Services**: Core massive failure business logic via `/v1/problemGroup` endpoint\n- **Bot Services Integration**: WhatsApp automation and customer communication via `/support/init/v1` endpoint\n- **Oracle Database**: Customer profile validation and service association for failure impact assessment\n- **Service Inventory Systems**: Network element information and service resource correlation for failure context\n\n**Business Intelligence Features**: \n- Real-time massive failure status tracking and customer impact assessment with regulatory compliance\n- Cross-channel failure communication coordination for unified customer experience\n- Automated failure categorization and service restoration timeline estimation\n- Regulatory compliance tracking for customer communication and service level agreements\n",
       "get": {
-        "operationId": "get_problemGroup",
-        "summary": "Retrieve Problemgroup",
-        "description": "The `/problemGroup` GET operation within ETB's problem-management-xapi-services retrieves a list of problem groups, crucial for ETB's network management and customer service.  This RESTful API call allows applications to access aggregated information on related network incidents, facilitating efficient troubleshooting and proactive maintenance.\n\nBusiness use cases include:\n\n* **Network Operations Center (NOC):**  NOC engineers utilize this API to monitor the impact of outages, identifying affected customer segments and prioritizing remediation efforts based on the severity and scope of problems within each group.\n\n* **Customer Service:**  Service representatives leverage the API to quickly understand the status of reported issues affecting a customer, providing accurate updates and estimated resolution times.\n\n* **Reporting & Analytics:**  The data retrieved fuels internal reporting dashboards, providing insights into recurring problem areas, enabling proactive network improvements and capacity planning.\n\nThis API integrates with ETB's internal fault management system and customer relationship management (CRM) platform, ensuring seamless data flow and consistent information across various systems.  Authentication is required for access.\n",
-        "tags": [
-          "Problem Management Xapi Services"
+        "operationId": "Get Massive Failure Information",
+        "description": "**Operation Summary**: Retrieves comprehensive massive service failure information with real-time status updates and customer impact assessment for multi-channel customer communication and service restoration coordination following TMF656 Problem Group Management standards.\n\n**Use Cases**:\n- **WhatsApp Bot Services**: Automated customer notifications for massive failures with real-time status updates and resolution timelines\n- **Web Portal**: Customer self-service massive failure status queries and service restoration information\n- **Mobile App**: Real-time massive failure notifications and service restoration tracking with offline capability\n- **Agent Desktop**: Call center agents accessing comprehensive massive failure context for customer support and communication\n- **Network Operations Center**: NOC teams monitoring massive failures and coordinating service restoration efforts\n- **Customer Communications**: Automated customer communication workflows for failure notifications and resolution updates\n\n**Business Context**: Enables real-time massive failure consultation as documented in Info_API \"Consulta Falla Masiva V1\" with Bot Services integration for WhatsApp automation and customer communication coordination.\n\n**Data Sources**: \n- **Problem Management PAPI**: Real-time massive failure data via `/v1/problemGroup` endpoint with failure classification and impact assessment\n- **Bot Services Integration**: Customer communication automation via `/support/init/v1` endpoint for WhatsApp notification workflows\n- **Oracle Database**: Customer profile validation and service association for personalized failure impact information\n- **Service Inventory**: Network resource information and service correlation for failure context and restoration timeline\n\n**Performance Characteristics**: \n- **Response Time**: < 1500ms for massive failure queries including PAPI integration, Bot Services correlation, and data enrichment\n- **Caching Strategy**: Limited caching for rapidly changing failure status to ensure real-time accuracy\n- **Rate Limits**: 200 requests per minute per authenticated client for high-volume customer communication scenarios\n- **Bot Integration**: Real-time coordination with Bot Services for customer notification preparation and WhatsApp automation\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "**Business Purpose**: Identifies the requesting channel for massive failure consultation, enabling channel-specific processing rules, audit requirements, and Bot Services integration routing\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business Platform requests via Bot Services integration for automated customer notifications\n- **PORTAL**: ETB Customer Portal requests for self-service massive failure information and status updates\n- **MOBILE**: Mobile application requests with offline synchronization capability for failure notifications\n- **AGENT**: Call center agent requests for comprehensive massive failure context and customer communication support\n- **CRM**: Automated CRM system requests for business intelligence and customer impact assessment\n\n**Usage Examples**: \n- Customer communication: \"WHATSAPP\" for Bot Services automated massive failure notifications and status updates\n- Self-service: \"PORTAL\" for web-based massive failure status queries and service restoration information\n\n**Channel Variations**: Each channel receives optimized response structure and field filtering based on business requirements and customer communication needs\n",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "FAILURE_ID",
+            "description": "**Business Purpose**: Retrieves specific massive failure by unique system identifier for detailed analysis, customer communication, and service restoration coordination\n\n**Validation Rules**: \n- Format: Alphanumeric string or UUID format for TMF656 problem group identification\n- Length: 6-36 characters supporting both sequential and UUID identifiers\n- Pattern: ^[0-9a-zA-Z-]{6,36}$ for flexible identifier formats\n\n**Usage Examples**: \n- Specific failure lookup: \"12552454\" for targeted massive failure information and customer impact assessment\n- Customer communication: Agent accessing specific failure details for customer service and communication coordination\n- Service restoration: NOC teams accessing detailed failure information for restoration planning and resource allocation\n\n**Channel Variations**: \n- **WHATSAPP**: Returns Bot Services-specific metadata for automated customer notification workflows\n- **PORTAL**: Includes web-friendly failure information for customer self-service and status tracking\n- **AGENT**: Comprehensive failure details for customer service and communication support\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "**Business Purpose**: Advanced filtering for targeted massive failure queries supporting customer-specific impact assessment, service restoration workflows, and regulatory reporting\n\n**Validation Rules**: \n- Format: Key:Value pairs separated by semicolons for multiple filter conditions\n- Pattern: ^([a-zA-Z]+:[^;]+)(;[a-zA-Z]+:[^;]+)*$ for structured filter syntax\n- Maximum: 10 filter conditions per query to optimize Problem Management PAPI performance\n\n**Valid Filter Types**: \n- **Phone**: Customer phone number (format: +57XXXXXXXXXX Colombian mobile numbers) for customer-specific failure impact\n- **AccountNumber**: ETB customer account number from Oracle database for service association and impact assessment\n- **ServiceType**: Service type filter (INTERNET, TV, TELEFONIA) for failure categorization and impact analysis\n- **Zone**: Geographic zone filter for regional failure analysis and service restoration coordination\n- **Priority**: Failure priority level (1-5) for escalation and resource allocation filtering\n- **Status**: Failure status (OPEN, IN_PROGRESS, RESOLVED) for lifecycle tracking and customer communication\n- **Product**: Product type filter (INTERNET, TELEVISION, FIXED_LINE) for service-specific failure analysis\n\n**Usage Examples**: \n- Customer impact: \"Phone:+573001234567;ServiceType:INTERNET\" for customer-specific failure information\n- Service restoration: \"Zone:NORTE;Priority:1\" for high-priority regional failure coordination\n- Communication targeting: \"Product:INTERNET;Status:IN_PROGRESS\" for targeted customer notifications\n\n**Channel Variations**: \n- **WHATSAPP**: Phone number is primary filter for Bot Services customer-specific failure notifications\n- **PORTAL**: Account number is primary with customer authentication and service association\n- **AGENT**: Multiple filters available for comprehensive customer service and failure analysis\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "LIMIT",
+            "description": "**Business Purpose**: Controls result set size for pagination and performance optimization in high-volume massive failure queries with Problem Management PAPI aggregation\n\n**Validation Rules**: \n- Range: 1-500 failure records per request to balance performance and data completeness\n- Default: 50 failures if not specified for optimal response time and customer communication efficiency\n- Maximum: 500 for bulk operations and comprehensive failure analysis\n\n**Usage Examples**: \n- Dashboard summaries: 10-25 recent failures for real-time NOC dashboards and customer service overviews\n- Customer communication: 5-10 relevant failures for targeted customer notifications via Bot Services\n- Comprehensive analysis: 100-500 failures for business intelligence, trend analysis, and regulatory reporting\n\n**Channel Variations**: \n- **WHATSAPP**: Optimized for 5-10 failures per customer notification to avoid message overflow\n- **PORTAL**: Customer self-service limited to 20 failures for performance and user experience\n- **AGENT**: Up to 100 failures for comprehensive customer service context and failure analysis\n",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "OFFSET",
+            "description": "**Business Purpose**: Enables cursor-based pagination for large massive failure datasets, supporting efficient data retrieval and optimal customer communication workflows\n\n**Validation Rules**: \n- Type: Non-negative integer for Problem Management PAPI skip operation\n- Range: 0 to maximum dataset size with performance considerations\n- Increment: Typically by LIMIT value for sequential pagination and optimal PAPI performance\n\n**Usage Examples**: \n- First page: OFFSET=0, LIMIT=50 for initial failure data load\n- Second page: OFFSET=50, LIMIT=50 for sequential navigation through failure data\n- Jump to specific segment: OFFSET=200, LIMIT=50 for direct navigation to historical failure data\n\n**Channel Variations**: \n- **PORTAL**: Web-based pagination with page numbers for user-friendly navigation\n- **MOBILE**: Infinite scroll with dynamic offset calculation for mobile user experience\n- **AGENT**: Large offset values for historical failure data access and comprehensive customer service context\n",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ProblemgroupModel"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "status": "success",
-                  "data": {
-                    "id": "ETB001234",
-                    "name": "Ejemplo ETB",
-                    "created": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "**Success Response - Massive Failure Information Retrieved Successfully**\n\n**API-Controlled Code**: \"200\" (in codeResponse field)\n\n**Response Structure**: \n- **codeResponse**: API-controlled success indicator (\"200\") following TMF656 standards\n- **messageResponse**: Optional descriptive message or empty string for custom messaging\n- **massiveFailure**: Array of massive failure objects with complete failure information and customer impact data\n\n**Data Enrichment**: \n- **System-Generated Fields**: Automatic failure categorization and impact assessment from Problem Management PAPI services\n- **Cross-Reference Data**: Customer profile enrichment from Oracle master data with service association validation\n- **Failure Context**: Service failure correlation with network resource identification for restoration coordination\n- **Bot Services Integration**: WhatsApp-specific metadata preparation for automated customer notifications\n- **Service Impact**: Real-time service availability assessment and customer impact analysis\n\n**Business Context**: \n- **Massive Failure Details**: Comprehensive failure information following Info_API \"Consulta Falla Masiva V1\" specification\n- **Customer Communication**: Failure information optimized for multi-channel customer notifications and service updates\n- **Service Restoration**: Technical details for service restoration coordination and timeline estimation\n- **Regulatory Compliance**: Colombian telecommunications standards compliance with complete audit trail management\n\n**Failure Information Structure**:\n- **affectation**: Service type affected (Internet, TV, Telefonia) for customer impact classification\n- **cun**: Código Único de Notificación (Unique Notification Code) for regulatory compliance and tracking\n- **description**: General failure description for customer communication and internal coordination\n- **descriptionUser**: Customer-facing description for service notifications and communication\n- **descriptionTechnical**: Technical failure description for NOC teams and service restoration\n- **startDate/endDate**: Failure timeline with multiple date formats for customer communication optimization\n- **priority**: Failure priority level (1-5) for resource allocation and escalation management\n- **tes**: Tiempo Estimado de Solución (Estimated Solution Time) in minutes for customer communication\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_3"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN, document, documentType)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for service problem updates or service orders\n- Business rule validation failures for problem management operations\n\n**System Context**: Validation occurs at the XAPI layer before Problem Management PAPI backend system calls\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested problem management operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Service problem ID does not exist in problem management system\n- Customer document number not found in Oracle customer database\n- Service account or resource not found in service inventory systems\n- Invalid endpoint path or resource identifier for problem management operations\n\n**System Context**: Resource lookup performed across Oracle customer database, service inventory, and Problem Management PAPI services\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Problem Management PAPI services connectivity failure or timeout\n- Oracle database connection timeout or unavailability\n- Service inventory system unavailability for resource queries\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
         ]
       }
     },
     "/service": {
+      "x-amf-description": "## Service Inventory Management Resource\n\n**Business Purpose**: Comprehensive service resource information and inventory queries for problem resolution, service validation, and network element management following TMF656 Service Management standards.\n\n**Data Integration**: \n- **Problem Management PAPI Services**: Core service inventory business logic via `/v1/service` endpoint\n- **Service Inventory Systems**: Real-time service resource information and network element data\n- **Oracle Database**: Customer service associations and subscription validation\n- **Network Management Systems**: Network element status and resource availability for problem correlation\n\n**Business Intelligence Features**: \n- Real-time service resource status tracking and availability assessment\n- Network element correlation for problem resolution and service restoration\n- Service dependency mapping for impact analysis and restoration planning\n- Regulatory compliance tracking for service management and customer communication\n",
       "get": {
-        "operationId": "get_service",
-        "summary": "Retrieve Service",
-        "description": "The GET /service endpoint in ETB's problem-management-xapi-services retrieves a comprehensive list of active and historical network problems impacting ETB's telecommunications services.  This operation is crucial for proactive network management and customer service.  Business use cases include:\n\n* **Network Monitoring:**  Real-time visibility into service disruptions affecting fixed-line, mobile, or broadband services allows ETB engineers to quickly identify and resolve outages.\n* **Customer Support:**  Service representatives utilize this data to accurately diagnose customer issues and provide estimated restoration times, improving customer satisfaction.\n* **Root Cause Analysis:** Historical problem data facilitates trend analysis, identifying recurring issues and enabling preventative maintenance to improve network reliability.\n* **Service Level Agreement (SLA) Reporting:**  The data feeds into ETB's SLA reporting systems, tracking performance against agreed-upon service levels.\n\nThis API integrates with ETB's internal monitoring systems, customer relationship management (CRM) platform, and reporting dashboards, providing a centralized view of network health and performance.  The response includes detailed information on each problem, including location, impact, status, and resolution details.\n",
-        "tags": [
-          "Problem Management Xapi Services"
+        "operationId": "Get Service Resource Information",
+        "description": "**Operation Summary**: Retrieves comprehensive service resource information and network element data for problem resolution, service validation, and network management following TMF656 Service Management standards.\n\n**Use Cases**:\n- **Network Operations Center**: NOC teams accessing service resource information for problem diagnosis and service restoration\n- **Problem Resolution**: Service technicians accessing network element data for problem troubleshooting and resolution\n- **Customer Service**: Agent desktop accessing service resource status for customer inquiry resolution\n- **Service Validation**: Automated service health checks and availability monitoring for proactive problem management\n- **Resource Planning**: Network planning teams accessing service resource utilization and capacity information\n\n**Data Sources**: \n- **Problem Management PAPI**: Service resource queries via `/v1/service` endpoint with network element correlation\n- **Service Inventory**: Real-time service resource status and network element information\n- **Oracle Database**: Customer service associations and subscription validation for access control\n- **Network Management**: Network element status and performance data for comprehensive service context\n\n**Performance Characteristics**: \n- **Response Time**: < 1500ms for service resource queries including PAPI integration and network element data enrichment\n- **Caching Strategy**: Limited caching for rapidly changing service status to ensure real-time accuracy\n- **Rate Limits**: 100 requests per minute per authenticated client for operational service management\n- **Network Integration**: Real-time coordination with network management systems for service resource correlation\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "**Business Purpose**: Identifies the requesting channel for service resource queries, enabling channel-specific processing rules and audit requirements\n\n**Validation Rules**: \n- Format: Alphanumeric string, uppercase\n- Length: 3-20 characters\n- Pattern: ^[A-Z][A-Z0-9_]*$\n\n**Valid Values**: \n- **WHATSAPP**: WhatsApp Business Platform requests for customer service resource validation\n- **PORTAL**: ETB Customer Portal requests for self-service resource information\n- **MOBILE**: Mobile application requests for service status and resource information\n- **AGENT**: Call center agent requests for comprehensive service resource context\n- **NOC**: Network Operations Center requests for service resource management and problem resolution\n\n**Usage Examples**: \n- Service validation: \"AGENT\" for customer service resource verification and problem resolution\n- Network operations: \"NOC\" for service resource management and network element correlation\n",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "SERVICE_ACCOUNT",
+            "description": "**Business Purpose**: ETB service account number for targeted service resource lookup and customer service correlation\n\n**Validation Rules**: \n- Format: Numeric string following ETB account number standards\n- Length: 6-15 characters for service account identification\n- Pattern: ^[0-9]{6,15}$ for numeric validation\n\n**Usage Examples**: \n- Service lookup: \"12552454\" for specific service account resource information and status validation\n- Customer service: Agent accessing service resources for customer account management and problem resolution\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CONNECTION_NUMBER",
+            "description": "**Business Purpose**: Customer connection number (typically phone number) for service resource identification and network element correlation\n\n**Validation Rules**: \n- Format: Numeric string for Colombian phone number standards\n- Length: 7-10 characters for local and national phone numbers\n- Pattern: ^[0-9]{7,10}$ for phone number validation\n\n**Usage Examples**: \n- Phone service: \"542545454\" for fixed-line service resource lookup and network element correlation\n- Service correlation: Network element identification for customer connection and service validation\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "RESOURCE_ID",
+            "description": "**Business Purpose**: Network element identifier for targeted resource queries and service correlation\n\n**Validation Rules**: \n- Format: Alphanumeric string for network element identification\n- Length: 4-50 characters supporting various network element naming conventions\n- Pattern: ^[a-zA-Z0-9-_\\.]{4,50}$ for network element identifier validation\n\n**Usage Examples**: \n- Network element: \"OLT-001-BOGOTA\" for optical line terminal resource information\n- Service correlation: Network element identification for service resource mapping and problem resolution\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "RESOURCE_TYPE",
+            "description": "**Business Purpose**: Network resource type classification for targeted resource queries and service management\n\n**Validation Rules**: \n- Format: Alphanumeric string for resource type categorization\n- Length: 3-20 characters for resource type identification\n- Pattern: ^[A-Z][A-Z0-9_]{2,19}$ for resource type validation\n\n**Valid Resource Types**: \n- **OLT**: Optical Line Terminal for fiber optic services\n- **DSLAM**: Digital Subscriber Line Access Multiplexer for DSL services\n- **SWITCH**: Network switch for data services\n- **ROUTER**: Network router for internet services\n- **PBX**: Private Branch Exchange for telephony services\n\n**Usage Examples**: \n- Equipment type: \"OLT\" for optical line terminal resource queries and fiber service management\n- Service planning: \"DSLAM\" for DSL service resource availability and capacity planning\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "OPERATION",
+            "description": "**Business Purpose**: Specific operation or query type for service resource management and network element interaction\n\n**Validation Rules**: \n- Format: Alphanumeric string for operation classification\n- Length: 3-20 characters for operation identification\n- Pattern: ^[A-Z][A-Z0-9_]{2,19}$ for operation validation\n\n**Valid Operations**: \n- **STATUS_CHECK**: Service resource status validation and availability check\n- **INVENTORY_QUERY**: Resource inventory information and capacity queries\n- **DIAGNOSTIC**: Network element diagnostic and performance information\n- **CONFIGURATION**: Resource configuration information for service management\n\n**Usage Examples**: \n- Service health: \"STATUS_CHECK\" for service resource availability and operational status\n- Problem diagnosis: \"DIAGNOSTIC\" for network element performance and problem correlation\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/ServiceModel"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "status": "success",
-                  "data": {
-                    "id": "ETB001234",
-                    "name": "Ejemplo ETB",
-                    "created": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "**Success Response - Service Resource Information Retrieved Successfully**\n\n**API-Controlled Code**: \"200\" or similar (in response field structure)\n\n**Response Structure**: \n- **Service Resources**: Comprehensive service resource information and network element data\n- **Resource Status**: Real-time resource availability and operational status information\n- **Network Context**: Network element correlation and service dependency mapping\n\n**Data Enrichment**: \n- **System-Generated Fields**: Automatic resource categorization and status assessment from PAPI services\n- **Cross-Reference Data**: Customer service association from Oracle database with resource validation\n- **Network Correlation**: Network element information and service dependency mapping for comprehensive context\n- **Service Status**: Real-time service availability and performance metrics from network management systems\n\n**Business Context**: \n- **Service Management**: Comprehensive service resource information for operational management and problem resolution\n- **Network Operations**: Network element data for service correlation and resource planning\n- **Problem Resolution**: Service resource context for problem diagnosis and resolution workflows\n- **Customer Service**: Service resource information for customer inquiry resolution and service validation\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_4"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**Bad Request - REQUEST_ERROR**\n\n**API Error Code**: REQUEST_ERROR\n\n**Common Issues**:\n- Missing required query parameters (ORIGIN, document, documentType)\n- Invalid document type or number format per Colombian standards\n- Malformed request body structure for service problem updates or service orders\n- Business rule validation failures for problem management operations\n\n**System Context**: Validation occurs at the XAPI layer before Problem Management PAPI backend system calls\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**Unauthorized - AUTHENTICATION_ERROR**\n\n**API Error Code**: Unauthorized\n\n**Common Issues**:\n- Missing or invalid OAuth 2.0 access token\n- Expired JWT token requiring refresh\n- Insufficient scope permissions for requested problem management operation\n- ETB authentication service unavailable\n\n**System Context**: Authentication managed by ETB OAuth 2.0 provider with JKS keystore security\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**Not Found - NOT_FOUND**\n\n**API Error Code**: NOT_FOUND\n\n**Common Issues**:\n- Service problem ID does not exist in problem management system\n- Customer document number not found in Oracle customer database\n- Service account or resource not found in service inventory systems\n- Invalid endpoint path or resource identifier for problem management operations\n\n**System Context**: Resource lookup performed across Oracle customer database, service inventory, and Problem Management PAPI services\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**Internal Server Error - INTERNAL_SERVER_ERROR**\n\n**API Error Code**: INTERNAL_SERVER_ERROR\n\n**Common Issues**:\n- Problem Management PAPI services connectivity failure or timeout\n- Oracle database connection timeout or unavailability\n- Service inventory system unavailability for resource queries\n- Audit system (`audits-oracle-sapi-services`) logging service failure\n\n**System Context**: Backend system failures logged for operations team analysis with full error attribution\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/serviceOrder": {
+      "post": {
+        "operationId": "service Inventory",
+        "description": "create order service",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_5"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_6"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
+      },
+      "get": {
+        "operationId": "service Order",
+        "description": "View detailed information about a service using filters; receive service data and return service information.",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "ORDER_NUMBER",
+            "description": "number of order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "String used to apply filters to the query (follow example), separate the filter type and its value with a colon, and separate the number of filters with a semicolon.",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "LIMIT",
+            "description": "Limit on orders to display",
+            "required": false,
+            "in": "query",
+            "type": "number"
+          },
+          {
+            "name": "OFFSET",
+            "description": "used to organize information and establish a logical order",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_7"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
           }
         ]
       }
     }
   },
-  "components": {
-    "schemas": {
-      "auto_f566160d-cfee-43a8-82b6-b9c991305a27_Output-AttributesModel": {
-        "type": "object",
-        "properties": {},
-        "description": "Schema extraído de datatypes MuleSoft para auto_f566160d-cfee-43a8-82b6-b9c991305a27_Output-Attributes"
+  "definitions": {
+    "type": {
+      "example": {
+        "value": [
+          {
+            "id": "MDM-PQR-4156123",
+            "status": "pending",
+            "description": "Degradación del servicio de internet",
+            "characteristic": [
+              {
+                "name": "Causal",
+                "value": "FALLA INTERNET"
+              }
+            ],
+            "affectedService": [
+              {
+                "category": "Conectividad",
+                "id": "svc001",
+                "name": "Internet Empresarial Fibra 500Mbps",
+                "type": "BUNDLE"
+              }
+            ],
+            "priority": "",
+            "@type": "ServiceProblem"
+          }
+        ]
       },
-      "auto_f566160d-cfee-43a8-82b6-b9c991305a27_Output-PayloadModel": {
-        "type": "object",
-        "properties": {},
-        "description": "Schema extraído de datatypes MuleSoft para auto_f566160d-cfee-43a8-82b6-b9c991305a27_Output-Payload"
-      },
-      "auto_3f36616a-0174-4c9a-a913-743c1e141ab8_Output-PayloadModel": {
-        "type": "object",
-        "properties": {},
-        "description": "Schema extraído de datatypes MuleSoft para auto_3f36616a-0174-4c9a-a913-743c1e141ab8_Output-Payload"
-      },
-      "auto_3f36616a-0174-4c9a-a913-743c1e141ab8_Output-AttributesModel": {
-        "type": "object",
-        "properties": {},
-        "description": "Schema extraído de datatypes MuleSoft para auto_3f36616a-0174-4c9a-a913-743c1e141ab8_Output-Attributes"
-      },
-      "Customer": {
+      "type": "array",
+      "items": {
         "type": "object",
         "required": [
-          "documentType",
-          "documentNumber",
-          "name",
-          "phone"
+          "characteristic",
+          "affectedService"
         ],
         "properties": {
-          "documentType": {
-            "type": "string",
-            "enum": [
-              "CC",
-              "CE",
-              "NIT",
-              "PASAPORTE",
-              "TI"
-            ],
-            "description": "Tipo de documento de identidad"
+          "id": {
+            "example": "MDM-PQR-4156123",
+            "type": "string"
           },
-          "documentNumber": {
-            "type": "string",
-            "pattern": "^[0-9]{8,15}$",
-            "description": "Número de documento de identidad",
-            "example": "87654321"
-          },
-          "name": {
-            "type": "string",
-            "minLength": 2,
-            "description": "Nombre completo del cliente",
-            "example": "Juan Pérez García"
-          },
-          "phone": {
-            "type": "string",
-            "pattern": "^[0-9]{10}$",
-            "description": "Número de teléfono de contacto",
-            "example": "3157000421"
-          },
-          "email": {
-            "type": "string",
-            "format": "email",
-            "description": "Correo electrónico del cliente"
-          }
-        }
-      },
-      "Address": {
-        "type": "object",
-        "properties": {
-          "street": {
-            "type": "string",
-            "description": "Dirección completa",
-            "example": "Carrera 7 # 45-23"
-          },
-          "city": {
-            "type": "string",
-            "description": "Ciudad",
-            "example": "BOGOTA D.C."
-          },
-          "neighborhood": {
-            "type": "string",
-            "description": "Barrio o localidad",
-            "example": "CENTRO"
-          },
-          "zipCode": {
-            "type": "string",
-            "pattern": "^[0-9]{6}$",
-            "description": "Código postal"
-          }
-        }
-      },
-      "ErrorResponse": {
-        "type": "object",
-        "properties": {
           "status": {
-            "type": "integer",
-            "description": "Código de estado HTTP"
+            "example": "pending",
+            "type": "string"
           },
-          "code": {
-            "type": "string",
-            "description": "Código de error específico del negocio"
+          "description": {
+            "example": "Degradación del servicio de internet",
+            "type": "string"
           },
-          "message": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "description": "Mensaje de error detallado"
-              }
-            }
-          },
-          "cause": {
+          "characteristic": {
             "type": "array",
             "items": {
               "type": "object",
               "properties": {
-                "origin": {
-                  "type": "string",
-                  "description": "Origen del error"
+                "name": {
+                  "example": "Causal",
+                  "type": "string"
                 },
-                "message": {
-                  "type": "string",
-                  "description": "Detalle del error"
+                "value": {
+                  "example": "FALLA INTERNET",
+                  "type": "string"
                 }
+              }
+            }
+          },
+          "affectedService": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "category": {
+                  "example": "Conectividad",
+                  "type": "string"
+                },
+                "id": {
+                  "example": "svc001",
+                  "type": "string"
+                },
+                "name": {
+                  "example": "Internet Empresarial Fibra 500Mbps",
+                  "type": "string"
+                },
+                "type": {
+                  "example": "BUNDLE",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "priority": {
+            "example": "",
+            "type": "string"
+          },
+          "@type": {
+            "example": "ServiceProblem",
+            "type": "string"
+          }
+        }
+      }
+    },
+    "type_1": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
+          "message": {
+            "message": "Required query parameter document not specified"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
+            }
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "XXXX-xapi-services",
+                "type": "string"
+              },
+              "message": {
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
               }
             }
           }
         }
       }
     },
-    "parameters": {
-      "CorrelationId": {
-        "name": "X-CORRELATION-ID",
-        "in": "header",
-        "required": false,
-        "description": "Correlation ID for transaction traceability",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
+    "type_2": {
+      "example": {
+        "value": {
+          "@type": "ServiceProblem",
+          "affectedService": [
+            {
+              "category": "Conectividad",
+              "id": "svc001",
+              "name": "Internet Empresarial Fibra 500Mbps",
+              "type": "BUNDLE"
+            }
+          ],
+          "characteristic": [
+            {
+              "name": "appointmentId",
+              "value": "24729984"
+            },
+            {
+              "name": "Causal",
+              "value": "FALLA INTERNET"
+            }
+          ],
+          "description": "Degradación del servicio de internet",
+          "id": "MDM-PQR-4156123",
+          "priority": "",
+          "status": "pending"
         }
       },
-      "SystemId": {
-        "name": "systemId",
-        "in": "header",
-        "required": true,
-        "description": "Source system identifier for audit purposes",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "MIGRACION",
-            "TRANSACCCIONES_OM",
-            "MAYORISTAS",
-            "OTINICIATIVAS"
-          ]
-        }
-      },
-      "ProcessName": {
-        "name": "processName",
-        "in": "header",
-        "required": false,
-        "description": "Process name for internal audit",
-        "schema": {
+      "type": "object",
+      "required": [
+        "affectedService",
+        "characteristic"
+      ],
+      "properties": {
+        "@type": {
+          "example": "ServiceProblem",
+          "type": "string"
+        },
+        "affectedService": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "category": {
+                "example": "Conectividad",
+                "type": "string"
+              },
+              "id": {
+                "example": "svc001",
+                "type": "string"
+              },
+              "name": {
+                "example": "Internet Empresarial Fibra 500Mbps",
+                "type": "string"
+              },
+              "type": {
+                "example": "BUNDLE",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "characteristic": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "example": "appointmentId",
+                "type": "string"
+              },
+              "value": {
+                "example": "24729984",
+                "type": "string"
+              }
+            }
+          }
+        },
+        "description": {
+          "example": "Degradación del servicio de internet",
+          "type": "string"
+        },
+        "id": {
+          "example": "MDM-PQR-4156123",
+          "type": "string"
+        },
+        "priority": {
+          "example": "",
+          "type": "string"
+        },
+        "status": {
+          "example": "pending",
           "type": "string"
         }
       }
     },
-    "responses": {
-      "BadRequest": {
-        "description": "Invalid request - Missing or incorrect parameters",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+    "type_3": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "massiveFailure": [
+          {
+            "affectation": "Internet",
+            "cun": "CUN12345",
+            "description": "Falla masiva en la zona norte",
+            "descriptionUser": "Estamos trabajando para restablecer el servicio.",
+            "descriptionTechnical": "Corte de fibra óptica",
+            "endDate": {
+              "date": "2024-06-01T18:00:00Z",
+              "format1": "01/06",
+              "format2": "01/06/2024",
+              "format3": "01/06/2024 18:00:00",
+              "format4": "01/06/2024 06:00:00 PM"
             },
-            "example": {
-              "status": 400,
-              "code": "REQUEST_ERROR",
-              "message": {
-                "message": "Required query parameters not specified"
+            "id": "PQR98765",
+            "incident": "INC123456",
+            "priority": 1,
+            "product": "INTERNET",
+            "startDate": {
+              "date": "2024-06-01T10:00:00Z",
+              "format1": "01/06",
+              "format2": "01/06/2024",
+              "format3": "01/06/2024 10:00:00",
+              "format4": "01/06/2024 10:00:00 AM"
+            },
+            "tes": 120
+          }
+        ]
+      },
+      "type": "object",
+      "required": [
+        "massiveFailure"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "Consulta Exitosa",
+          "type": "string"
+        },
+        "massiveFailure": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "endDate",
+              "startDate"
+            ],
+            "properties": {
+              "affectation": {
+                "example": "Internet",
+                "type": "string"
               },
-              "cause": [
-                {
-                  "origin": "XAPI-Services",
-                  "message": "Validation failed"
+              "cun": {
+                "example": "CUN12345",
+                "type": "string"
+              },
+              "description": {
+                "example": "Falla masiva en la zona norte",
+                "type": "string"
+              },
+              "descriptionUser": {
+                "example": "Estamos trabajando para restablecer el servicio.",
+                "type": "string"
+              },
+              "descriptionTechnical": {
+                "example": "Corte de fibra óptica",
+                "type": "string"
+              },
+              "endDate": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2024-06-01T18:00:00Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "01/06",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "01/06/2024",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "01/06/2024 18:00:00",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "01/06/2024 06:00:00 PM",
+                    "type": "string"
+                  }
                 }
-              ]
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized - Invalid or expired token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 401,
-              "code": "Unauthorized",
-              "message": {
-                "message": "Invalid or expired access token"
-              }
-            }
-          }
-        }
-      },
-      "Forbidden": {
-        "description": "Access forbidden - Insufficient permissions",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 403,
-              "code": "FORBIDDEN",
-              "message": {
-                "message": "You do not have permissions to access this resource"
-              }
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 404,
-              "code": "NOT_FOUND",
-              "message": {
-                "message": "The requested resource does not exist"
-              }
-            }
-          }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 500,
-              "code": "INTERNAL_SERVER_ERROR",
-              "message": {
-                "message": "Internal error processing the request"
+              },
+              "id": {
+                "example": "PQR98765",
+                "type": "string"
+              },
+              "incident": {
+                "example": "INC123456",
+                "type": "string"
+              },
+              "priority": {
+                "example": 1,
+                "type": "integer"
+              },
+              "product": {
+                "example": "INTERNET",
+                "type": "string"
+              },
+              "startDate": {
+                "type": "object",
+                "properties": {
+                  "date": {
+                    "example": "2024-06-01T10:00:00Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "01/06",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "01/06/2024",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "01/06/2024 10:00:00",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "01/06/2024 10:00:00 AM",
+                    "type": "string"
+                  }
+                }
+              },
+              "tes": {
+                "example": 120,
+                "type": "integer"
               }
             }
           }
         }
       }
     },
-    "securitySchemes": {
-      "etb_oauth2": {
-        "type": "oauth2",
-        "description": "ETB OAuth 2.0 Authentication",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
-            "scopes": {
-              "read": "Data read access permissions",
-              "write": "Write and modification permissions"
+    "type_4": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "serviceResource": [
+          {
+            "numPqr": "string",
+            "service": {
+              "status": "string",
+              "message": "string"
+            },
+            "networks": [
+              {
+                "networkName": "string",
+                "networkState": "string",
+                "macAddress": "string",
+                "ontSerial": "string",
+                "frequency": "string"
+              }
+            ],
+            "equipment": {
+              "ontSerial": "string",
+              "model": "string",
+              "status": "string"
+            },
+            "status": "string",
+            "message": "string",
+            "additionalChannels": "string",
+            "additionalServices": "string",
+            "decos": "string",
+            "stateSubscriberId": "string"
+          }
+        ]
+      },
+      "type": "object",
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "serviceResource": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "numPqr": {
+                "example": "string",
+                "type": "string"
+              },
+              "service": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "message": {
+                    "example": "string",
+                    "type": "string"
+                  }
+                }
+              },
+              "networks": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "networkName": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "networkState": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "macAddress": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "ontSerial": {
+                      "example": "string",
+                      "type": "string"
+                    },
+                    "frequency": {
+                      "example": "string",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "equipment": {
+                "type": "object",
+                "properties": {
+                  "ontSerial": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "model": {
+                    "example": "string",
+                    "type": "string"
+                  },
+                  "status": {
+                    "example": "string",
+                    "type": "string"
+                  }
+                }
+              },
+              "status": {
+                "example": "string",
+                "type": "string"
+              },
+              "message": {
+                "example": "string",
+                "type": "string"
+              },
+              "additionalChannels": {
+                "example": "string",
+                "type": "string"
+              },
+              "additionalServices": {
+                "example": "string",
+                "type": "string"
+              },
+              "decos": {
+                "example": "string",
+                "type": "string"
+              },
+              "stateSubscriberId": {
+                "example": "string",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_5": {
+      "example": {
+        "serviceOrder": {
+          "customer": {
+            "documentNumber": "1023456789",
+            "documentType": "CC",
+            "phone": "+57 3001234567"
+          },
+          "service": {
+            "serviceAccountNumber": "ACC-987654"
+          },
+          "orderType": "installation",
+          "causal": "customer request",
+          "operation": "create"
+        }
+      },
+      "type": "object",
+      "required": [
+        "serviceOrder"
+      ],
+      "properties": {
+        "serviceOrder": {
+          "type": "object",
+          "required": [
+            "customer",
+            "service"
+          ],
+          "properties": {
+            "customer": {
+              "type": "object",
+              "properties": {
+                "documentNumber": {
+                  "example": "1023456789",
+                  "type": "string"
+                },
+                "documentType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "phone": {
+                  "example": "+57 3001234567",
+                  "type": "string"
+                }
+              }
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "serviceAccountNumber": {
+                  "example": "ACC-987654",
+                  "type": "string"
+                }
+              }
+            },
+            "orderType": {
+              "example": "installation",
+              "type": "string"
+            },
+            "causal": {
+              "example": "customer request",
+              "type": "string"
+            },
+            "operation": {
+              "example": "create",
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "type_6": {
+      "type": "object",
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "success",
+          "type": "string"
+        },
+        "order": {
+          "example": "order successfully created",
+          "type": "string"
+        }
+      }
+    },
+    "type_7": {
+      "example": {
+        "value": {
+          "codeResponse": "200",
+          "messageResponse": "",
+          "serviceOrder": [
+            {
+              "phone": "6013103732",
+              "billingAccount": "15052876387",
+              "status": "Activo",
+              "type": "Fijo",
+              "contractedOffer": {
+                "name": "Plan Hogar Plus",
+                "description": "Plan de internet y telefonía fija",
+                "value": 89000,
+                "currency": "COP"
+              }
+            }
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "serviceOrder"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "serviceOrder": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "contractedOffer"
+            ],
+            "properties": {
+              "phone": {
+                "example": "6013103732",
+                "type": "string"
+              },
+              "billingAccount": {
+                "example": "15052876387",
+                "type": "string"
+              },
+              "status": {
+                "example": "Activo",
+                "type": "string"
+              },
+              "type": {
+                "example": "Fijo",
+                "type": "string"
+              },
+              "contractedOffer": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "example": "Plan Hogar Plus",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": "Plan de internet y telefonía fija",
+                    "type": "string"
+                  },
+                  "value": {
+                    "example": 89000,
+                    "type": "integer"
+                  },
+                  "currency": {
+                    "example": "COP",
+                    "type": "string"
+                  }
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "security": [
-    {
-      "etb_oauth2": []
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
     }
-  ],
-  "tags": [
-    {
-      "name": "Problem Management Xapi Services",
-      "description": "Main operations for Problem Management Xapi Services"
-    }
-  ]
+  }
 }

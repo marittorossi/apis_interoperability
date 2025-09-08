@@ -1,668 +1,1970 @@
 {
-  "openapi": "3.0.3",
+  "swagger": "2.0",
   "info": {
-    "title": "common-xapi-services",
-    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** common-xapi-services\n**Total Operations:** 4\n**Documentation Quality:** 60% RAML Coverage\n\n## Core Capabilities\n\nThe API supports the ability to send requests to create a new trouble ticket specifying the nature and severity of the trouble or issue as well as all necessary related information.\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
-    "version": "v1",
-    "contact": {
-      "name": "ETB API Team",
-      "url": "https://www.etb.com.co",
-      "email": "api-support@etb.com.co"
-    },
-    "license": {
-      "name": "Proprietary - ETB"
-    },
-    "x-language": "en",
-    "x-compliance": "TM Forum Open APIs"
+    "title": "Common XAPI Services",
+    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Trouble Ticket Management:** Create, update, and query customer service tickets (PQRs - Peticiones, Quejas, Reclamos) following TM Forum TMF621 standard\n- **User Authentication:** Validate user credentials and generate authentication tokens for Bot Service integration (TMF672 compliant)\n- **Audit Trail:** Create DIJIN audit records for compliance and security tracking\n\n**Integration Points:**\n- **bot-sapi-services:** Primary backend for PQR management and user authentication (port 8091)\n- **mongo-db-sapi-services:** MongoDB integration for audit record storage (port 8091)\n- **audits-oracle-sapi-services:** Oracle-based audit logging for transaction traceability (port 8091)\n\n**Standards Compliance:**\n- TM Forum TMF621 (Trouble Ticket Management) v1.3.1\n- TM Forum TMF672 (User Role & Permission Management) v1.4.1\n- RESTful API design principles\n- OAuth 2.0 security standards\n\n**Performance Metrics:**\n- Target response time: < 2 seconds for synchronous operations\n- Availability target: 99.5% monthly uptime\n- Maximum error rate: < 2% of transactions\n\n**Target Consumers:**\n- WhatsApp Business Channel\n- Customer Portal Applications\n- Mobile Applications\n- Internal Support Systems\n- Bot Service Integrations\n",
+    "version": "v1"
   },
-  "servers": [
-    {
-      "url": "https://mock-common-xapi-services.etb-apis.com",
-      "description": "Mock Server - Documentation and Testing"
-    },
-    {
-      "url": "https://common-xapi-services-prod.us-e2.cloudhub.io",
-      "description": "Production Server - Live Environment"
-    },
-    {
-      "url": "https://common-xapi-services-qa.us-e2.cloudhub.io",
-      "description": "QA Test Server - Validation Environment"
-    }
+  "host": "common-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
   ],
+  "externalDocs": {
+    "url": "http://",
+    "description": "## Architecture Overview\n\nThis API serves as the experience layer facade for common business operations across ETB's digital channels. It orchestrates calls to multiple system APIs (SAPIs) to provide unified, channel-optimized responses.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Bot Services:** Core system for PQR creation, updates, and user authentication\n- **MongoDB:** NoSQL database for audit trail and transaction logging\n- **Oracle Database:** Enterprise audit repository for compliance requirements\n\n**Data Flow Patterns:**\n- Synchronous request-response for all operations\n- Pass-through proxy pattern with data enrichment\n- Centralized error handling and transformation\n\n## Response Codes\n\n**API-Controlled Response Codes (in response body):**\n- `200`: Successful operation completion\n- `REQUEST_ERROR`: Malformed request or missing required parameters\n- `Unauthorized`: Invalid or expired authentication token\n- `NOT_FOUND`: Requested resource does not exist\n- `INTERNAL_SERVER_ERROR`: Backend system failure or timeout\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- Business-specific error codes in the response body\n- Detailed error messages for debugging\n- Origin tracking for multi-system error propagation\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Authentication operations: < 1 second\n- PQR creation: < 2 seconds\n- Query operations: < 1.5 seconds\n- Audit logging: Asynchronous (non-blocking)\n",
+    "x-amf-title": "Technical Architecture"
+  },
   "paths": {
     "/troubleTicket": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages customer service tickets (PQRs - Peticiones, Quejas, Reclamos) for ETB's telecommunications services. This resource provides complete lifecycle management for customer complaints, requests, and claims.\n\n**Data Integration:**\n- **bot-sapi-services:** Primary backend for PQR data persistence and business logic\n- **Bot Services:** External system providing PQR management capabilities\n\n**Business Intelligence Features:**\n- Automatic correlation of related PQRs through CUN (Código Único de Notificación) linkage\n- Massive failure tracking and correlation\n- Multi-channel support with origin tracking\n- File attachment support for evidence documentation\n",
       "get": {
-        "operationId": "get_troubleTicket",
-        "summary": "Retrieve Troubleticket",
-        "description": "The GET /troubleTicket operation retrieves trouble ticket details within ETB's common-xapi-services.  This RESTful API endpoint is crucial for ETB's internal systems and external partner integrations.  Business use cases include:\n\n* **Customer Service Representatives:** Accessing real-time ticket status and details to efficiently resolve customer issues related to broadband, landline, or mobile services.  This allows for faster troubleshooting and improved customer satisfaction.\n\n* **Network Operations Center (NOC):** Monitoring and managing network outages reflected in trouble tickets, enabling proactive intervention and minimizing service disruptions.\n\n* **Billing System Integration:**  Automating billing adjustments based on resolved trouble tickets, ensuring accurate invoicing and minimizing disputes.\n\n* **Third-party Vendor Integration:**  Providing external vendors (e.g., equipment providers) with access to relevant ticket information for faster repairs and maintenance.\n\nThe operation returns a JSON response containing ticket ID, status, description, assigned technician, creation date, and resolution details.  This data is vital for efficient fault management and improved operational efficiency across ETB's telecommunications services.\n",
-        "tags": [
-          "Common Xapi Services"
+        "operationId": "Query Trouble Tickets",
+        "description": "## Operation Summary\n\nRetrieves trouble ticket (PQR) information based on various search criteria. Supports flexible filtering to locate specific tickets or retrieve customer service history.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customers checking their PQR status through chatbot\n- **Portal Channel:** Web users viewing their complete service request history\n- **Mobile Channel:** App users tracking active complaints\n- **Agent Channel:** Support staff researching customer issues\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/get/v1` endpoint\n- Backend: Bot Services PQR management system\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds for single record queries\n- Caching: Not implemented (real-time data required)\n- Rate limits: 100 requests per second per client\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "**Business Purpose:** Identifies the channel or system originating the request for analytics and routing\n\n**Valid Values:** WHATSAPP, PORTAL, MOBILE_APP, AGENT_DESKTOP, IVR, WEB\n\n**Usage Examples:**\n- WHATSAPP: Requests from WhatsApp Business chatbot\n- PORTAL: Customer self-service web portal\n- MOBILE_APP: ETB mobile application\n\n**Channel Variations:** Required for all channels to ensure proper audit trail\n",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "CUSTOMER_ID",
+            "description": "**Business Purpose:** Primary customer identifier for retrieving associated PQRs\n\n**Validation Rules:**\n- Format: Numeric string\n- Length: 6-15 characters\n- Pattern: ^[0-9]{6,15}$\n\n**Usage Examples:**\n- Colombian ID: \"1234567890\"\n- NIT: \"900123456-1\"\n- Passport: \"ABC123456\"\n\n**Channel Variations:** Mobile and Portal channels auto-populate from session\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CUSTOMER_ID_TYPE",
+            "description": "**Business Purpose:** Specifies the type of identification document for validation\n\n**Valid Values:**\n- CC: Cédula de Ciudadanía (National ID)\n- CE: Cédula de Extranjería (Foreign ID)\n- PASAPORTE: Passport\n- NIT: Tax Identification Number (Business)\n- RUT: Registro Único Tributario\n- TI: Tarjeta de Identidad (Youth ID)\n\n**Business Meaning:** Required when CUSTOMER_ID is provided to ensure correct validation\n",
+            "required": false,
+            "in": "query",
+            "enum": [
+              "CC",
+              "CE",
+              "PASAPORTE",
+              "NIT",
+              "RUT",
+              "TI"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "FILTERS",
+            "description": "**Business Purpose:** Advanced filtering mechanism for complex queries\n\n**Validation Rules:**\n- Format: key:value pairs separated by semicolons\n- Pattern: ^([A-Za-z]+:[^;]+)(;[A-Za-z]+:[^;]+)*$\n\n**Valid Filter Keys:**\n- Phone: Service phone number\n- AccountNumber: Billing account\n- Status: PQR status (OPEN, CLOSED, IN_PROGRESS)\n- Priority: Ticket priority (HIGH, MEDIUM, LOW)\n- DateRange: Creation date range (YYYY-MM-DD:YYYY-MM-DD)\n\n**Usage Examples:**\n- Single filter: \"Phone:3001234567\"\n- Multiple filters: \"Status:OPEN;Priority:HIGH\"\n- Date range: \"DateRange:2024-01-01:2024-12-31\"\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "CUN",
+            "description": "**Business Purpose:** Unique notification code for direct PQR lookup\n\n**Validation Rules:**\n- Format: CUN followed by 10 digits\n- Pattern: ^CUN[0-9]{10}$\n\n**Business Meaning:** Primary key for PQR retrieval, supersedes all other filters when provided\n",
+            "required": false,
+            "in": "query",
+            "type": "string",
+            "pattern": "^CUN[0-9]{10}$"
+          },
+          {
+            "name": "PQR_ID",
+            "description": "**Business Purpose:** Alternative PQR identifier (legacy support)\n\n**Validation Rules:** Same as CUN parameter\n\n**Business Meaning:** Maintained for backward compatibility, maps to CUN internally\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "BILLING_ACCOUNT",
+            "description": "**Business Purpose:** Retrieves all PQRs associated with a billing account\n\n**Validation Rules:**\n- Format: Alphanumeric\n- Length: 8-12 characters\n\n**Usage Examples:** Used by agents to view all issues for a customer account\n",
+            "required": false,
+            "in": "query",
+            "type": "string",
+            "pattern": "^[A-Z0-9]{8,12}$"
+          },
+          {
+            "name": "PHONE",
+            "description": "**Business Purpose:** Service line number for PQR association\n\n**Validation Rules:**\n- Format: 10 digits\n- Pattern: ^[0-9]{10}$\n\n**Business Meaning:** Retrieves PQRs related to specific service lines\n",
+            "required": false,
+            "in": "query",
+            "type": "string",
+            "pattern": "^[0-9]{10}$"
+          },
+          {
+            "name": "LIMIT",
+            "description": "**Business Purpose:** Controls pagination size for large result sets\n\n**Validation Rules:**\n- Minimum: 1\n- Maximum: 100\n- Default: 10\n\n**Channel Variations:**\n- WhatsApp: Limited to 5 for optimal display\n- Portal/Web: Up to 50 records\n- Agent Desktop: Up to 100 records\n",
+            "required": false,
+            "in": "query",
+            "default": 10,
+            "type": "number",
+            "minimum": 1.0,
+            "maximum": 100.0
+          },
+          {
+            "name": "OFFSET",
+            "description": "**Business Purpose:** Pagination offset for result navigation\n\n**Validation Rules:**\n- Format: Numeric string\n- Minimum: 0\n\n**Usage Examples:** Used with LIMIT for paginated results (e.g., OFFSET=20&LIMIT=10 for page 3)\n",
+            "required": true,
+            "in": "query",
+            "default": "0",
+            "type": "string",
+            "pattern": "^[0-9]+$"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/TroubleticketModel"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "status": "success",
-                  "data": {
-                    "id": "ETB001234",
-                    "name": "Ejemplo ETB",
-                    "created": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "**API-Controlled Code:** `200` in response body\n\n**Response Structure:**\n- List of PQR records matching search criteria\n- Each record includes full ticket details, customer information, and status\n\n**Data Enrichment:**\n- Automatic timestamp formatting to ISO 8601\n- Status translation from codes to descriptive text\n- Related PQR linkage through CUN references\n\n**Business Context:**\n- Returns empty array if no matches found (not a 404 error)\n- Results sorted by creation date (newest first)\n- Sensitive data masked based on channel permissions\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "**API Error Code:** `REQUEST_ERROR`\n\n**Common Issues:**\n- Missing required ORIGIN parameter\n- Invalid enum value for CUSTOMER_ID_TYPE\n- Malformed FILTERS string syntax\n- LIMIT exceeds maximum allowed value\n- Invalid date format in filter ranges\n\n**System Context:** Validation performed at API Gateway level before backend call\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "**API Error Code:** `Unauthorized`\n\n**Common Issues:**\n- Missing or invalid OAuth 2.0 bearer token\n- Token expired (tokens valid for 3600 seconds)\n- Insufficient scope for operation\n- Client credentials not authorized for this resource\n\n**System Context:** Token validation performed against ETB OAuth provider\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "**API Error Code:** `NOT_FOUND`\n\n**Common Issues:**\n- Specific CUN does not exist in system\n- Customer ID has no associated PQRs\n- Invalid resource path (rare, usually caught as 400)\n\n**System Context:** Returned when specifically querying single resource by ID\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "**API Error Code:** `INTERNAL_SERVER_ERROR`\n\n**Common Issues:**\n- bot-sapi-services timeout (> 30 seconds)\n- Bot Services backend unavailable\n- Database connection failure\n- Unexpected data format from backend\n\n**System Context:** Error details logged with correlation ID for support investigation\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
         ]
       },
       "post": {
-        "operationId": "post_troubleTicket",
-        "summary": "Create Troubleticket",
-        "description": "The `/troubleTicket` POST operation within ETB's common-xapi-services allows creation of new trouble tickets for various telecommunication services.  This RESTful API endpoint is crucial for integrating ETB's internal systems and external partner applications.\n\nBusiness use cases include:\n\n* **Customer self-service portal:** Customers report faults (e.g., internet outage, landline issues) directly via a web or mobile application, creating tickets automatically.\n* **Field technician dispatch system:**  Upon ticket creation, the system automatically assigns the ticket to the appropriate technician based on location and expertise, improving response times.\n* **Network monitoring system:** Automated alerts triggered by network anomalies automatically generate trouble tickets for immediate investigation.\n* **Partner integrations:**  Third-party providers (e.g., ISPs) can integrate to report and track faults affecting their services on ETB's network.\n\nThe operation accepts a JSON payload specifying the fault details (service type, location, description, customer information).  Successful submission returns a unique ticket ID for tracking purposes.  This API integrates with ETB's CRM, service management, and network monitoring systems.\n",
-        "tags": [
-          "Common Xapi Services"
+        "operationId": "Create Trouble Ticket",
+        "description": "## Operation Summary\n\nCreates a new trouble ticket (PQR) in the system for customer service management. Supports comprehensive ticket creation with customer details, service information, problem description, and file attachments.\n\n## Use Cases\n\n- **WhatsApp Channel:** Automated PQR creation from chatbot conversations\n- **Portal Channel:** Customer self-service ticket submission\n- **Mobile Channel:** In-app complaint registration with photo evidence\n- **Agent Channel:** Support staff creating tickets on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/create/v1` endpoint\n- Backend: Bot Services PQR management system for ticket persistence\n- Audit: audits-oracle-sapi-services for transaction logging\n\n## Performance Characteristics\n\n- Response time: < 2 seconds for ticket creation\n- File attachments: Maximum 5 files, 10MB each\n- Rate limits: 50 creations per minute per customer\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/TroubleticketModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        },
-        "security": [
-          {
-            "etb_oauth2": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/{id}": {
-      "patch": {
-        "operationId": "patch_id",
-        "summary": "Modify {Id}",
-        "description": "The `/id` PATCH operation within ETB's common-xapi-services allows modification of existing telecommunications resources.  This RESTful endpoint facilitates dynamic updates to subscriber profiles, service configurations, and network elements.  Business use cases include real-time adjustments to bandwidth allocation for broadband customers experiencing congestion, immediate updates to roaming agreements for international travelers, and on-the-fly modifications to call routing based on network performance.  This operation is crucial for proactive network management and personalized service delivery.  It integrates with ETB's billing system for immediate cost adjustments following service changes and with the network monitoring system for automated fault remediation.  The PATCH request utilizes JSON payloads specifying the fields to be updated, ensuring granular control and minimizing unnecessary data transmission.  Successful updates trigger downstream processes, ensuring seamless service continuity and efficient resource utilization across ETB's infrastructure.\n",
-        "tags": [
-          "Common Xapi Services"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
             "required": true,
-            "description": "Unique identifier for id",
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
             "schema": {
-              "type": "string"
-            },
-            "example": "ETB001234567"
-          },
-          {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
+              "$ref": "#/definitions/type_2"
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/ResourceModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_3"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
+        ]
+      }
+    },
+    "/troubleTicket/{id}": {
+      "patch": {
+        "operationId": "Update Trouble Ticket",
+        "description": "## Operation Summary\n\nUpdates an existing trouble ticket with new information, status changes, or additional attachments. Supports partial updates following PATCH semantics.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer adding information to open ticket\n- **Portal Channel:** Status updates and additional evidence submission\n- **Mobile Channel:** Customer feedback on resolution attempts\n- **Agent Channel:** Support staff updating ticket status and adding notes\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/update/v1` endpoint\n- Backend: Bot Services PQR management system\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds for updates\n- Partial updates supported (only send changed fields)\n- Audit trail maintained for all changes\n",
+        "consumes": [
+          "application/json"
         ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "description": "**Business Purpose:** Unique identifier (CUN) of the PQR to update\n\n**Validation Rules:**\n- Format: CUN followed by 10 digits\n- Must exist in the system\n\n**Business Context:** Used for updating existing tickets with new information or status changes\n",
+            "required": true,
+            "in": "path",
+            "type": "string",
+            "pattern": "^CUN[0-9]{10}$"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_4"
             }
           }
-        }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_5"
+            }
+          },
+          "400": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "401": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "404": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "500": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
+          }
+        ]
       }
     },
     "/permission": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages user authentication and authorization for ETB's digital services. Validates credentials and generates authentication tokens for secure access to customer accounts and services.\n\n**Data Integration:**\n- **bot-sapi-services:** Authentication service provider\n- **Bot Services:** External authentication system `/api/mietb/v1/authmail`\n\n**Business Intelligence Features:**\n- Multi-factor authentication support\n- Service-level permission mapping\n- Session management and token generation\n- User profile enrichment with associated services\n",
       "post": {
-        "operationId": "post_permission",
-        "summary": "Create Permission",
-        "description": "The `/permission` POST operation within ETB's common-xapi-services allows for dynamic provisioning and management of user access rights across various telecommunications services.  This is crucial for ETB's operational efficiency and security.  Business use cases include: granting a new subscriber access to specific value-added services (VAS) like international roaming or premium SMS; enabling a technician to access customer network information for troubleshooting; or revoking access to a service after a customer cancels their subscription.  This RESTful API integrates with ETB's billing system, customer relationship management (CRM), and network management platforms.  Successful execution returns a permission ID, enabling subsequent auditing and management.  Failure responses provide detailed error codes for troubleshooting integration issues.  This operation is fundamental to ETB's ability to deliver personalized and secure telecommunications services.\n",
-        "tags": [
-          "Common Xapi Services"
+        "operationId": "Authenticate User",
+        "description": "## Operation Summary\n\nAuthenticates user credentials and returns an authorization token with user profile and associated services. Supports multiple authentication types for different business scenarios.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer authentication for secure operations\n- **Portal Channel:** Web login for account management\n- **Mobile Channel:** App authentication with biometric support\n- **Agent Channel:** Not applicable (agents use different authentication)\n\n## Data Sources\n\n- Primary: bot-sapi-services `/mietb/authmail/v1` endpoint\n- Backend: Bot Services authentication system\n- Enrichment: User profile and service catalog from MDM\n\n## Performance Characteristics\n\n- Response time: < 1 second for authentication\n- Token validity: 3600 seconds (1 hour)\n- Rate limits: 5 attempts per minute per user (brute force protection)\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "Parameter that allows the origin of the request to be identified",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_6"
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/PermissionModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_7"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/audit": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Creates audit records for DIJIN (Dirección de Investigación Criminal e INTERPOL) compliance, tracking sensitive operations and data access for regulatory requirements.\n\n**Data Integration:**\n- **mongo-db-sapi-services:** Primary storage for audit records\n- **MongoDB:** NoSQL database for flexible audit data structure\n\n**Business Intelligence Features:**\n- Compliance tracking for Colombian regulations\n- User activity monitoring\n- Sensitive data access logging\n- Forensic investigation support\n",
       "post": {
-        "operationId": "post_audit",
-        "summary": "Create Audit",
-        "description": "The `/audit` endpoint in ETB's common-xapi-services facilitates logging and auditing of critical telecommunications events.  This POST operation allows various ETB systems to record and timestamp significant actions, ensuring comprehensive audit trails for compliance and troubleshooting.\n\n**Business Use Cases:**  This operation is crucial for tracking changes to customer accounts (e.g., service upgrades, address modifications), network configuration alterations (e.g., routing changes, bandwidth adjustments), and security-related events (e.g., login attempts, access control modifications).  It integrates with ETB's billing system to record payment transactions and with the network management system to log network performance metrics.\n\n**Integration:** The `/audit` endpoint accepts JSON payloads conforming to a predefined schema, enabling seamless integration with diverse ETB applications.  This ensures consistent logging across various systems, providing a centralized repository for auditing and analysis.  Data from this endpoint feeds ETB's security information and event management (SIEM) system for threat detection and reporting.  This robust auditing capability is vital for regulatory compliance and efficient operational management within ETB's telecommunications infrastructure.\n",
-        "tags": [
-          "Common Xapi Services"
+        "operationId": "Create DIJIN Audit Record",
+        "description": "## Operation Summary\n\nCreates an audit record in MongoDB for DIJIN compliance tracking. Records user actions, data access, and system operations for regulatory and security purposes.\n\n## Use Cases\n\n- **All Channels:** Automatic audit logging for sensitive operations\n- **Compliance:** DIJIN regulatory requirement fulfillment\n- **Security:** Forensic trail for incident investigation\n- **Internal:** System monitoring and usage analytics\n\n## Data Sources\n\n- Primary: mongo-db-sapi-services `/mongo/v1/audit/dijin` endpoint\n- Backend: MongoDB audit collection\n\n## Performance Characteristics\n\n- Response time: < 500ms (asynchronous preferred)\n- No rate limits (audit logging must not be restricted)\n- High availability requirement: 99.9% uptime\n\n## Security Notes\n\n- Authentication temporarily disabled for critical audit scenarios\n- All requests logged regardless of authentication status\n- Tamper-proof design with write-only access pattern\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "$ref": "#/definitions/type_8"
+            }
           }
         ],
         "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/AuditModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+          "200": {
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_9"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        },
-        "security": [
-          {
-            "etb_oauth2": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "id": {
-                    "type": "string"
-                  },
-                  "name": {
-                    "type": "string"
-                  },
-                  "status": {
-                    "type": "string",
-                    "enum": [
-                      "active",
-                      "inactive",
-                      "pending"
-                    ]
-                  },
-                  "metadata": {
-                    "type": "object",
-                    "properties": {
-                      "source": {
-                        "type": "string"
-                      },
-                      "timestamp": {
-                        "type": "string",
-                        "format": "date-time"
-                      }
-                    }
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
+            "description": "",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
             }
           }
         }
       }
     }
   },
-  "components": {
-    "schemas": {
-      "ErrorResponse": {
-        "type": "object",
-        "required": [
-          "status",
-          "code",
-          "message"
-        ],
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "HTTP status code",
-            "example": 400
-          },
-          "code": {
-            "type": "string",
-            "description": "Business-specific error code",
-            "example": "VALIDATION_ERROR"
-          },
-          "message": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "description": "Detailed error message",
-                "example": "Invalid request parameters"
+  "definitions": {
+    "type": {
+      "example": {
+        "value": {
+          "codeResponse": "200",
+          "messageResponse": "",
+          "pqrs": [
+            {
+              "agenda": null,
+              "agendas": null,
+              "activities": [
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:12:32Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:12:32",
+                    "format4": "02/08/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277393",
+                  "management": "MIXTA",
+                  "managementDescription": "PENDIENTE ENTREGA",
+                  "name": "INSTANCIA ADMINISTRATIVA",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                },
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:12:32Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:12:32",
+                    "format4": "02/08/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277394",
+                  "management": "SIN NOTIFICAR",
+                  "managementDescription": "SIN TEXTO",
+                  "name": "NOTIFICACION",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                },
+                {
+                  "assignedUser": "laurros1",
+                  "creationUser": "laurros1",
+                  "description": "",
+                  "expirationDate": {
+                    "date": "2025-08-02T15:16:57Z",
+                    "format1": "02/08",
+                    "format2": "02/08/2025",
+                    "format3": "02/08/2025 15:16:57",
+                    "format4": "02/08/2025 03:16:57 PM",
+                    "day": {
+                      "format1": "02",
+                      "format2": "Sáb.",
+                      "format3": "Sábado"
+                    },
+                    "month": {
+                      "format1": "08",
+                      "format2": "Ago.",
+                      "format3": "Agosto"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:16:57",
+                      "format2": "03:16:57 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "16",
+                      "format6": "57"
+                    }
+                  },
+                  "id": "MDM-PQR-ACT-108277395",
+                  "management": "SIN IMPUTABILIDAD",
+                  "managementDescription": "SIN TEXTO",
+                  "name": "IMPUTABILIDAD(F28)",
+                  "startDate": {
+                    "date": "2025-07-28T15:12:32Z",
+                    "format1": "28/07",
+                    "format2": "28/07/2025",
+                    "format3": "28/07/2025 15:12:32",
+                    "format4": "28/07/2025 03:12:32 PM",
+                    "day": {
+                      "format1": "28",
+                      "format2": "Lun.",
+                      "format3": "Lunes"
+                    },
+                    "month": {
+                      "format1": "07",
+                      "format2": "Jul.",
+                      "format3": "Julio"
+                    },
+                    "year": {
+                      "format1": "25",
+                      "format2": "2025",
+                      "format3": "02025"
+                    },
+                    "hour": {
+                      "format1": "15:12:32",
+                      "format2": "03:12:32 PM",
+                      "format3": "15",
+                      "format4": "03 PM",
+                      "format5": "12",
+                      "format6": "32"
+                    }
+                  },
+                  "state": "Cerrado"
+                }
+              ],
+              "assignedUser": "laurros1",
+              "billingAccount": "12054363574",
+              "characteristics": [
+                {
+                  "action": null,
+                  "name": "DescripcionTipologia",
+                  "value": "Información con la  gestión y requisitos del trámite de  cancelación de los servicios suscritos"
+                },
+                {
+                  "action": null,
+                  "name": "AccionSeguirTipologia",
+                  "value": "Entregar la información de requisitos o estado del trámite, según el caso. Si la orden presenta alguna novedad, reingresar o escalar."
+                },
+                {
+                  "action": null,
+                  "name": "AUDITORIA_PARRAFO",
+                  "value": "NO"
+                },
+                {
+                  "action": null,
+                  "name": "estado_pqr_homologado",
+                  "value": "Resuelto"
+                }
+              ],
+              "contactDocumentNumber": "52530339",
+              "contactDocumentType": "CC",
+              "creationDate": {
+                "date": "2025-07-28T15:12:34Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:12:34",
+                "format4": "28/07/2025 03:12:34 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:12:34",
+                  "format2": "03:12:34 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "12",
+                  "format6": "34"
+                }
+              },
+              "creationUser": "laurros1",
+              "isAgendaSuspended": false,
+              "isSon": false,
+              "notificationMedium": "TELEFONICO",
+              "modificationDate": {
+                "date": "2025-07-28T15:17:12.542Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:17:12",
+                "format4": "28/07/2025 03:17:12 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:17:12",
+                  "format2": "03:17:12 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "17",
+                  "format6": "12"
+                }
+              },
+              "order": null,
+              "radicationDate": {
+                "date": "2025-07-28T15:10:07Z",
+                "format1": "28/07",
+                "format2": "28/07/2025",
+                "format3": "28/07/2025 15:10:07",
+                "format4": "28/07/2025 03:10:07 PM",
+                "day": {
+                  "format1": "28",
+                  "format2": "Lun.",
+                  "format3": "Lunes"
+                },
+                "month": {
+                  "format1": "07",
+                  "format2": "Jul.",
+                  "format3": "Julio"
+                },
+                "year": {
+                  "format1": "25",
+                  "format2": "2025",
+                  "format3": "02025"
+                },
+                "hour": {
+                  "format1": "15:10:07",
+                  "format2": "03:10:07 PM",
+                  "format3": "15",
+                  "format4": "03 PM",
+                  "format5": "10",
+                  "format6": "07"
+                }
+              },
+              "receptionMedium": "LÍNEA TELEFÓNICA",
+              "service": null,
+              "subChannel": "TELEFÓNICO",
+              "suspensionDetail": null,
+              "solutionDate": null,
+              "cUN": "",
+              "cunMassiveFailure": "",
+              "cunRelated": "",
+              "customer": {
+                "aTDP": null,
+                "birthday": null,
+                "business": null,
+                "collectionCommunications": null,
+                "documentNumber": "52530339",
+                "documentType": "CC",
+                "email": "",
+                "mobilePhone": null,
+                "mobilePhone2": null,
+                "name": {
+                  "completeName": "OLGA CAROLINA CASTILLO ROMERO",
+                  "firstName": "OLGA",
+                  "firstSurname": "CASTILLO",
+                  "names": "OLGA CAROLINA",
+                  "secondName": "CAROLINA",
+                  "secondSurname": "ROMERO",
+                  "surnames": "CASTILLO ROMERO"
+                },
+                "segmentation": null,
+                "validationCode": null
+              },
+              "description": "NOMBRE: CAROLINA\nCEDULA: 52530339\nTEL: 3124853341  \nCORREO: condorcas@hotmail.com  \nDIRRECION: CL 74C SUR 12 20\nLINEA: SR-30593591 \t\nCUENTA: 12054363574\nMOTIVO: DESEA CANCELAR Y BA  A REALIZAR LA CARTA PARA QUE NO LE COBREN EL SERVICIO POR FALLA MASIVA YA QUE AL DIA DE HOY AUN NO SE LE SOLUCIONA LA FALLA \n",
+              "id": "MDM-PQR-52226815",
+              "idRemedy": "",
+              "isYoungFail": false,
+              "phone": "",
+              "response": "",
+              "serviceAccount": "CS-1375757",
+              "serviceId": "CS-1375757",
+              "solution": "CLIENTE INDIDICA QUE SE VA  HACERCAR A UN PUNTO HACER EL TRAMITE ",
+              "state": "Resuelto",
+              "stateTechnical": "Cerrado",
+              "typology": {
+                "causal": "REQUISITOS Y ESTADO DEL TRAMITE",
+                "class": "PETICION",
+                "cUN": false,
+                "extension": {
+                  "closeType": "ACCEDE",
+                  "notificationMedium": "TELEFONICO",
+                  "operator": "ETB S.A. ESP",
+                  "operatorLsp": "RECEPCIÓN",
+                  "receptionMedium": "LÍNEA TELEFÓNICA"
+                },
+                "product": "PAQUETE",
+                "reason": "INFORMACION Y/O DOCUMENTACION",
+                "remedy": false,
+                "symptom": "CANCELACIÓN",
+                "technology": "FTTC",
+                "type": "PRODUCTO",
+                "version": "31"
               }
             }
-          },
-          "cause": {
-            "type": "array",
-            "description": "Error cause information",
-            "items": {
-              "type": "object",
-              "properties": {
-                "origin": {
-                  "type": "string",
-                  "example": "XAPI-Services"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Validation failed"
+          ]
+        }
+      },
+      "type": "object",
+      "required": [
+        "pqrs"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "pqrs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "activities",
+              "characteristics",
+              "creationDate",
+              "modificationDate",
+              "radicationDate",
+              "customer",
+              "typology"
+            ],
+            "properties": {
+              "agenda": {
+                "type": "null"
+              },
+              "agendas": {
+                "type": "null"
+              },
+              "activities": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "expirationDate",
+                    "startDate"
+                  ],
+                  "properties": {
+                    "assignedUser": {
+                      "example": "laurros1",
+                      "type": "string"
+                    },
+                    "creationUser": {
+                      "example": "laurros1",
+                      "type": "string"
+                    },
+                    "description": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "expirationDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-08-02T15:12:32Z",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "02/08",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "02/08/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "02/08/2025 15:12:32",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "02/08/2025 03:12:32 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "02",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Sáb.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Sábado",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "08",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Ago.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Agosto",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "15:12:32",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "03:12:32 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "15",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "03 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "12",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "32",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "id": {
+                      "example": "MDM-PQR-ACT-108277393",
+                      "type": "string"
+                    },
+                    "management": {
+                      "example": "MIXTA",
+                      "type": "string"
+                    },
+                    "managementDescription": {
+                      "example": "PENDIENTE ENTREGA",
+                      "type": "string"
+                    },
+                    "name": {
+                      "example": "INSTANCIA ADMINISTRATIVA",
+                      "type": "string"
+                    },
+                    "startDate": {
+                      "type": "object",
+                      "required": [
+                        "day",
+                        "month",
+                        "year",
+                        "hour"
+                      ],
+                      "properties": {
+                        "date": {
+                          "example": "2025-07-28T15:12:32Z",
+                          "type": "string"
+                        },
+                        "format1": {
+                          "example": "28/07",
+                          "type": "string"
+                        },
+                        "format2": {
+                          "example": "28/07/2025",
+                          "type": "string"
+                        },
+                        "format3": {
+                          "example": "28/07/2025 15:12:32",
+                          "type": "string"
+                        },
+                        "format4": {
+                          "example": "28/07/2025 03:12:32 PM",
+                          "type": "string"
+                        },
+                        "day": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "28",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Lun.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Lunes",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "month": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "07",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "Jul.",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "Julio",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "year": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "25",
+                              "type": "string"
+                            },
+                            "format2": {
+                              "example": "2025",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "02025",
+                              "type": "string"
+                            }
+                          }
+                        },
+                        "hour": {
+                          "type": "object",
+                          "properties": {
+                            "format1": {
+                              "example": "15:12:32",
+                              "type": "string",
+                              "format": "time"
+                            },
+                            "format2": {
+                              "example": "03:12:32 PM",
+                              "type": "string"
+                            },
+                            "format3": {
+                              "example": "15",
+                              "type": "string"
+                            },
+                            "format4": {
+                              "example": "03 PM",
+                              "type": "string"
+                            },
+                            "format5": {
+                              "example": "12",
+                              "type": "string"
+                            },
+                            "format6": {
+                              "example": "32",
+                              "type": "string"
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "state": {
+                      "example": "Cerrado",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "assignedUser": {
+                "example": "laurros1",
+                "type": "string"
+              },
+              "billingAccount": {
+                "example": "12054363574",
+                "type": "string"
+              },
+              "characteristics": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "action": {
+                      "type": "null"
+                    },
+                    "name": {
+                      "example": "DescripcionTipologia",
+                      "type": "string"
+                    },
+                    "value": {
+                      "example": "Información con la  gestión y requisitos del trámite de  cancelación de los servicios suscritos",
+                      "type": "string"
+                    }
+                  }
+                }
+              },
+              "contactDocumentNumber": {
+                "example": "52530339",
+                "type": "string"
+              },
+              "contactDocumentType": {
+                "example": "CC",
+                "type": "string"
+              },
+              "creationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:12:34Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:12:34",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:12:34 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:12:34",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:12:34 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "12",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "34",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "creationUser": {
+                "example": "laurros1",
+                "type": "string"
+              },
+              "isAgendaSuspended": {
+                "example": false,
+                "type": "boolean"
+              },
+              "isSon": {
+                "example": false,
+                "type": "boolean"
+              },
+              "notificationMedium": {
+                "example": "TELEFONICO",
+                "type": "string"
+              },
+              "modificationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:17:12.542Z",
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:17:12",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:17:12 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:17:12",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:17:12 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "17",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "12",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "order": {
+                "type": "null"
+              },
+              "radicationDate": {
+                "type": "object",
+                "required": [
+                  "day",
+                  "month",
+                  "year",
+                  "hour"
+                ],
+                "properties": {
+                  "date": {
+                    "example": "2025-07-28T15:10:07Z",
+                    "type": "string"
+                  },
+                  "format1": {
+                    "example": "28/07",
+                    "type": "string"
+                  },
+                  "format2": {
+                    "example": "28/07/2025",
+                    "type": "string"
+                  },
+                  "format3": {
+                    "example": "28/07/2025 15:10:07",
+                    "type": "string"
+                  },
+                  "format4": {
+                    "example": "28/07/2025 03:10:07 PM",
+                    "type": "string"
+                  },
+                  "day": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "28",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Lun.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Lunes",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "month": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "07",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "Jul.",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "Julio",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "year": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "25",
+                        "type": "string"
+                      },
+                      "format2": {
+                        "example": "2025",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "02025",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "hour": {
+                    "type": "object",
+                    "properties": {
+                      "format1": {
+                        "example": "15:10:07",
+                        "type": "string",
+                        "format": "time"
+                      },
+                      "format2": {
+                        "example": "03:10:07 PM",
+                        "type": "string"
+                      },
+                      "format3": {
+                        "example": "15",
+                        "type": "string"
+                      },
+                      "format4": {
+                        "example": "03 PM",
+                        "type": "string"
+                      },
+                      "format5": {
+                        "example": "10",
+                        "type": "string"
+                      },
+                      "format6": {
+                        "example": "07",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              },
+              "receptionMedium": {
+                "example": "LÍNEA TELEFÓNICA",
+                "type": "string"
+              },
+              "service": {
+                "type": "null"
+              },
+              "subChannel": {
+                "example": "TELEFÓNICO",
+                "type": "string"
+              },
+              "suspensionDetail": {
+                "type": "null"
+              },
+              "solutionDate": {
+                "type": "null"
+              },
+              "cUN": {
+                "example": "",
+                "type": "string"
+              },
+              "cunMassiveFailure": {
+                "example": "",
+                "type": "string"
+              },
+              "cunRelated": {
+                "example": "",
+                "type": "string"
+              },
+              "customer": {
+                "type": "object",
+                "required": [
+                  "name"
+                ],
+                "properties": {
+                  "aTDP": {
+                    "type": "null"
+                  },
+                  "birthday": {
+                    "type": "null"
+                  },
+                  "business": {
+                    "type": "null"
+                  },
+                  "collectionCommunications": {
+                    "type": "null"
+                  },
+                  "documentNumber": {
+                    "example": "52530339",
+                    "type": "string"
+                  },
+                  "documentType": {
+                    "example": "CC",
+                    "type": "string"
+                  },
+                  "email": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "mobilePhone": {
+                    "type": "null"
+                  },
+                  "mobilePhone2": {
+                    "type": "null"
+                  },
+                  "name": {
+                    "type": "object",
+                    "properties": {
+                      "completeName": {
+                        "example": "OLGA CAROLINA CASTILLO ROMERO",
+                        "type": "string"
+                      },
+                      "firstName": {
+                        "example": "OLGA",
+                        "type": "string"
+                      },
+                      "firstSurname": {
+                        "example": "CASTILLO",
+                        "type": "string"
+                      },
+                      "names": {
+                        "example": "OLGA CAROLINA",
+                        "type": "string"
+                      },
+                      "secondName": {
+                        "example": "CAROLINA",
+                        "type": "string"
+                      },
+                      "secondSurname": {
+                        "example": "ROMERO",
+                        "type": "string"
+                      },
+                      "surnames": {
+                        "example": "CASTILLO ROMERO",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "segmentation": {
+                    "type": "null"
+                  },
+                  "validationCode": {
+                    "type": "null"
+                  }
+                }
+              },
+              "description": {
+                "example": "NOMBRE: CAROLINA\nCEDULA: 52530339\nTEL: 3124853341  \nCORREO: condorcas@hotmail.com  \nDIRRECION: CL 74C SUR 12 20\nLINEA: SR-30593591 \t\nCUENTA: 12054363574\nMOTIVO: DESEA CANCELAR Y BA  A REALIZAR LA CARTA PARA QUE NO LE COBREN EL SERVICIO POR FALLA MASIVA YA QUE AL DIA DE HOY AUN NO SE LE SOLUCIONA LA FALLA \n",
+                "type": "string"
+              },
+              "id": {
+                "example": "MDM-PQR-52226815",
+                "type": "string"
+              },
+              "idRemedy": {
+                "example": "",
+                "type": "string"
+              },
+              "isYoungFail": {
+                "example": false,
+                "type": "boolean"
+              },
+              "phone": {
+                "example": "",
+                "type": "string"
+              },
+              "response": {
+                "example": "",
+                "type": "string"
+              },
+              "serviceAccount": {
+                "example": "CS-1375757",
+                "type": "string"
+              },
+              "serviceId": {
+                "example": "CS-1375757",
+                "type": "string"
+              },
+              "solution": {
+                "example": "CLIENTE INDIDICA QUE SE VA  HACERCAR A UN PUNTO HACER EL TRAMITE ",
+                "type": "string"
+              },
+              "state": {
+                "example": "Resuelto",
+                "type": "string"
+              },
+              "stateTechnical": {
+                "example": "Cerrado",
+                "type": "string"
+              },
+              "typology": {
+                "type": "object",
+                "required": [
+                  "extension"
+                ],
+                "properties": {
+                  "causal": {
+                    "example": "REQUISITOS Y ESTADO DEL TRAMITE",
+                    "type": "string"
+                  },
+                  "class": {
+                    "example": "PETICION",
+                    "type": "string"
+                  },
+                  "cUN": {
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "extension": {
+                    "type": "object",
+                    "properties": {
+                      "closeType": {
+                        "example": "ACCEDE",
+                        "type": "string"
+                      },
+                      "notificationMedium": {
+                        "example": "TELEFONICO",
+                        "type": "string"
+                      },
+                      "operator": {
+                        "example": "ETB S.A. ESP",
+                        "type": "string"
+                      },
+                      "operatorLsp": {
+                        "example": "RECEPCIÓN",
+                        "type": "string"
+                      },
+                      "receptionMedium": {
+                        "example": "LÍNEA TELEFÓNICA",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "product": {
+                    "example": "PAQUETE",
+                    "type": "string"
+                  },
+                  "reason": {
+                    "example": "INFORMACION Y/O DOCUMENTACION",
+                    "type": "string"
+                  },
+                  "remedy": {
+                    "example": false,
+                    "type": "boolean"
+                  },
+                  "symptom": {
+                    "example": "CANCELACIÓN",
+                    "type": "string"
+                  },
+                  "technology": {
+                    "example": "FTTC",
+                    "type": "string"
+                  },
+                  "type": {
+                    "example": "PRODUCTO",
+                    "type": "string"
+                  },
+                  "version": {
+                    "example": "31",
+                    "type": "string"
+                  }
                 }
               }
             }
@@ -670,160 +1972,777 @@
         }
       }
     },
-    "parameters": {
-      "CorrelationId": {
-        "name": "X-CORRELATION-ID",
-        "in": "header",
-        "required": false,
-        "description": "Correlation ID for transaction traceability",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
-      "SystemId": {
-        "name": "systemId",
-        "in": "header",
-        "required": true,
-        "description": "Source system identifier for audit purposes",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "MIGRACION",
-            "TRANSACCCIONES_OM",
-            "MAYORISTAS",
-            "OTINICIATIVAS"
+    "type_1": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
+          "message": {
+            "message": "Required query parameter document not specified"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
+            }
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
           ]
         }
       },
-      "ProcessName": {
-        "name": "processName",
-        "in": "header",
-        "required": false,
-        "description": "Process name for internal audit",
-        "schema": {
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "REQUEST_ERROR",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Required query parameter document not specified",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "XXX-xapi-services",
+                "type": "string"
+              },
+              "message": {
+                "example": "org.mule.module.apikit.api.exception.InvalidQueryParameterException",
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_2": {
+      "example": {
+        "pqr": {
+          "customer": {
+            "documentNumber": "87654321",
+            "documentType": "CC",
+            "phone": "3057000421",
+            "user": "USUARIO_SISTEMA"
+          },
+          "service": {
+            "product": "INTERNET_FIBRA"
+          },
+          "detailPqr": {
+            "contact": {
+              "documentNumber": "12345678",
+              "documentType": "CC",
+              "email": "cliente@email.com",
+              "phone": "3001234567"
+            },
+            "cunMassiveFailure": "CUN-MASIVA-001",
+            "cunRelated": "CUN-RELACIONADO-001",
+            "description": "Descripción detallada del problema",
+            "failure": {
+              "botPeticion": "FALLA_INTERNET",
+              "causal": "FALLA_TECNICA",
+              "class": "INTERNET",
+              "description": "No tengo conexión a internet",
+              "reason": "FALLA TECNICA",
+              "symptom": "SIN_CONEXION"
+            },
+            "solution": "Solución aplicada",
+            "state": "ABIERTA",
+            "attachment": [
+              {
+                "id": "",
+                "description": "",
+                "attachmentType": "",
+                "mimeType": "image/png",
+                "file": "JVBERi0xLjQKJcOkw7zDtsO...",
+                "name": "March Bill",
+                "size": "",
+                "url": ""
+              }
+            ]
+          }
+        }
+      },
+      "type": "object",
+      "required": [
+        "pqr"
+      ],
+      "properties": {
+        "pqr": {
+          "type": "object",
+          "required": [
+            "customer",
+            "service",
+            "detailPqr"
+          ],
+          "properties": {
+            "customer": {
+              "type": "object",
+              "properties": {
+                "documentNumber": {
+                  "example": "87654321",
+                  "type": "string"
+                },
+                "documentType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "phone": {
+                  "example": "3057000421",
+                  "type": "string"
+                },
+                "user": {
+                  "example": "USUARIO_SISTEMA",
+                  "type": "string"
+                }
+              }
+            },
+            "service": {
+              "type": "object",
+              "properties": {
+                "product": {
+                  "example": "INTERNET_FIBRA",
+                  "type": "string"
+                }
+              }
+            },
+            "detailPqr": {
+              "type": "object",
+              "required": [
+                "contact",
+                "failure",
+                "attachment"
+              ],
+              "properties": {
+                "contact": {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "example": "12345678",
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "example": "CC",
+                      "type": "string"
+                    },
+                    "email": {
+                      "example": "cliente@email.com",
+                      "type": "string"
+                    },
+                    "phone": {
+                      "example": "3001234567",
+                      "type": "string"
+                    }
+                  }
+                },
+                "cunMassiveFailure": {
+                  "example": "CUN-MASIVA-001",
+                  "type": "string"
+                },
+                "cunRelated": {
+                  "example": "CUN-RELACIONADO-001",
+                  "type": "string"
+                },
+                "description": {
+                  "example": "Descripción detallada del problema",
+                  "type": "string"
+                },
+                "failure": {
+                  "type": "object",
+                  "properties": {
+                    "botPeticion": {
+                      "example": "FALLA_INTERNET",
+                      "type": "string"
+                    },
+                    "causal": {
+                      "example": "FALLA_TECNICA",
+                      "type": "string"
+                    },
+                    "class": {
+                      "example": "INTERNET",
+                      "type": "string"
+                    },
+                    "description": {
+                      "example": "No tengo conexión a internet",
+                      "type": "string"
+                    },
+                    "reason": {
+                      "example": "FALLA TECNICA",
+                      "type": "string"
+                    },
+                    "symptom": {
+                      "example": "SIN_CONEXION",
+                      "type": "string"
+                    }
+                  }
+                },
+                "solution": {
+                  "example": "Solución aplicada",
+                  "type": "string"
+                },
+                "state": {
+                  "example": "ABIERTA",
+                  "type": "string"
+                },
+                "attachment": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "description": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "attachmentType": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "mimeType": {
+                        "example": "image/png",
+                        "type": "string"
+                      },
+                      "file": {
+                        "example": "JVBERi0xLjQKJcOkw7zDtsO...",
+                        "type": "string"
+                      },
+                      "name": {
+                        "example": "March Bill",
+                        "type": "string"
+                      },
+                      "size": {
+                        "example": "",
+                        "type": "string"
+                      },
+                      "url": {
+                        "example": "",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_3": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "example": 200,
+          "type": "integer"
+        },
+        "code": {
+          "example": "Ok",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Se registro la pqr satisfactoriamente",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
           "type": "string"
         }
       }
     },
-    "responses": {
-      "BadRequest": {
-        "description": "Invalid request - Missing or incorrect parameters",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+    "type_4": {
+      "example": {
+        "appoitment": {
+          "appoitmentDecision": ""
+        },
+        "customer": {
+          "documentNumber": "12345678",
+          "documentType": "CC",
+          "email": "cliente@email.com",
+          "phone": "3001234567"
+        },
+        "pqr": {
+          "attachment": [
+            {
+              "attachmentType": "",
+              "description": "",
+              "file": "JVBERi0xLjQKJcOkw7zDtsO...",
+              "id": "",
+              "mimeType": "image/png",
+              "name": "March Bill",
+              "size": "",
+              "url": ""
+            }
+          ],
+          "cunMassiveFailure": "CUN-MASIVA-001",
+          "cunRelated": "CUN-RELACIONADO-001",
+          "description": "Descripción detallada del problema",
+          "solution": "Solución aplicada",
+          "state": "ABIERTA",
+          "number": ""
+        },
+        "service": {
+          "product": "INTERNET_FIBRA"
+        }
+      },
+      "type": "object",
+      "properties": {
+        "appoitment": {
+          "type": "object",
+          "properties": {
+            "appoitmentDecision": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "customer": {
+          "type": "object",
+          "properties": {
+            "documentNumber": {
+              "example": "12345678",
+              "type": "string"
             },
-            "example": {
-              "status": 400,
-              "code": "REQUEST_ERROR",
-              "message": {
-                "message": "Required query parameters not specified"
-              },
-              "cause": [
-                {
-                  "origin": "XAPI-Services",
-                  "message": "Validation failed"
+            "documentType": {
+              "example": "CC",
+              "type": "string"
+            },
+            "email": {
+              "example": "cliente@email.com",
+              "type": "string"
+            },
+            "phone": {
+              "example": "3001234567",
+              "type": "string"
+            }
+          }
+        },
+        "pqr": {
+          "type": "object",
+          "required": [
+            "attachment"
+          ],
+          "properties": {
+            "attachment": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "attachmentType": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "description": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "file": {
+                    "example": "JVBERi0xLjQKJcOkw7zDtsO...",
+                    "type": "string"
+                  },
+                  "id": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "mimeType": {
+                    "example": "image/png",
+                    "type": "string"
+                  },
+                  "name": {
+                    "example": "March Bill",
+                    "type": "string"
+                  },
+                  "size": {
+                    "example": "",
+                    "type": "string"
+                  },
+                  "url": {
+                    "example": "",
+                    "type": "string"
+                  }
                 }
-              ]
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized - Invalid or expired token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 401,
-              "code": "Unauthorized",
-              "message": {
-                "message": "Invalid or expired access token"
               }
+            },
+            "cunMassiveFailure": {
+              "example": "CUN-MASIVA-001",
+              "type": "string"
+            },
+            "cunRelated": {
+              "example": "CUN-RELACIONADO-001",
+              "type": "string"
+            },
+            "description": {
+              "example": "Descripción detallada del problema",
+              "type": "string"
+            },
+            "solution": {
+              "example": "Solución aplicada",
+              "type": "string"
+            },
+            "state": {
+              "example": "ABIERTA",
+              "type": "string"
+            },
+            "number": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "service": {
+          "type": "object",
+          "properties": {
+            "product": {
+              "example": "INTERNET_FIBRA",
+              "type": "string"
             }
           }
         }
+      }
+    },
+    "type_5": {
+      "type": "object",
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "status": {
+          "example": 200,
+          "type": "integer"
+        },
+        "code": {
+          "example": "Ok",
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "Se actualizo la pqr satisfactoriamente",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        }
+      }
+    },
+    "type_6": {
+      "example": {
+        "credentials": {
+          "username": "",
+          "password": ""
+        },
+        "authentication_type": "type bussiness",
+        "operation": "type bussiness"
       },
-      "Forbidden": {
-        "description": "Access forbidden - Insufficient permissions",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+      "type": "object",
+      "required": [
+        "credentials"
+      ],
+      "properties": {
+        "credentials": {
+          "type": "object",
+          "properties": {
+            "username": {
+              "example": "",
+              "type": "string"
             },
-            "example": {
-              "status": 403,
-              "code": "FORBIDDEN",
-              "message": {
-                "message": "You do not have permissions to access this resource"
+            "password": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "authentication_type": {
+          "example": "type bussiness",
+          "type": "string"
+        },
+        "operation": {
+          "example": "type bussiness",
+          "type": "string"
+        }
+      }
+    },
+    "type_7": {
+      "example": {
+        "codeResponse": "200",
+        "messageResponse": "",
+        "authentication": {
+          "token": "",
+          "detail_authentication": {
+            "name": "Juan Pérez",
+            "userIdentificacionNumber": "12345678",
+            "userIdentificationType": "CC",
+            "services": [
+              {
+                "lineType": "INTERNET",
+                "phone": "3001234567",
+                "subType": "INTERNET",
+                "state": "ACTIVO",
+                "technology": "FTTH"
               }
-            }
+            ]
           }
         }
       },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
+      "type": "object",
+      "required": [
+        "authentication"
+      ],
+      "properties": {
+        "codeResponse": {
+          "example": "200",
+          "type": "string"
+        },
+        "messageResponse": {
+          "example": "",
+          "type": "string"
+        },
+        "authentication": {
+          "type": "object",
+          "required": [
+            "detail_authentication"
+          ],
+          "properties": {
+            "token": {
+              "example": "",
+              "type": "string"
             },
-            "example": {
-              "status": 404,
-              "code": "NOT_FOUND",
-              "message": {
-                "message": "The requested resource does not exist"
-              }
-            }
-          }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 500,
-              "code": "INTERNAL_SERVER_ERROR",
-              "message": {
-                "message": "Internal error processing the request"
+            "detail_authentication": {
+              "type": "object",
+              "required": [
+                "services"
+              ],
+              "properties": {
+                "name": {
+                  "example": "Juan Pérez",
+                  "type": "string"
+                },
+                "userIdentificacionNumber": {
+                  "example": "12345678",
+                  "type": "string"
+                },
+                "userIdentificationType": {
+                  "example": "CC",
+                  "type": "string"
+                },
+                "services": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "lineType": {
+                        "example": "INTERNET",
+                        "type": "string"
+                      },
+                      "phone": {
+                        "example": "3001234567",
+                        "type": "string"
+                      },
+                      "subType": {
+                        "example": "INTERNET",
+                        "type": "string"
+                      },
+                      "state": {
+                        "example": "ACTIVO",
+                        "type": "string"
+                      },
+                      "technology": {
+                        "example": "FTTH",
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
               }
             }
           }
         }
       }
     },
-    "securitySchemes": {
-      "etb_oauth2": {
-        "type": "oauth2",
-        "description": "ETB OAuth 2.0 Authentication",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
-            "scopes": {
-              "read": "Data read access permissions",
-              "write": "Write and modification permissions"
-            }
-          }
+    "type_8": {
+      "example": {
+        "application": "DIJIN",
+        "ip": "192.168.1.100",
+        "browser": "Google Chrome",
+        "computerName": "PC-Oficina",
+        "sumaUser": "mrodriguez",
+        "queriedPhone": "2342342",
+        "downloadedFile": "archivo de 200 caracteres",
+        "registrationDateTime": "2025-08-14T17:45:00Z"
+      },
+      "type": "object",
+      "properties": {
+        "application": {
+          "example": "DIJIN",
+          "type": "string"
+        },
+        "ip": {
+          "example": "192.168.1.100",
+          "type": "string"
+        },
+        "browser": {
+          "example": "Google Chrome",
+          "type": "string"
+        },
+        "computerName": {
+          "example": "PC-Oficina",
+          "type": "string"
+        },
+        "sumaUser": {
+          "example": "mrodriguez",
+          "type": "string"
+        },
+        "queriedPhone": {
+          "example": "2342342",
+          "type": "string"
+        },
+        "downloadedFile": {
+          "example": "archivo de 200 caracteres",
+          "type": "string"
+        },
+        "registrationDateTime": {
+          "example": "2025-08-14T17:45:00Z",
+          "type": "string"
+        }
+      }
+    },
+    "type_9": {
+      "example": {
+        "id": "1",
+        "code": "200",
+        "message": "Successful operation"
+      },
+      "type": "object",
+      "properties": {
+        "id": {
+          "example": "1",
+          "type": "string"
+        },
+        "code": {
+          "example": "200",
+          "type": "string"
+        },
+        "message": {
+          "example": "Successful operation",
+          "type": "string"
         }
       }
     }
   },
-  "security": [
-    {
-      "etb_oauth2": []
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
     }
-  ],
-  "tags": [
-    {
-      "name": "Common Xapi Services",
-      "description": "Main operations for Common Xapi Services"
-    }
-  ]
+  }
 }

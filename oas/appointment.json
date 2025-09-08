@@ -1,709 +1,1307 @@
 {
-  "openapi": "3.0.3",
+  "swagger": "2.0",
   "info": {
-    "title": "appointment-admin-web-xapi-services",
-    "description": "## API Overview\n\n**Architecture Layer:** Experience Layer (XAPI) - Part of ETB's API-led connectivity architecture\n\n**Service Name:** appointment-management-xapi-services\n**Total Operations:** 3\n**Documentation Quality:** 60% RAML Coverage\n\n## Core Capabilities\n\nAPI designed for appointment management, enabling the handling of various actions related to scheduling and agenda management.\n\n## Standards Compliance\n\n- OpenAPI 3.0.3 Specification\n- ETB API Design Guidelines\n- OAuth 2.0 Security Standards\n- RESTful API Design Principles\n- TM Forum Open APIs Compliance\n\n## Mock Server Information\n\nThis specification includes mock examples for all operations to facilitate API testing and integration development without requiring live backend connectivity.",
-    "version": "v1",
-    "contact": {
-      "name": "ETB API Team",
-      "url": "https://www.etb.com.co",
-      "email": "api-support@etb.com.co"
-    },
-    "license": {
-      "name": "Proprietary - ETB"
-    },
-    "x-language": "en",
-    "x-compliance": "TM Forum Open APIs"
+    "title": "Appointment Admin Web XAPI Services",
+    "description": "## API Overview\n\n**Architecture Layer:** XAPI (Experience Layer) - Part of ETB's API-led connectivity architecture\n\n**Core Capabilities:**\n- **Appointment Creation:** Create and register service appointments linked to customer PQRs following TM Forum TMF646 standard\n- **Appointment Management:** Retrieve, update, and patch existing appointments with full lifecycle support\n- **Time Slot Search:** Advanced availability search with multi-day capacity, area-based filtering, and service category optimization\n- **PQR Integration:** Seamless integration with ETB's trouble ticket system for appointment-PQR correlation\n\n**Integration Points:**\n- **bot-sapi-services:** System layer for appointment operations via `/pqr/agenda/v1` endpoint (port 8091)\n- **oracle-sapi-services:** Oracle backend for capacity management and order assurance (port 8091)\n- **audits-oracle-sapi-services:** Oracle-based audit logging for compliance and traceability (port 8091)\n\n**Standards Compliance:**\n- TM Forum TMF646 (Appointment Management) v3.4.2\n- RESTful API design principles with PATCH support\n- OAuth 2.0 security standards\n\n**Performance Metrics:**\n- Target response time: < 2 seconds for appointment operations\n- Availability target: 99.5% monthly uptime\n- Maximum error rate: < 2% of transactions\n\n**Target Consumers:**\n- WhatsApp Business Channel\n- Customer Service Portal\n- Field Service Mobile Applications\n- Contact Center Agent Desktop\n- Third-party Integration Systems\n",
+    "version": "v1"
   },
-  "servers": [
-    {
-      "url": "https://mock-appointment-management-xapi-services.etb-apis.com",
-      "description": "Mock Server - Documentation and Testing"
-    },
-    {
-      "url": "https://appointment-management-xapi-services-prod.us-e2.cloudhub.io",
-      "description": "Production Server - Live Environment"
-    },
-    {
-      "url": "https://appointment-management-xapi-services-qa.us-e2.cloudhub.io",
-      "description": "QA Test Server - Validation Environment"
-    }
+  "host": "appointment-admin-web-xapi-services-{env}.us-e2.cloudhub.io",
+  "basePath": "/{version}",
+  "schemes": [
+    "https"
   ],
+  "externalDocs": {
+    "url": "http://",
+    "description": "## Architecture Overview\n\nThis API serves as the experience layer for appointment management, orchestrating service scheduling operations across ETB's digital channels. It provides a unified interface for creating, managing, and searching appointments while ensuring proper integration with PQR management and capacity planning systems.\n\n## Data Integration\n\n**Primary Backend Systems:**\n- **Bot Services:** Core appointment management via `/api/pqr/v2/agenda`\n- **Oracle Database:** Capacity management and order assurance tracking\n- **Audit System:** Comprehensive transaction logging for compliance\n\n**Data Flow Patterns:**\n- Synchronous request-response for all appointment operations\n- Real-time capacity checking for time slot availability\n- Event-driven PQR correlation for appointment tracking\n- Audit trail generation for all state changes\n\n## Response Codes\n\n**API-Controlled Response Codes (in response body):**\n- `200/Ok`: Successful operation completion\n- `REQUEST_ERROR`: Malformed request or validation failure\n- `Unauthorized`: Invalid or expired authentication token\n- `NOT_FOUND`: Appointment or resource not found\n- `INTERNAL_SERVER_ERROR`: Backend system failure or timeout\n\n## Error Handling\n\nAll errors follow a standardized structure with:\n- HTTP status code for transport-level status\n- Business-specific error codes in the response body\n- Detailed error messages for debugging\n- Origin tracking for multi-system error propagation\n- Correlation IDs for end-to-end traceability\n\n## Performance Standards\n\n**Response Time Expectations:**\n- Appointment creation: < 2 seconds\n- Appointment retrieval: < 1 second  \n- Time slot search: < 3 seconds (depends on date range)\n- Appointment updates: < 1.5 seconds\n- Audit logging: Asynchronous (non-blocking)\n",
+    "x-amf-title": "Technical Architecture"
+  },
   "paths": {
     "/appointment": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Manages service appointments for ETB's field operations, customer visits, and technical support activities. This resource provides complete lifecycle management for appointments linked to customer PQRs (Peticiones, Quejas, Reclamos) and service orders.\n\n**Data Integration:**\n- **bot-sapi-services:** Primary backend for appointment persistence via `/pqr/agenda/v1`\n- **Bot Services:** External system managing appointment scheduling via `/api/pqr/v2/agenda`\n- **Oracle Database:** Capacity management and order tracking integration\n\n**Business Intelligence Features:**\n- **PQR Correlation:** Automatic linking of appointments to trouble tickets\n- **Order Tracking:** Integration with service order lifecycle\n- **Customer History:** Access to previous appointments and preferences\n- **Capacity Optimization:** Real-time availability and resource allocation\n",
       "post": {
-        "operationId": "post_appointment",
-        "summary": "Create Appointment",
-        "description": "The `/appointment` POST operation within ETB's appointment-management-xapi-services facilitates scheduling and managing appointments for various telecommunications services.  This RESTful API allows authorized applications to create new appointments for customers, technicians, or internal staff.  Business use cases include scheduling installations of fiber optic broadband, troubleshooting appointments for faulty landlines, or booking in-person consultations at ETB stores.  The API accepts detailed appointment data including date, time, customer details (potentially integrated with ETB's CRM), service type, technician assignment (if applicable, potentially integrated with ETB's workforce management system), and location.  Successful requests return a unique appointment ID, allowing subsequent updates or retrieval.  This integration point is crucial for streamlining ETB's operational efficiency and enhancing customer experience by providing a centralized, automated appointment management system.  Error handling provides informative responses for invalid data or scheduling conflicts.\n",
-        "tags": [
-          "Appointment Scheduling"
+        "operationId": "Create Appointment",
+        "description": "## Operation Summary\n\nCreates a new appointment in the system linked to a customer PQR and service order. Validates customer information, checks time slot availability, and registers the appointment with all necessary tracking information.\n\n## Use Cases\n\n- **WhatsApp Channel:** Automated appointment scheduling through chatbot conversation\n- **Portal Channel:** Customer self-service appointment booking\n- **Mobile Channel:** Field technician scheduling follow-up visits\n- **Agent Channel:** Contact center scheduling on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services `/pqr/agenda/v1` endpoint\n- Backend: Bot Services appointment engine `/api/pqr/v2/agenda`\n- Validation: Oracle capacity management service\n- Audit: audits-oracle-sapi-services for transaction logging\n\n## Performance Characteristics\n\n- Response time: < 2 seconds for appointment creation\n- Validation time: < 500ms for availability check\n- Rate limits: 100 appointments per minute per channel\n- Timeout: 30 seconds for backend operations\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "ORIGIN",
+            "description": "**Business Purpose:** Identifies the channel or system originating the appointment request for analytics and routing\n\n**Valid Values:** WHATSAPP, PORTAL, MOBILE_APP, AGENT_DESKTOP, IVR, WEB, THIRD_PARTY\n\n**Usage Examples:**\n- WHATSAPP: Appointments scheduled via WhatsApp chatbot\n- PORTAL: Customer self-service web portal bookings\n- AGENT_DESKTOP: Contact center agent scheduling\n\n**Channel Variations:** Required for all channels to ensure proper audit trail and capacity allocation\n",
+            "required": true,
+            "in": "query",
+            "type": "string"
           },
           {
-            "$ref": "#/components/parameters/SystemId"
-          }
-        ],
-        "responses": {
-          "201": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/AppointmentModel"
-                    }
-                  }
-                },
-                "example": {
-                  "customer": {
-                    "documentNumber": "87654321",
-                    "documentType": "CC",
-                    "phone": "3157000421",
-                    "name": "USUARIO_SISTEMA"
-                  },
-                  "appointment": {
-                    "date": "2025-07-25",
-                    "timeSlot": "AM",
-                    "duration": "120"
-                  },
-                  "order": {
-                    "id": "12345",
-                    "CUN": "CUN001122",
-                    "orderType": "installation"
-                  }
-                }
-              }
-            }
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
           },
-          "400": {
-            "$ref": "#/components/responses/BadRequest"
-          },
-          "401": {
-            "$ref": "#/components/responses/Unauthorized"
-          },
-          "404": {
-            "$ref": "#/components/responses/NotFound"
-          },
-          "500": {
-            "$ref": "#/components/responses/InternalServerError"
-          }
-        },
-        "security": [
           {
-            "etb_oauth2": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "customer",
-                  "appointment"
-                ],
-                "properties": {
-                  "customer": {
-                    "$ref": "#/components/schemas/Customer"
-                  },
-                  "appointment": {
-                    "type": "object",
-                    "properties": {
-                      "date": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "timeSlot": {
-                        "type": "string",
-                        "enum": [
-                          "AM",
-                          "PM",
-                          "EVENING"
-                        ]
-                      },
-                      "duration": {
-                        "type": "string",
-                        "pattern": "^[0-9]+$"
-                      }
-                    },
-                    "required": [
-                      "date",
-                      "timeSlot"
-                    ]
-                  }
-                }
-              },
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
+            "schema": {
+              "description": "## Request Body Structure\n\n**Customer Object:**\n- **documentNumber:** Customer identification number (8-15 digits)\n  - Format: Numeric string\n  - Example: \"87654321\"\n  - Business Logic: Must match billing system records\n\n- **documentType:** Type of identification document\n  - Valid Values: CC (Cédula), CE (Foreign ID), NIT, PASAPORTE, TI\n  - Default: CC for residential customers\n  - Business Logic: NIT required for corporate customers\n\n- **phone:** Contact phone number for appointment confirmation\n  - Format: 10 digits Colombian format\n  - Pattern: ^[0-9]{10}$\n  - Example: \"3057000421\"\n  - Usage: SMS notifications and appointment reminders\n\n- **name:** Name of user creating the appointment\n  - Format: Alphanumeric with spaces\n  - Example: \"USUARIO_SISTEMA\" for automated bookings\n  - Business Logic: Audit trail for appointment creation\n\n**Order Object:**\n- **id:** Service order identifier\n  - Format: Numeric string\n  - Example: \"12345\"\n  - Validation: Must exist in order management system\n\n- **CUN:** Unique business code (Código Único de Negocio)\n  - Format: CUN followed by 6-10 digits\n  - Pattern: ^CUN[0-9]{6,10}$\n  - Example: \"CUN001122\"\n  - Business Logic: Links appointment to master transaction\n\n- **orderType:** Category of service order\n  - Valid Values: installation, repair, maintenance, disconnection, upgrade\n  - Business Logic: Determines required technician skills and duration\n\n- **state:** Current order status\n  - Valid Values: pending, scheduled, in_progress, completed, cancelled\n  - Business Logic: Only pending orders can have new appointments\n\n- **creationDate:** Order creation timestamp\n  - Format: ISO 8601 (YYYY-MM-DDTHH:mm:ssZ)\n  - Example: \"2025-07-23T10:00:00Z\"\n  - Usage: SLA calculation and priority routing\n\n**Appointment Object:**\n- **date:** Requested appointment date\n  - Format: YYYY-MM-DD\n  - Validation: Must be future date within booking window (typically 30 days)\n  - Business Logic: Subject to capacity availability\n\n- **timeSlot:** Preferred time window\n  - Valid Values: AM (8:00-12:00), PM (12:00-17:00), EVENING (17:00-20:00)\n  - Business Logic: Availability depends on service area and type\n\n- **duration:** Expected appointment duration in minutes\n  - Format: Numeric string\n  - Range: 30-240 minutes\n  - Default: Based on orderType (installation=120, repair=60)\n\n**PQR Object:**\n- **id:** Trouble ticket identifier\n  - Format: Numeric string\n  - Example: \"454\"\n  - Validation: Must exist in PQR system\n  - Business Logic: Required for complaint-related appointments\n\n**Operation Field:**\n- Purpose: Business operation context\n- Valid Values: FTTH, HFC, DTH, CORPORATE, RESIDENTIAL\n- Usage: Routing to specialized technician teams\n",
               "example": {
                 "customer": {
                   "documentNumber": "87654321",
                   "documentType": "CC",
-                  "phone": "3157000421",
+                  "phone": "3057000421",
                   "name": "USUARIO_SISTEMA"
-                },
-                "appointment": {
-                  "date": "2025-07-25",
-                  "timeSlot": "AM",
-                  "duration": "120"
                 },
                 "order": {
                   "id": "12345",
                   "CUN": "CUN001122",
-                  "orderType": "installation"
+                  "orderType": "installation",
+                  "state": "pending",
+                  "creationDate": "2025-07-23T10:00:00Z"
+                },
+                "appointment": {
+                  "date": "",
+                  "timeSlot": "",
+                  "duration": ""
+                },
+                "pqr": {
+                  "id": "454"
+                },
+                "operation": "type bussiness"
+              },
+              "type": "object",
+              "required": [
+                "order",
+                "customer",
+                "pqr",
+                "appointment"
+              ],
+              "properties": {
+                "order": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "12345",
+                      "type": "string"
+                    },
+                    "CUN": {
+                      "example": "CUN001122",
+                      "type": "string"
+                    },
+                    "orderType": {
+                      "example": "installation",
+                      "type": "string"
+                    },
+                    "state": {
+                      "example": "pending",
+                      "type": "string"
+                    },
+                    "creationDate": {
+                      "example": "2025-07-23T10:00:00Z",
+                      "type": "string"
+                    }
+                  }
+                },
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "documentNumber": {
+                      "example": "87654321",
+                      "type": "string"
+                    },
+                    "documentType": {
+                      "example": "CC",
+                      "type": "string"
+                    },
+                    "phone": {
+                      "example": "3057000421",
+                      "type": "string"
+                    },
+                    "name": {
+                      "example": "USUARIO_SISTEMA",
+                      "type": "string"
+                    }
+                  }
+                },
+                "pqr": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "example": "454",
+                      "type": "string"
+                    }
+                  }
+                },
+                "operation": {
+                  "example": "type bussiness",
+                  "type": "string"
+                },
+                "appointment": {
+                  "type": "object",
+                  "properties": {
+                    "date": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "timeSlot": {
+                      "example": "",
+                      "type": "string"
+                    },
+                    "duration": {
+                      "example": "",
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
           }
-        }
-      }
-    },
-    "/{id}": {
-      "get": {
-        "operationId": "get_id",
-        "summary": "Retrieve {Id}",
-        "description": "Retrieves a specific appointment from ETB's appointment-management-xapi-services using its unique ID.  This GET /{id} operation is crucial for ETB's telecommunications service provisioning and customer support.\n\n**Business Use Cases:**\n\n* **Technician Dispatch:**  Field technicians use this API to access appointment details (customer address, service type, scheduled time) before visiting a customer's premises for installations, repairs, or maintenance of ETB's network infrastructure (e.g., fiber optic cable installation, modem replacement).\n\n* **Customer Self-Service Portal:**  Customers can view their scheduled appointments via ETB's online portal, integrated with this API, allowing them to manage and reschedule appointments independently.\n\n* **Internal Reporting & Analytics:**  ETB's internal systems leverage this API to generate reports on appointment scheduling efficiency, technician workload, and service completion rates, optimizing resource allocation.\n\n* **Third-Party Integrations:**  This API integrates with ETB's CRM and scheduling systems, ensuring seamless data flow and consistency across different platforms.  It also enables integration with partner applications for appointment reminders and notifications.\n",
-        "tags": [
-          "Appointment Management Xapi Services"
-        ],
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "description": "Unique identifier for id",
-            "schema": {
-              "type": "string"
-            },
-            "example": "ETB001234567"
-          },
-          {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
-          }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
+            "description": "**API-Controlled Code:** `200/Ok` in response body\n\n**Response Structure:**\n- Status code confirming successful creation\n- Business code indicating operation result\n- Confirmation message with appointment details\n- Server messages for additional information\n\n**Data Enrichment:**\n- Appointment ID generated automatically\n- Confirmation number for customer reference\n- Estimated technician arrival time\n- SMS notification status\n\n**Business Context:**\n- Successful creation triggers SMS confirmation\n- Appointment visible in all channels immediately\n- Capacity automatically updated\n- PQR status updated to \"scheduled\"\n",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "description": "**Response Fields:**\n- **status:** HTTP status code (always 200 for success)\n- **code:** Business operation code (\"Ok\" for success)\n- **message.message:** Confirmation text in Spanish\n- **messageServer:** Additional server information\n- **Data Source:** Bot Services appointment engine\n",
+              "type": "object",
+              "required": [
+                "message"
+              ],
+              "properties": {
+                "code": {
+                  "example": "Ok",
+                  "type": "string"
+                },
+                "messageServer": {
+                  "example": "",
+                  "type": "string"
+                },
+                "message": {
                   "type": "object",
                   "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/ResourceModel"
+                    "message": {
+                      "example": "Se registro la agenda satisfactoriamente",
+                      "type": "string"
                     }
                   }
                 },
-                "example": {
-                  "id": "APT001234",
-                  "status": "SCHEDULED",
-                  "date": "2025-07-25",
-                  "timeSlot": "AM",
-                  "customer": {
-                    "documentNumber": "87654321",
-                    "name": "Carlos Rodríguez",
-                    "phone": "3157000421"
-                  },
-                  "technician": {
-                    "id": "TECH001",
-                    "name": "Pedro Martínez",
-                    "skills": [
-                      "FTTH",
-                      "HFC"
-                    ]
-                  }
+                "status": {
+                  "example": 200,
+                  "type": "integer"
                 }
               }
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Bad Request",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Unauthorized",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "Not Found",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "Internal Server Error",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
+          }
+        ]
+      }
+    },
+    "/appointment/{id}": {
+      "get": {
+        "operationId": "Retrieve Appointment",
+        "description": "## Operation Summary\n\nRetrieves complete appointment details including customer information, associated PQR, order details, and current status. Provides real-time appointment status and technician assignment information.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer checking appointment status via chatbot\n- **Portal Channel:** Viewing appointment details and updates\n- **Mobile Channel:** Technician accessing appointment information\n- **Agent Channel:** Support staff reviewing customer appointments\n\n## Data Sources\n\n- Primary: Bot Services appointment repository\n- Enrichment: Order management system for service details\n- Real-time: Technician location and ETA from field service system\n\n## Performance Characteristics\n\n- Response time: < 1 second\n- Cache TTL: 60 seconds for status information\n- Rate limits: 500 queries per minute per client\n",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "description": "**Business Purpose:** Unique identifier of the appointment to retrieve or update\n\n**Format:** Alphanumeric appointment ID or CUN reference\n- Pattern: ^[A-Z0-9]{8,15}$\n- Example: \"APT20250123456\" or \"CUN001122\"\n\n**Validation:** Must exist in appointment system\n\n**Business Context:** Can be appointment ID or associated CUN for flexible lookup\n",
+            "required": true,
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          }
+        },
+        "security": [
+          {
+            "etb_oauth_2_0": []
           }
         ]
       },
       "patch": {
-        "operationId": "patch_id",
-        "summary": "Modify {Id}",
-        "description": "The `/ {id}` PATCH operation within ETB's appointment-management-xapi-services updates existing appointments.  This is crucial for ETB's telecommunications operations, enabling real-time modifications to technician schedules.  Business use cases include rescheduling appointments due to customer requests, technician unavailability (e.g., illness or equipment malfunction), or unforeseen network issues impacting service delivery.  The service integrates with ETB's CRM and field service management systems, allowing for seamless updates across platforms.  For example, a customer service representative can reschedule a fiber optic installation appointment via the CRM, triggering an automatic update via this PATCH operation, instantly notifying the technician and updating ETB's internal scheduling system.  This ensures efficient resource allocation and improved customer service within ETB's telecommunications network.  The operation accepts a JSON payload specifying the changes to the appointment details (e.g., date, time, location, technician).\n",
-        "tags": [
-          "Appointment Management Xapi Services"
+        "operationId": "Update Appointment",
+        "description": "## Operation Summary\n\nPerforms partial updates to an existing appointment following PATCH semantics. Supports rescheduling, status updates, and modification of appointment details while maintaining audit trail.\n\n## Use Cases\n\n- **WhatsApp Channel:** Customer rescheduling via chatbot\n- **Portal Channel:** Self-service appointment modifications\n- **Mobile Channel:** Technician updating appointment status\n- **Agent Channel:** Support staff making changes on behalf of customers\n\n## Data Sources\n\n- Primary: bot-sapi-services appointment update endpoint\n- Validation: Capacity service for new time slot availability\n- Notification: SMS service for change notifications\n\n## Performance Characteristics\n\n- Response time: < 1.5 seconds\n- Partial update support: Only send changed fields\n- Rate limits: 50 updates per minute per appointment\n",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
             "name": "id",
-            "in": "path",
+            "description": "**Business Purpose:** Unique identifier of the appointment to retrieve or update\n\n**Format:** Alphanumeric appointment ID or CUN reference\n- Pattern: ^[A-Z0-9]{8,15}$\n- Example: \"APT20250123456\" or \"CUN001122\"\n\n**Validation:** Must exist in appointment system\n\n**Business Context:** Can be appointment ID or associated CUN for flexible lookup\n",
             "required": true,
-            "description": "Unique identifier for id",
+            "in": "path",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "x-amf-mediaType": "application/json",
+            "in": "body",
+            "name": "generated",
             "schema": {
-              "type": "string"
-            },
-            "example": "ETB001234567"
-          },
-          {
-            "$ref": "#/components/parameters/CorrelationId"
-          },
-          {
-            "$ref": "#/components/parameters/SystemId"
+              "description": "The Appointment to be updated",
+              "example": {
+                "value": {
+                  "description": "Hogares",
+                  "category": "ASEGURAMIENTO",
+                  "externalId": "MDM-PQR-4156123",
+                  "startDateTime": "",
+                  "endDateTime": "2025-05-26T16:36:24.985Z",
+                  "creationDate": "",
+                  "status": "CANCELLED",
+                  "appointmentCharacteristic": [
+                    {
+                      "name": "workZone",
+                      "value": "CHICO"
+                    },
+                    {
+                      "name": "cancellationReason",
+                      "value": "CLIENTE CANCELA A TRAVÉS DE IA"
+                    }
+                  ],
+                  "place": {},
+                  "relatedParty": []
+                }
+              },
+              "type": "object",
+              "required": [
+                "appointmentCharacteristic",
+                "relatedParty",
+                "place"
+              ],
+              "properties": {
+                "appointmentCharacteristic": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "example": "workZone",
+                        "type": "string"
+                      },
+                      "value": {
+                        "example": "CHICO",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "startDateTime": {
+                  "example": "",
+                  "type": "string"
+                },
+                "externalId": {
+                  "example": "MDM-PQR-4156123",
+                  "type": "string"
+                },
+                "id": {
+                  "example": 8844894,
+                  "type": "integer"
+                },
+                "relatedParty": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "example": "612802304579311959",
+                        "type": "string"
+                      },
+                      "name": {
+                        "example": "John Doe",
+                        "type": "string"
+                      },
+                      "role": {
+                        "example": "customer",
+                        "type": "string"
+                      },
+                      "@referredType": {
+                        "example": "Customer",
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "endDateTime": {
+                  "example": "",
+                  "type": "string"
+                },
+                "place": {
+                  "type": "object",
+                  "properties": {
+                    "name": {
+                      "example": "Customer Home",
+                      "type": "string"
+                    },
+                    "streetNumber": {
+                      "example": "XX XXX X 77 AP 203",
+                      "type": "string"
+                    },
+                    "streetName": {
+                      "example": "Main St",
+                      "type": "string"
+                    },
+                    "city": {
+                      "example": "BOGOTA D.C.",
+                      "type": "string"
+                    },
+                    "stateOrProvince": {
+                      "example": "BOGOTA",
+                      "type": "string"
+                    },
+                    "country": {
+                      "example": "Colombia (COT)",
+                      "type": "string"
+                    },
+                    "@type": {
+                      "example": "PhysicalLocation",
+                      "type": "string"
+                    }
+                  }
+                },
+                "category": {
+                  "example": "ASEGURAMIENTO",
+                  "type": "string"
+                },
+                "creationDate": {
+                  "example": "",
+                  "type": "string"
+                },
+                "description": {
+                  "example": "Hogares",
+                  "type": "string"
+                },
+                "status": {
+                  "example": "cancelled",
+                  "type": "string"
+                }
+              }
+            }
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "code": {
-                      "type": "string",
-                      "example": "Ok"
-                    },
-                    "message": {
-                      "type": "object",
-                      "properties": {
-                        "message": {
-                          "type": "string",
-                          "example": "Operation completed successfully"
-                        }
-                      }
-                    },
-                    "data": {
-                      "$ref": "#/components/schemas/ResourceModel"
-                    }
-                  }
-                },
-                "example": {
-                  "id": "ETB001234",
-                  "name": "Ejemplo Request ETB",
-                  "status": "active",
-                  "metadata": {
-                    "source": "PORTAL",
-                    "timestamp": "2025-07-23T10:00:00Z"
-                  }
-                }
-              }
+            "description": "Updated",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_1"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Bad Request",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Unauthorized",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "Not Found",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "Internal Server Error",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "customer",
-                  "appointment"
-                ],
-                "properties": {
-                  "customer": {
-                    "$ref": "#/components/schemas/Customer"
-                  },
-                  "appointment": {
-                    "type": "object",
-                    "properties": {
-                      "date": {
-                        "type": "string",
-                        "format": "date"
-                      },
-                      "timeSlot": {
-                        "type": "string",
-                        "enum": [
-                          "AM",
-                          "PM",
-                          "EVENING"
-                        ]
-                      },
-                      "duration": {
-                        "type": "string",
-                        "pattern": "^[0-9]+$"
-                      }
-                    },
-                    "required": [
-                      "date",
-                      "timeSlot"
-                    ]
-                  }
-                }
-              },
-              "example": {
-                "id": "ETB001234",
-                "name": "Ejemplo Request ETB",
-                "status": "active",
-                "metadata": {
-                  "source": "PORTAL",
-                  "timestamp": "2025-07-23T10:00:00Z"
-                }
-              }
-            }
-          }
-        }
+        ]
       }
     },
     "/searchTimeSlot": {
+      "x-amf-description": "## Resource Description\n\n**Business Purpose:** Provides real-time availability search for appointment scheduling based on service area, category, and capacity constraints. Enables intelligent time slot recommendations optimized for field service efficiency.\n\n**Data Integration:**\n- **oracle-sapi-services:** Primary source for capacity data via `/oracle/v1/getCapacity`\n- **Oracle Database:** Real-time technician availability and routing information\n- **Bot Services:** Historical appointment patterns for optimization\n\n**Business Intelligence Features:**\n- **Dynamic Capacity:** Real-time adjustment based on technician availability\n- **Area Optimization:** Geographic clustering for efficient routing\n- **Category Filtering:** Service-specific time slot availability\n- **Multi-day Search:** Extended availability window for flexibility\n",
       "get": {
-        "operationId": "get_searchTimeSlot",
-        "summary": "Retrieve Searchtimeslot",
-        "description": "The `/searchTimeSlot` GET operation within ETB's appointment-management-xapi-services allows agents to find available appointment slots for customer service interactions.  This is crucial for scheduling technical support appointments, network installations, or in-home consultations.  The operation accepts parameters such as date range, service type (e.g., broadband installation, fiber optic upgrade), and technician location to return a list of available time slots.  Integrations exist with ETB's customer relationship management (CRM) system, automatically updating appointment details upon booking.  Business use cases include optimizing technician routing, minimizing customer wait times, and improving overall service efficiency.  The returned data includes slot details like start/end times, technician availability, and associated service IDs, enabling seamless scheduling and resource allocation within ETB's telecommunications network.\n",
-        "tags": [
-          "Appointment Management Xapi Services"
+        "operationId": "Search Available Time Slots",
+        "description": "## Operation Summary\n\nSearches for available appointment time slots based on service requirements, geographic area, and capacity constraints. Returns optimized scheduling options considering technician skills, travel time, and workload balance.\n\n## Use Cases\n\n- **WhatsApp Channel:** Presenting available slots during appointment booking flow\n- **Portal Channel:** Calendar view of available appointments\n- **Mobile Channel:** Technician viewing available slots for rescheduling\n- **Agent Channel:** Finding optimal slots while customer is on call\n\n## Data Sources\n\n- Primary: oracle-sapi-services `/oracle/v1/getCapacity` endpoint\n- Real-time: Field service management system for live availability\n- Optimization: ML-based routing engine for slot recommendations\n\n## Performance Characteristics\n\n- Response time: < 3 seconds (depends on date range)\n- Cache TTL: 5 minutes for capacity data\n- Rate limits: 200 searches per minute per client\n- Maximum date range: 30 days\n",
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "produces": [
+          "application/json"
         ],
         "parameters": [
           {
-            "$ref": "#/components/parameters/CorrelationId"
+            "name": "numDays",
+            "description": "**Business Purpose:** Number of days to search for available time slots\n\n**Validation Rules:**\n- Minimum: 1 day\n- Maximum: 30 days\n- Default: 7 days if not specified\n\n**Business Logic:** Longer ranges may have reduced accuracy due to dynamic scheduling\n\n**Channel Variations:**\n- WhatsApp: Limited to 7 days for quick selection\n- Portal: Full 30-day range available\n",
+            "required": false,
+            "in": "query",
+            "default": 7,
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 30
           },
           {
-            "$ref": "#/components/parameters/SystemId"
+            "name": "categories",
+            "description": "**Business Purpose:** Service categories to filter available technicians and time slots\n\n**Format:** Comma-separated list of category codes\n\n**Valid Values:**\n- MPPFTTH_Plata: FTTH Silver tier service\n- MPPFTTH_Oro: FTTH Gold tier service\n- MPPHFC: HFC service\n- MPPDTH: DTH satellite service\n- CORPORATE: Corporate services\n\n**Business Logic:** Categories determine required technician skills and appointment duration\n\n**Usage Example:** \"MPPFTTH_Plata,MPPFTTH_Oro\" for FTTH services\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "area",
+            "description": "**Business Purpose:** Geographic area code for technician routing and availability\n\n**Valid Values:**\n- NORTE: Northern Bogotá area\n- SUR: Southern Bogotá area\n- CENTRO: Central Bogotá area\n- CHICO: Chico neighborhood\n- SUBA: Suba locality\n- KENNEDY: Kennedy locality\n\n**Business Logic:** Area determines available technician pool and travel time calculations\n\n**Channel Variations:** Auto-detected based on customer address when available\n",
+            "required": false,
+            "in": "query",
+            "type": "string"
+          },
+          {
+            "name": "date",
+            "description": "**Business Purpose:** Starting date for time slot search\n\n**Format:** YYYY-MM-DD (ISO 8601 date format)\n\n**Validation Rules:**\n- Must be today or future date\n- Cannot exceed 30 days from today\n- Pattern: ^\\\\d{4}-\\\\d{2}-\\\\d{2}$\n\n**Default:** Today's date if not specified\n\n**Business Logic:** Combined with numDays to define search window\n",
+            "required": false,
+            "in": "query",
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}$"
+          },
+          {
+            "name": "name",
+            "description": "System of origin of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "X-CORRELATION-ID",
+            "description": "Optional Correlation ID to be overwritten when sent the request as a transaction identifier",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "source",
+            "description": "Destination of the request.",
+            "required": false,
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "systemId",
+            "description": "Auditing logs system identifier. Used for internal communication.",
+            "required": true,
+            "in": "header",
+            "enum": [
+              "MIGRACION",
+              "TRANSACCCIONES_OM",
+              "MAYORISTAS",
+              "OTINICIATIVAS"
+            ],
+            "type": "string"
+          },
+          {
+            "name": "processName",
+            "description": "Auditing logs process name. Used for internal communication",
+            "required": false,
+            "in": "header",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
-            "description": "Operation completed successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "status": {
-                      "type": "integer",
-                      "example": 200
-                    },
-                    "data": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/SearchtimeslotModel"
-                      }
-                    },
-                    "pagination": {
-                      "type": "object",
-                      "properties": {
-                        "total": {
-                          "type": "integer"
-                        },
-                        "page": {
-                          "type": "integer"
-                        },
-                        "limit": {
-                          "type": "integer"
-                        }
-                      }
-                    }
-                  }
-                },
-                "example": {
-                  "id": "APT001234",
-                  "status": "SCHEDULED",
-                  "date": "2025-07-25",
-                  "timeSlot": "AM",
-                  "customer": {
-                    "documentNumber": "87654321",
-                    "name": "Carlos Rodríguez",
-                    "phone": "3157000421"
-                  },
-                  "technician": {
-                    "id": "TECH001",
-                    "name": "Pedro Martínez",
-                    "skills": [
-                      "FTTH",
-                      "HFC"
-                    ]
-                  }
-                }
-              }
+            "description": "Success",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type_2"
             }
           },
           "400": {
-            "$ref": "#/components/responses/BadRequest"
+            "description": "Bad Request",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "401": {
-            "$ref": "#/components/responses/Unauthorized"
+            "description": "Unauthorized",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "404": {
-            "$ref": "#/components/responses/NotFound"
+            "description": "Not Found",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "405": {
+            "description": "Method Not Allowed",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           },
           "500": {
-            "$ref": "#/components/responses/InternalServerError"
+            "description": "Internal Server Error",
+            "x-amf-mediaType": "application/json",
+            "schema": {
+              "$ref": "#/definitions/type"
+            }
           }
         },
         "security": [
           {
-            "etb_oauth2": []
+            "etb_oauth_2_0": []
           }
         ]
       }
     }
   },
-  "components": {
-    "schemas": {
-      "ErrorResponse": {
-        "type": "object",
-        "required": [
-          "status",
-          "code",
-          "message"
-        ],
-        "properties": {
-          "status": {
-            "type": "integer",
-            "description": "HTTP status code",
-            "example": 400
-          },
-          "code": {
-            "type": "string",
-            "description": "Business-specific error code",
-            "example": "VALIDATION_ERROR"
-          },
+  "definitions": {
+    "type": {
+      "x-amf-examples": {
+        "example_0": {
+          "status": 400,
+          "code": "REQUEST_ERROR",
           "message": {
-            "type": "object",
-            "properties": {
-              "message": {
-                "type": "string",
-                "description": "Detailed error message",
-                "example": "Invalid request parameters"
-              }
-            }
+            "message": "Required query parameter document not specified"
           },
-          "cause": {
-            "type": "array",
-            "description": "Error cause information",
-            "items": {
-              "type": "object",
-              "properties": {
-                "origin": {
-                  "type": "string",
-                  "example": "XAPI-Services"
-                },
-                "message": {
-                  "type": "string",
-                  "example": "Validation failed"
-                }
-              }
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": "org.mule.module.apikit.api.exception.InvalidQueryParameterException"
             }
-          }
-        }
-      }
-    },
-    "parameters": {
-      "CorrelationId": {
-        "name": "X-CORRELATION-ID",
-        "in": "header",
-        "required": false,
-        "description": "Correlation ID for transaction traceability",
-        "schema": {
-          "type": "string",
-          "format": "uuid"
-        }
-      },
-      "SystemId": {
-        "name": "systemId",
-        "in": "header",
-        "required": true,
-        "description": "Source system identifier for audit purposes",
-        "schema": {
-          "type": "string",
-          "enum": [
-            "MIGRACION",
-            "TRANSACCCIONES_OM",
-            "MAYORISTAS",
-            "OTINICIATIVAS"
+          ]
+        },
+        "example_1": {
+          "status": 401,
+          "code": "Unauthorized",
+          "message": {
+            "message": "Invalid token"
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_1": {
+          "status": 404,
+          "code": "NOT_FOUND",
+          "message": {
+            "message": "Resource not found "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
+          ]
+        },
+        "amf_example_2": {
+          "status": 500,
+          "code": "INTERNAL_SERVER_ERROR",
+          "message": {
+            "message": "Server Internal Error "
+          },
+          "messageServer": "",
+          "cause": [
+            {
+              "origin": "XXX-xapi-services",
+              "message": ""
+            }
           ]
         }
       },
-      "ProcessName": {
-        "name": "processName",
-        "in": "header",
-        "required": false,
-        "description": "Process name for internal audit",
-        "schema": {
+      "type": "object",
+      "required": [
+        "message",
+        "cause"
+      ],
+      "properties": {
+        "status": {
+          "example": 400,
+          "type": "integer"
+        },
+        "code": {
+          "example": "",
           "type": "string"
-        }
-      }
-    },
-    "responses": {
-      "BadRequest": {
-        "description": "Invalid request - Missing or incorrect parameters",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 400,
-              "code": "REQUEST_ERROR",
-              "message": {
-                "message": "Required query parameters not specified"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "example": "",
+              "type": "string"
+            }
+          }
+        },
+        "messageServer": {
+          "example": "",
+          "type": "string"
+        },
+        "cause": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "origin": {
+                "example": "",
+                "type": "string"
               },
-              "cause": [
-                {
-                  "origin": "XAPI-Services",
-                  "message": "Validation failed"
-                }
-              ]
-            }
-          }
-        }
-      },
-      "Unauthorized": {
-        "description": "Unauthorized - Invalid or expired token",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 401,
-              "code": "Unauthorized",
               "message": {
-                "message": "Invalid or expired access token"
-              }
-            }
-          }
-        }
-      },
-      "Forbidden": {
-        "description": "Access forbidden - Insufficient permissions",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 403,
-              "code": "FORBIDDEN",
-              "message": {
-                "message": "You do not have permissions to access this resource"
-              }
-            }
-          }
-        }
-      },
-      "NotFound": {
-        "description": "Resource not found",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 404,
-              "code": "NOT_FOUND",
-              "message": {
-                "message": "The requested resource does not exist"
-              }
-            }
-          }
-        }
-      },
-      "InternalServerError": {
-        "description": "Internal server error",
-        "content": {
-          "application/json": {
-            "schema": {
-              "$ref": "#/components/schemas/ErrorResponse"
-            },
-            "example": {
-              "status": 500,
-              "code": "INTERNAL_SERVER_ERROR",
-              "message": {
-                "message": "Internal error processing the request"
+                "example": "",
+                "type": "string"
               }
             }
           }
         }
       }
     },
-    "securitySchemes": {
-      "etb_oauth2": {
-        "type": "oauth2",
-        "description": "ETB OAuth 2.0 Authentication",
-        "flows": {
-          "clientCredentials": {
-            "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
-            "scopes": {
-              "read": "Data read access permissions",
-              "write": "Write and modification permissions"
+    "type_1": {
+      "example": {
+        "value": [
+          {
+            "id": 8844894,
+            "description": "Hogares",
+            "category": "ASEGURAMIENTO",
+            "externalId": "MDM-PQR-4156123",
+            "startDateTime": "",
+            "endDateTime": "",
+            "creationDate": "2025-05-26T16:36:24.985Z",
+            "status": "pending",
+            "appointmentCharacteristic": [
+              {
+                "name": "workZone",
+                "value": "CHICO"
+              },
+              {
+                "name": "workSkill",
+                "value": "FALLA_JOVEN_FO_Platino"
+              },
+              {
+                "name": "duration",
+                "value": "120"
+              },
+              {
+                "name": "timeSlot",
+                "value": "AM_1"
+              },
+              {
+                "name": "date",
+                "value": "2025-05-28"
+              }
+            ],
+            "place": {
+              "name": "Customer Home",
+              "streetNumber": "XX XXX X 77 AP 203",
+              "streetName": "",
+              "city": "BOGOTA D.C.",
+              "stateOrProvince": "BOGOTA",
+              "country": "Colombia (COT)",
+              "@type": "PhysicalLocation"
+            },
+            "relatedParty": [
+              {
+                "id": "612802304579311959",
+                "name": "John Doe",
+                "role": "customer"
+              }
+            ]
+          }
+        ]
+      },
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "appointmentCharacteristic",
+          "place",
+          "relatedParty"
+        ],
+        "properties": {
+          "id": {
+            "example": 8844894,
+            "type": "integer"
+          },
+          "description": {
+            "example": "Hogares",
+            "type": "string"
+          },
+          "category": {
+            "example": "ASEGURAMIENTO",
+            "type": "string"
+          },
+          "externalId": {
+            "example": "MDM-PQR-4156123",
+            "type": "string"
+          },
+          "startDateTime": {
+            "example": "",
+            "type": "string"
+          },
+          "endDateTime": {
+            "example": "",
+            "type": "string"
+          },
+          "creationDate": {
+            "example": "2025-05-26T16:36:24.985Z",
+            "type": "string",
+            "format": "date-time"
+          },
+          "status": {
+            "example": "cancelled",
+            "type": "string"
+          },
+          "appointmentCharacteristic": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "example": "workZone",
+                  "type": "string"
+                },
+                "value": {
+                  "example": "CHICO",
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "place": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "example": "Customer Home",
+                "type": "string"
+              },
+              "streetNumber": {
+                "example": "XX XXX X 77 AP 203",
+                "type": "string"
+              },
+              "streetName": {
+                "example": "Main St",
+                "type": "string"
+              },
+              "city": {
+                "example": "BOGOTA D.C.",
+                "type": "string"
+              },
+              "stateOrProvince": {
+                "example": "BOGOTA",
+                "type": "string"
+              },
+              "country": {
+                "example": "Colombia (COT)",
+                "type": "string"
+              },
+              "@type": {
+                "example": "PhysicalLocation",
+                "type": "string"
+              }
+            }
+          },
+          "relatedParty": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "example": "612802304579311959",
+                  "type": "string"
+                },
+                "name": {
+                  "example": "John Doe",
+                  "type": "string"
+                },
+                "role": {
+                  "example": "customer",
+                  "type": "string"
+                },
+                "@referredType": {
+                  "example": "Customer",
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "type_2": {
+      "example": {
+        "items": [
+          {
+            "date": "2025-05-26",
+            "areas": [
+              {
+                "label": "CHICO",
+                "timeSlots": [
+                  {
+                    "label": "AM",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 12514952,
+                        "used": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "AM1",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 16777215,
+                        "used": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "AM2",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 9888275,
+                        "used": 0
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "date": "2025-05-27",
+            "areas": [
+              {
+                "label": "CHICO",
+                "timeSlots": [
+                  {
+                    "label": "AM",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 11344634,
+                        "used": 126
+                      }
+                    ]
+                  },
+                  {
+                    "label": "PM3",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 16777215,
+                        "used": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "AM_1",
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 10725888,
+                        "used": 0
+                      }
+                    ]
+                  },
+                  {
+                    "label": "AM_2",
+                    "maxAvailable": 17640,
+                    "categories": [
+                      {
+                        "label": "MPPFTTH_Plata",
+                        "quota": 3957050,
+                        "used": 160
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "type": "object",
+      "required": [
+        "items"
+      ],
+      "properties": {
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": [
+              "areas"
+            ],
+            "properties": {
+              "date": {
+                "example": "2025-05-26",
+                "type": "string",
+                "format": "date"
+              },
+              "areas": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "required": [
+                    "timeSlots"
+                  ],
+                  "properties": {
+                    "label": {
+                      "example": "CHICO",
+                      "type": "string"
+                    },
+                    "timeSlots": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "required": [
+                          "categories"
+                        ],
+                        "properties": {
+                          "label": {
+                            "example": "AM",
+                            "type": "string"
+                          },
+                          "categories": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "label": {
+                                  "example": "MPPFTTH_Plata",
+                                  "type": "string"
+                                },
+                                "quota": {
+                                  "example": 12514952,
+                                  "type": "integer"
+                                },
+                                "used": {
+                                  "example": 0,
+                                  "type": "integer"
+                                }
+                              }
+                            }
+                          },
+                          "maxAvailable": {
+                            "example": 17640,
+                            "type": "integer"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
             }
           }
         }
       }
     }
   },
-  "security": [
-    {
-      "etb_oauth2": []
+  "securityDefinitions": {
+    "etb_oauth_2_0": {
+      "type": "oauth2",
+      "x-amf-describedBy": {
+        "headers": {
+          "Authorization": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use\nwith the \"access_token\" query string parameter.\n",
+            "type": "string"
+          }
+        },
+        "queryParameters": {
+          "access_token": {
+            "description": "Used to send a valid OAuth 2 access token. Do not use together with\nthe \"Authorization\" header\n"
+          },
+          "type": {
+            "type": "string"
+          }
+        },
+        "responses": {
+          "401": {
+            "description": "Bad or expired token. This can happen if the user or Dropbox\nrevoked or expired an access token. To fix, you should re-\nauthenticate the user.\n",
+            "body": {}
+          },
+          "403": {
+            "description": "Bad OAuth request (wrong consumer key, bad nonce, expired\ntimestamp...). Unfortunately, re-authenticating the user won't help here.\n",
+            "body": {}
+          }
+        }
+      },
+      "tokenUrl": "https://oauth-etb-security-services.us-e2.cloudhub.io/security/v1/access_token",
+      "flow": "application",
+      "scopes": {
+        "*": ""
+      },
+      "x-amf-settings": {
+        "authorizationGrants": [
+          "client_credentials",
+          "authorization_code",
+          "password"
+        ]
+      }
     }
-  ],
-  "tags": [
-    {
-      "name": "Appointment Management Xapi Services",
-      "description": "Main operations for Appointment Management Xapi Services"
-    },
-    {
-      "name": "Appointment Scheduling",
-      "description": "Programación y gestión de citas técnicas"
-    }
-  ]
+  }
 }
